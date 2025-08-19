@@ -1,0 +1,882 @@
+/* ===========================================
+   SIDEBAR EXTENSION - MINIMALIST DARK MODE
+   =========================================== */
+
+/* ===========================================
+   RESET & BASE STYLES
+   =========================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #ffffff;
+  background: #000000;
+  overflow-x: hidden;
+}
+
+/* ===========================================
+   LAYOUT & CONTAINER
+   =========================================== */
+.sidebar-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #141414;
+  border-left: 1px solid #333333;
+  position: relative;
+}
+
+/* ===========================================
+   HEADER STYLES
+   =========================================== */
+.sidebar-header {
+  background: #111111;
+  color: #ffffff;
+  padding: 16px 20px;
+  border-bottom: 1px solid #333333;
+  position: sticky;
+  top: 0;
+  z-index: 1001;
+  flex-shrink: 0;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.content-logo {
+  width: 70px;
+  height: 70px;
+}
+
+.sidebar-header h1 {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+}
+
+/* ===========================================
+   MAIN CONTENT AREA
+   =========================================== */
+.sidebar-content {
+  flex: 1;
+  background: #141414;
+  overflow: hidden;
+  position: relative;
+}
+
+.sidebar-content.chat-mode {
+  padding: 20px 12px 100px 12px; /* Padding inferior para el footer fijo */
+}
+
+/* ===========================================
+   WELCOME MESSAGE STYLES
+   =========================================== */
+.welcome-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.welcome-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  flex-direction: column;
+  transform: translateY(-60px);
+}
+
+.welcome-text {
+  color: #888888;
+  font-size: 22px;
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+.welcome-logo {
+  width: 90px;
+  height: 90px;
+}
+
+/* ===========================================
+   CHAT STYLES
+   =========================================== */
+.chat-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 8px;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.message {
+  padding: 12px 16px;
+  border-radius: 10px;
+  width: 100%;
+  word-wrap: break-word;
+  line-height: 1.5;
+}
+
+.user-message {
+  background: #1a1a1a;
+  border: 1px solid #303030;
+  color: #ffffff;
+  align-self: flex-end;
+  margin-left: auto;
+  text-align: left;
+  transition: all 0.2s ease;  /* Transición suave para el hover */
+}
+
+.user-message:hover {
+  background: #222222;  /* Fondo más claro al hacer hover */
+  border-color: #404040;  /* Borde más claro */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);  /* Sombra sutil */
+}
+
+/* Estilo para mensaje en modo edición */
+.user-message.editing {
+  border-color: #00ff88;
+  box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.2);
+  transition: all 0.2s ease;
+}
+
+.user-message.editing:hover {
+  border-color: #00ffaa;
+  box-shadow: 0 0 0 2px rgba(0, 255, 170, 0.3);
+}
+
+/* ===========================================
+   USER MESSAGE EDITING STYLES
+   =========================================== */
+.user-message {
+  background: #1a1a1a;
+  border: 1px solid #303030;
+  color: #ffffff;
+  align-self: flex-end;
+  margin-left: auto;
+  text-align: left;
+  transition: all 0.2s ease;  /* Transición suave para el hover */
+  cursor: pointer; /* Cursor pointer para todo el bubble */
+}
+
+.user-message:hover {
+  background: #222222;  /* Fondo más claro al hacer hover */
+  border-color: #404040;  /* Borde más claro */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);  /* Sombra sutil */
+}
+
+.user-message-content {
+  transition: all 0.2s ease;
+}
+
+.user-text {
+  display: block;
+  width: 100%;
+}
+
+.edit-mode {
+  width: 100%;
+}
+
+.edit-content {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  outline: none;
+  transition: all 0.2s ease;
+  display: block;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  cursor: text;
+}
+
+.edit-content:focus {
+  outline: none;
+}
+
+.edit-content:empty:before {
+  content: attr(data-placeholder);
+  color: #666666;
+  pointer-events: none;
+}
+
+
+
+.ai-message {
+  color: #ffffff;
+  background: transparent;
+  border: none;
+  align-self: flex-start;
+  margin-right: auto;
+  padding: 12px 8px;
+}
+
+.typing {
+  opacity: 0.7;
+}
+
+.streaming {
+  opacity: 0.9;
+}
+
+.streaming-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.2em;
+  background: #00ff88;
+  animation: blink 1s infinite;
+  margin-left: 2px;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.typing-dots {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.typing-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffffff;
+  animation: typing 1.4s infinite ease-in-out;
+}
+
+.typing-dots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.typing-dots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes typing {
+  0%, 80%, 100% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Espaciador inferior del chat */
+.chat-bottom-spacer {
+  height: 120px;
+  flex-shrink: 0;
+}
+
+/* ===========================================
+   MARKDOWN CONTENT STYLES
+   =========================================== */
+.markdown-content {
+  line-height: 1.6;
+  word-wrap: break-word;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  margin: 16px 0 8px 0;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.markdown-content h1 { font-size: 1.5em; }
+.markdown-content h2 { font-size: 1.3em; }
+.markdown-content h3 { font-size: 1.1em; }
+
+.markdown-content p {
+  margin: 8px 0;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+
+.markdown-content li {
+  margin: 4px 0;
+}
+
+.markdown-content code {
+  background: #2a2a2a;
+  color: #00ff88;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.9em;
+}
+
+.markdown-content pre {
+  background: #1a1a1a;
+  border: 1px solid #333333;
+  border-radius: 6px;
+  padding: 12px;
+  margin: 12px 0;
+  overflow-x: auto;
+}
+
+.markdown-content pre code {
+  background: transparent;
+  padding: 0;
+  color: #00ff88;
+}
+
+.markdown-content blockquote {
+  border-left: 4px solid #00ff88;
+  margin: 12px 0;
+  padding: 8px 16px;
+  background: #1a1a1a;
+  color: #cccccc;
+}
+
+.markdown-content strong {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.markdown-content em {
+  font-style: italic;
+  color: #cccccc;
+}
+
+.markdown-content a {
+  color: #00ff88;
+  text-decoration: none;
+}
+
+.markdown-content a:hover {
+  text-decoration: underline;
+}
+
+.markdown-content hr {
+  border: none;
+  border-top: 1px solid #333333;
+  margin: 16px 0;
+}
+
+/* ===========================================
+   TABLE STYLES
+   =========================================== */
+.markdown-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 16px 0;
+  background: #1a1a1a;
+  border: 1px solid #333333;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.markdown-content th {
+  background: #2a2a2a;
+  color: #ffffff;
+  font-weight: 600;
+  padding: 12px 16px;
+  text-align: left;  /* ← Headers alineados a la izquierda */
+  border-bottom: 2px solid #333333;
+  border-right: 1px solid #333333;
+}
+
+.markdown-content th:last-child {
+  border-right: none;  /* Sin borde derecho en la última columna */
+}
+
+.markdown-content td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #333333;
+  border-right: 1px solid #333333;
+  color: #cccccc;
+}
+
+.markdown-content td:last-child {
+  border-right: none;  /* Sin borde derecho en la última columna */
+}
+
+.markdown-content tr:last-child td {
+  border-bottom: none;  /* Sin borde inferior en la última fila */
+}
+
+.markdown-content tr:hover {
+  background: #222222;  /* Efecto hover en las filas */
+}
+
+/* ===========================================
+   FOOTER STYLES
+   =========================================== */
+.footer-container {
+  border: 1px solid #303030;
+  padding: 5px;
+  background: #1a1a1a;
+  margin: 16px;
+  border-radius: 10px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1001;
+  width: calc(100% - 32px); /* Ajustar ancho considerando los márgenes */
+}
+
+.footer-row {
+  margin-bottom: 0px;
+}
+
+.footer-row:last-child {
+  margin-bottom: 0;
+}
+
+.footer-row:first-child {
+  padding: 4px;
+  text-align: left;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-height: 32px;
+}
+
+.context-button {
+  background: transparent;
+  border: 1px solid #303030;
+  color: #6e6e6e;
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.context-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.current-tab-indicator {
+  background: transparent;
+  border: 1px dashed #303030;
+  color: #6e6e6e;
+  padding: 4px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-left: 0px;
+  line-height: 1;
+  height: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  vertical-align: top;
+  flex-shrink: 0;
+  transition: border-color 0.2s ease;
+  cursor: pointer;
+}
+
+.current-tab-indicator:hover {
+  border-color: #ffffff;
+}
+
+.current-tab-icon {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.selected-tab-indicator {
+  background: transparent;
+  border: 1px dashed #303030;
+  color: #6e6e6e;
+  padding: 4px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-left: 0px;
+  line-height: 1;
+  height: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  vertical-align: top;
+  flex-shrink: 0;
+  transition: border-color 0.2s ease;
+  cursor: pointer;
+}
+
+.selected-tab-indicator:hover {
+  border-color: #ffffff;
+}
+
+.selected-tab-favicon {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.selected-tab-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.selection-counter {
+  background: #333333;
+  border: 1px dashed #404040;
+  color: #8d8d8d;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  margin-left: 5px;
+  line-height: 1;
+  height: auto;
+  display: inline-block;
+  vertical-align: top;
+  flex-shrink: 0;
+}
+
+.context-dropdown-options {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  background: #1a1a1a;
+  border: 1px solid #303030;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  z-index: 1000;
+  width: 280px;
+  max-height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.context-dropdown-option {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #8d8d8d;
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-start;
+  text-align: left;
+  font-size: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.context-option-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.context-option-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.context-option-icon {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+.context-checkmark {
+  width: 12px;
+  height: 10px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.context-dropdown-option:hover {
+  background: #333333;
+  color: #ffffff;
+}
+
+.go-back-option {
+  color: white !important;
+  font-weight: 500;
+  position: sticky;
+  top: 0;
+  background: #1a1a1a;
+  z-index: 10;
+  border-bottom: 1px solid #404040;
+}
+
+.go-back-option:hover {
+  background: #333333 !important;
+  color: #ffffff !important;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: #404040;
+  margin: 0;
+  position: sticky;
+  top: 40px;
+  background: #262626;
+  z-index: 9;
+}
+
+.tabs-scroll-container {
+  overflow-y: auto;
+  max-height: 220px;
+  flex: 1;
+}
+
+.tabs-scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.tabs-scroll-container::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+.tabs-scroll-container::-webkit-scrollbar-thumb {
+  background: #404040;
+}
+
+.tabs-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #555555;
+}
+
+.tab-option {
+  padding: 8px 12px;
+}
+
+.tab-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  position: relative;
+}
+
+.tab-favicon {
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.tab-title {
+  font-weight: 500;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.tab-checkmark {
+  width: 12px;
+  height: 10px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.tab-option:hover .tab-title {
+  color: #ffffff;
+}
+
+.editable-span {
+  display: block;
+  min-height: 20px;
+  width: 100%;
+  padding: 8px;
+  color: #ffffff;
+  position: relative;
+  margin-bottom: 6px;
+}
+
+.editable-span.placeholder::before {
+  content: attr(data-placeholder);
+  color: #666666;
+  pointer-events: none;
+  position: absolute;
+}
+
+.editable-span:focus {
+  outline: none;
+}
+
+.footer-row:last-child {
+  padding: 8px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer-column {
+  flex: 1;
+}
+
+.custom-select {
+  position: relative;
+  width: auto;
+}
+
+.select-button {
+  width: auto;
+  background: transparent;
+  border: 1px solid #303030;
+  color: #8d8d8d;
+  padding: 3px 8px;
+  border-radius: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2px;
+  background-color: #262626;
+}
+
+.dropdown-options {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  border: 1px solid #303030;
+  border-radius: 17px;
+  margin-bottom: 4px;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.dropdown-option {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #8d8d8d;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-start;
+  gap: 8px;
+  text-align: left;
+}
+
+.dropdown-option:hover {
+  background: #333333;
+}
+
+.dropdown-option.selected {
+  background: #444444;
+}
+
+.circular-button {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #b2b6c1;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  transition: background-color 0.2s ease;
+}
+
+.circular-button.has-content {
+  background: #ffffff;
+}
+
+.submit-icon {
+  width: 11px;
+  height: 11px;
+}
+
+.option-icon {
+  width: 12px;
+  height: 12px;
+  margin-right: 6px;
+  vertical-align: middle;
+  filter: invert(1); /* Hace el icono blanco */
+}
+
+/* ===========================================
+   RESPONSIVE DESIGN
+   =========================================== */
+@media (max-width: 400px) {
+  .sidebar-header {
+    padding: 14px 16px;
+  }
+  
+  .header-content {
+    gap: 8px;
+  }
+  
+  .sidebar-header h1 {
+    font-size: 16px;
+  }
+  
+  .sidebar-content {
+    padding: 24px 16px;
+  }
+}
+
+/* ===========================================
+   ANIMATIONS & TRANSITIONS
+   =========================================== */
+.sidebar-container {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ===========================================
+   TAB SELECTION STYLES
+   =========================================== */

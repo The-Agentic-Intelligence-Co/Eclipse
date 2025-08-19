@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Robinhood",
+  "version": "1.0.0",
+  "description": "Robinhood is a Chrome extension that helps you browse the web.",
+  "permissions": [
+    "sidePanel",
+    "activeTab",
+    "tabs",
+    "scripting",
+    "tabGroups"
+  ],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_title": "Robinhood"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "src/pages/side-panel/index.html"
+  }
+}
