@@ -23,6 +23,7 @@ const Content = ({
   // Hooks personalizados
   const {
     streamingMessage,
+    streamingHtml,
     isStreaming,
     startStreaming,
     stopStreaming,
@@ -142,11 +143,11 @@ const Content = ({
         )}
         
         {/* Mensaje de streaming en tiempo real */}
-        {isStreaming && streamingMessage && (
+        {isStreaming && streamingHtml && (
           <div className="message ai-message streaming">
             <div 
               className="markdown-content"
-              dangerouslySetInnerHTML={{ __html: streamingMessage }}
+              dangerouslySetInnerHTML={{ __html: streamingHtml }}
             />
             <span className="streaming-cursor">|</span>
           </div>

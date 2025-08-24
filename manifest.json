@@ -18,6 +18,6 @@
     "service_worker": "background.js"
   },
   "side_panel": {
-    "default_path": "src/pages/side-panel/index.html"
+    "default_path": "src/side-panel/index.html"
   }
 }

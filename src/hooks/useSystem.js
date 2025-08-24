@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { loadTabs, validateTabSelection, canShowCurrentTab } from '../services/tabService';
 import { TAB_LIMITS } from '../constants';
+import { renderMarkdown } from '../utils/markdownUtils';
 
 /**
  * Hook personalizado para manejar la gestión de pestañas
@@ -179,6 +180,7 @@ export const useTabManagement = (maxLimit = TAB_LIMITS.MAX_SELECTIONS) => {
  */
 export const useStreaming = () => {
   const [streamingMessage, setStreamingMessage] = useState('');
+  const [streamingHtml, setStreamingHtml] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
 
   /**
@@ -187,6 +189,7 @@ export const useStreaming = () => {
   const startStreaming = () => {
     setIsStreaming(true);
     setStreamingMessage('');
+    setStreamingHtml('');
   };
 
   /**
@@ -195,6 +198,7 @@ export const useStreaming = () => {
   const stopStreaming = () => {
     setIsStreaming(false);
     setStreamingMessage('');
+    setStreamingHtml('');
   };
 
   /**
@@ -207,6 +211,15 @@ export const useStreaming = () => {
   const handleStreamingChunk = (chunk, fullResponse, isFirstChunk, onFirstChunk) => {
     setStreamingMessage(fullResponse);
     
+    // Procesar markdown en tiempo real
+    try {
+      const htmlContent = renderMarkdown(fullResponse);
+      setStreamingHtml(htmlContent);
+    } catch (error) {
+      console.error('Error procesando markdown:', error);
+      setStreamingHtml(fullResponse); // Fallback a texto plano
+    }
+    
     // Ejecutar callback del primer chunk si existe
     if (isFirstChunk && onFirstChunk) {
       onFirstChunk();
@@ -215,6 +228,7 @@ export const useStreaming = () => {
 
   return {
     streamingMessage,
+    streamingHtml,
     isStreaming,
     startStreaming,
     stopStreaming,

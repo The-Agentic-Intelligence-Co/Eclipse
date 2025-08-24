@@ -104,21 +104,4 @@ export class AIService {
     }
   }
 
-  /**
-   * Determina si un mensaje debe generar respuesta de IA
-   * @param {string} mode - Modo de operación
-   * @returns {boolean} True si debe generar respuesta
-   */
-  static shouldGenerateResponse(mode) {
-    return mode === 'ask';
-  }
-
-  /**
-   * Obtiene respuesta mock para modo agent
-   * @param {string} userMessage - Mensaje del usuario
-   * @returns {string} Respuesta mock
-   */
-  static getMockResponse(userMessage) {
-    return `Entiendo que quieres: "${userMessage}". ¿En qué puedo ayudarte específicamente?`;
-  }
 }
