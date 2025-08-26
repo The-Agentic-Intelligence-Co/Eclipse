@@ -18,5 +18,8 @@ export {
   generateDirectTimestampUrl 
 } from './video_search.js';
 
+// Función integrada de búsqueda y análisis
+export { searchAndAnalyzeVideo } from './video_search.js';
+
 // Aquí se pueden agregar más tools en el futuro
 // export { otraTool } from './otraTool.js';

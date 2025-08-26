@@ -110,6 +110,33 @@ export function getAvailableTools(selectedTabs = []) {
       }
     }
   });
+
+  // Nueva herramienta integrada: busca y analiza el primer resultado
+  tools.push({
+    type: "function",
+    function: {
+      name: "search_and_analyze_video",
+      description: "Busca videos en YouTube y automáticamente analiza el primer resultado con IA. Combina búsqueda y análisis en una sola operación.",
+      parameters: {
+        type: "object",
+        properties: {
+          query: {
+            type: "string",
+            description: "Término de búsqueda para encontrar videos en YouTube"
+          },
+          analysisPrompt: {
+            type: "string",
+            description: "Prompt personalizado para el análisis del video. Si no se proporciona, se usará un análisis general por defecto."
+          },
+          maxSearchResults: {
+            type: "number",
+            description: "Número máximo de resultados de búsqueda a considerar (por defecto 5, máximo 10)"
+          }
+        },
+        required: ["query"]
+      }
+    }
+  });
   
   return tools;
 }
@@ -211,6 +238,61 @@ export async function executeTool(toolCall, selectedTabs = []) {
         tool_call_id: toolCall.id,
         functionName: toolCall.function.name,
         content: `**Análisis del video ${videoId}:**\n\n${analysis}${timestampInfo}`,
+        success: true
+      };
+      
+    } else if (toolCall.function.name === 'search_and_analyze_video') {
+      const args = JSON.parse(toolCall.function.arguments);
+      const { query, analysisPrompt, maxSearchResults = 5 } = args;
+      
+      // Paso 1: Buscar videos en YouTube
+      const videos = await searchYt(query, maxSearchResults);
+      
+      if (videos.length === 0) {
+        return {
+          tool_call_id: toolCall.id,
+          functionName: toolCall.function.name,
+          content: `No se encontraron videos para la búsqueda: "${query}"`,
+          success: true
+        };
+      }
+      
+      // Paso 2: Tomar el primer resultado y analizarlo
+      const firstVideo = videos[0];
+      console.log(`🔍 Analizando el primer resultado: "${firstVideo.title}" (ID: ${firstVideo.video_id})`);
+      
+      const analysis = await analyzeVideoWithAI(firstVideo.video_id, analysisPrompt);
+      
+      // Intentar extraer timestamp si existe
+      const timestamp = extractTimestampFromAnalysis(analysis);
+      let timestampInfo = '';
+      if (timestamp) {
+        const directUrl = generateDirectTimestampUrl(firstVideo.video_id, timestamp);
+        timestampInfo = `\n\n⏰ **Timestamp detectado:** ${Math.floor(timestamp / 60)}:${(timestamp % 60).toString().padStart(2, '0')}\n🔗 **Enlace directo:** ${directUrl}`;
+      }
+      
+      // Formatear información del video analizado
+      const videoInfo = `**🎬 Video Analizado:**\n` +
+        `📺 **Título:** ${firstVideo.title}\n` +
+        `👤 **Canal:** ${firstVideo.channelTitle}\n` +
+        `📅 **Publicado:** ${new Date(firstVideo.publishedAt).toLocaleDateString()}\n` +
+        `🏷️ **Hashtags:** ${firstVideo.hashtags.length > 0 ? firstVideo.hashtags.join(', ') : 'Ninguno'}\n` +
+        `🔗 **URL:** https://www.youtube.com/watch?v=${firstVideo.video_id}\n\n`;
+      
+      // Mostrar también los otros resultados encontrados
+      const otherResults = videos.slice(1).map((video, index) => 
+        `**${index + 2}. ${video.title}**\n` +
+        `👤 Canal: ${video.channelTitle}\n` +
+        `🔗 URL: https://www.youtube.com/watch?v=${video.video_id}\n`
+      ).join('\n');
+      
+      const otherResultsSection = otherResults.length > 0 ? 
+        `\n---\n**🔍 Otros resultados encontrados:**\n\n${otherResults}` : '';
+      
+      return {
+        tool_call_id: toolCall.id,
+        functionName: toolCall.function.name,
+        content: `**Búsqueda y Análisis para "${query}":**\n\n${videoInfo}**📊 Análisis con IA:**\n\n${analysis}${timestampInfo}${otherResultsSection}`,
         success: true
       };
       

@@ -11,6 +11,7 @@ const YOUTUBE_API_URL = "https://www.googleapis.com/youtube/v3";
  */
 export async function searchYt(query, maxResults = 5, pageToken = null) {
     try {
+        console.log("🔍 Buscando videos en YouTube:", query);
         const params = new URLSearchParams({
             part: "snippet",
             maxResults: maxResults.toString(),
@@ -102,27 +103,94 @@ export async function analyzeVideoWithAI(videoId, customPrompt = null) {
  * @returns {number|null} Timestamp en segundos o null si no se encuentra
  */
 export function extractTimestampFromAnalysis(analysis) {
-    try {
-        // Buscar patrón MM:SS o M:SS en la respuesta
-        const timestampMatch = analysis.match(/(\d{1,2}):(\d{2})/);
-        if (timestampMatch) {
-            const minutes = parseInt(timestampMatch[1]);
-            const seconds = parseInt(timestampMatch[2]);
-            return minutes * 60 + seconds;
+    // Buscar patrones de tiempo en el análisis
+    const timePatterns = [
+        /(\d{1,2}):(\d{2})/g,  // Formato MM:SS
+        /(\d{1,2})h(\d{2})m(\d{2})s/g,  // Formato HH:MM:SS
+        /(\d+)m(\d+)s/g,  // Formato MM:SS
+        /(\d+)s/g  // Solo segundos
+    ];
+    
+    let timestamp = null;
+    
+    for (const pattern of timePatterns) {
+        const match = analysis.match(pattern);
+        if (match) {
+            // Convertir a segundos (implementación básica)
+            if (pattern.source.includes(':')) {
+                const [minutes, seconds] = match[0].split(':').map(Number);
+                timestamp = minutes * 60 + seconds;
+                break;
+            }
         }
-        return null;
-    } catch (error) {
-        console.error("Error al extraer timestamp:", error);
-        return null;
     }
+    
+    return timestamp;
 }
 
 /**
- * Genera una URL directa con timestamp para un video
+ * Genera URL directa con timestamp
  * @param {string} videoId - ID del video de YouTube
  * @param {number} timestamp - Timestamp en segundos
- * @returns {string} URL directa al momento específico
+ * @returns {string} URL con timestamp
  */
 export function generateDirectTimestampUrl(videoId, timestamp) {
     return `https://www.youtube.com/watch?v=${videoId}&t=${timestamp}s`;
+}
+
+/**
+ * Función integrada: busca videos en YouTube y analiza el primer resultado
+ * @param {string} query - Término de búsqueda
+ * @param {string} analysisPrompt - Prompt personalizado para el análisis (opcional)
+ * @param {number} maxSearchResults - Número máximo de resultados de búsqueda (por defecto 5)
+ * @returns {Promise<Object>} Objeto con información del video analizado y otros resultados
+ */
+export async function searchAndAnalyzeVideo(query, analysisPrompt = null, maxSearchResults = 5) {
+    try {
+        // Paso 1: Buscar videos
+        const videos = await searchYt(query, maxSearchResults);
+        
+        if (videos.length === 0) {
+            return {
+                success: false,
+                error: `No se encontraron videos para la búsqueda: "${query}"`,
+                videos: [],
+                analysis: null
+            };
+        }
+        
+        // Paso 2: Analizar el primer resultado
+        const firstVideo = videos[0];
+        console.log(`🔍 Analizando el primer resultado: "${firstVideo.title}" (ID: ${firstVideo.video_id})`);
+        
+        const analysis = await analyzeVideoWithAI(firstVideo.video_id, analysisPrompt);
+        
+        // Intentar extraer timestamp si existe
+        const timestamp = extractTimestampFromAnalysis(analysis);
+        let timestampInfo = '';
+        if (timestamp) {
+            const directUrl = generateDirectTimestampUrl(firstVideo.video_id, timestamp);
+            timestampInfo = `\n\n⏰ **Timestamp detectado:** ${Math.floor(timestamp / 60)}:${(timestamp % 60).toString().padStart(2, '0')}\n🔗 **Enlace directo:** ${directUrl}`;
+        }
+        
+        return {
+            success: true,
+            query,
+            analyzedVideo: {
+                ...firstVideo,
+                analysis: analysis + timestampInfo
+            },
+            otherVideos: videos.slice(1),
+            totalFound: videos.length
+        };
+        
+    } catch (error) {
+        console.error('Error en búsqueda y análisis integrado:', error);
+        return {
+            success: false,
+            error: `Error en búsqueda y análisis: ${error.message}`,
+            videos: [],
+            analysis: null
+        };
+    }
 }
