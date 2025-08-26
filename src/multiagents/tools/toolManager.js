@@ -4,6 +4,7 @@
  */
 
 import { extractTabContent, extractMultipleTabsContent } from './tabContentExtractor.js';
+import { searchYt, analyzeVideoWithAI, extractTimestampFromAnalysis, generateDirectTimestampUrl } from './video_search.js';
 
 /**
  * Obtiene las herramientas disponibles para la IA basándose en las pestañas seleccionadas
@@ -65,6 +66,51 @@ export function getAvailableTools(selectedTabs = []) {
     }
   }
   
+  // Agregar tools de video (siempre disponibles)
+  tools.push({
+    type: "function",
+    function: {
+      name: "search_youtube",
+      description: "Busca videos en YouTube basándose en una consulta de texto. Útil para encontrar contenido relacionado con el tema de conversación.",
+      parameters: {
+        type: "object",
+        properties: {
+          query: {
+            type: "string",
+            description: "Término de búsqueda para encontrar videos en YouTube"
+          },
+          maxResults: {
+            type: "number",
+            description: "Número máximo de resultados a retornar (por defecto 5, máximo 10)"
+          }
+        },
+        required: ["query"]
+      }
+    }
+  });
+  
+  tools.push({
+    type: "function",
+    function: {
+      name: "analyze_video_with_ai",
+      description: "Analiza un video de YouTube usando IA para extraer información, resumir contenido, o encontrar momentos específicos.",
+      parameters: {
+        type: "object",
+        properties: {
+          videoId: {
+            type: "string",
+            description: "ID del video de YouTube a analizar (ej: 'dQw4w9WgXcQ')"
+          },
+          prompt: {
+            type: "string",
+            description: "Prompt personalizado para el análisis del video. Si no se proporciona, se usará un análisis general por defecto."
+          }
+        },
+        required: ["videoId"]
+      }
+    }
+  });
+  
   return tools;
 }
 
@@ -116,6 +162,58 @@ export async function executeTool(toolCall, selectedTabs = []) {
         success: true
       };
       
+    } else if (toolCall.function.name === 'search_youtube') {
+      const args = JSON.parse(toolCall.function.arguments);
+      const { query, maxResults = 5 } = args;
+      
+      const videos = await searchYt(query, maxResults);
+      
+      if (videos.length === 0) {
+        return {
+          tool_call_id: toolCall.id,
+          functionName: toolCall.function.name,
+          content: `No se encontraron videos para la búsqueda: "${query}"`,
+          success: true
+        };
+      }
+      
+      const formattedResults = videos.map((video, index) => 
+        `**${index + 1}. ${video.title}**\n` +
+        `📺 ID: ${video.video_id}\n` +
+        `👤 Canal: ${video.channelTitle}\n` +
+        `📅 Publicado: ${new Date(video.publishedAt).toLocaleDateString()}\n` +
+        `🏷️ Hashtags: ${video.hashtags.length > 0 ? video.hashtags.join(', ') : 'Ninguno'}\n` +
+        `🔗 URL: https://www.youtube.com/watch?v=${video.video_id}\n`
+      ).join('\n---\n');
+      
+      return {
+        tool_call_id: toolCall.id,
+        functionName: toolCall.function.name,
+        content: `**Resultados de búsqueda para "${query}":**\n\n${formattedResults}`,
+        success: true
+      };
+      
+    } else if (toolCall.function.name === 'analyze_video_with_ai') {
+      const args = JSON.parse(toolCall.function.arguments);
+      const { videoId, prompt } = args;
+      
+      const analysis = await analyzeVideoWithAI(videoId, prompt);
+      
+      // Intentar extraer timestamp si existe
+      const timestamp = extractTimestampFromAnalysis(analysis);
+      let timestampInfo = '';
+      if (timestamp) {
+        const directUrl = generateDirectTimestampUrl(videoId, timestamp);
+        timestampInfo = `\n\n⏰ **Timestamp detectado:** ${Math.floor(timestamp / 60)}:${(timestamp % 60).toString().padStart(2, '0')}\n🔗 **Enlace directo:** ${directUrl}`;
+      }
+      
+      return {
+        tool_call_id: toolCall.id,
+        functionName: toolCall.function.name,
+        content: `**Análisis del video ${videoId}:**\n\n${analysis}${timestampInfo}`,
+        success: true
+      };
+      
     } else {
       return {
         tool_call_id: toolCall.id,
@@ -161,6 +259,10 @@ export async function executeMultipleTools(toolCalls, selectedTabs = []) {
   });
   
   await Promise.all(executionPromises);
+  
+  // Log simple de las tools ejecutadas
+  const toolNames = uniqueToolCalls.map(tc => tc.function.name).join(', ');
+  console.log(`🛠️ Tools ejecutadas: ${toolNames}`);
   
   return results;
 }
