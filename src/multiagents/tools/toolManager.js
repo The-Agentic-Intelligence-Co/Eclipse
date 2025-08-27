@@ -43,6 +43,8 @@ export function getAvailableTools(selectedTabs = []) {
         }
       }
     });
+
+    console.log("availableTabsInfo", availableTabsInfo);
     
     // Agregar tool para extraer contenido de múltiples pestañas
     if (selectedTabs.length > 1) {

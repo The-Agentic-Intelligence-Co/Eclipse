@@ -74,6 +74,8 @@ export async function getAIResponse(userMessage, chatHistory = [], onChunk, sele
         allAvailableTabs.push(currentActiveTab);
       }
     }
+
+    console.log("allAvailableTabs", allAvailableTabs);
     
     // Obtener las tools disponibles para la IA usando todas las pestañas disponibles
     const availableTools = getAvailableTools(allAvailableTabs);
@@ -102,6 +104,7 @@ export async function getAIResponse(userMessage, chatHistory = [], onChunk, sele
     let fullResponse = '';
     let isFirstChunk = true;
     let toolCalls = [];
+    console.log("toolCalls", toolCalls);
     
     // Procesar el streaming
     for await (const chunk of completion) {
@@ -189,6 +192,7 @@ export async function getAIResponse(userMessage, chatHistory = [], onChunk, sele
         // Procesar la respuesta final
         let finalResponse = '';
         let finalIsFirstChunk = true;
+        console.log("finalResponse", finalResponse);
         
 
         for await (const chunk of finalCompletion) {
