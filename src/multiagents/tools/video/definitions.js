@@ -20,9 +20,13 @@ export const SEARCH_YOUTUBE_TOOL = {
         maxResults: {
           type: "number",
           description: "Número máximo de resultados a retornar (por defecto 5, máximo 10)"
+        },
+        userDescription: {
+          type: "string",
+          description: "Descripción clara para el usuario de qué herramienta se está usando y con qué propósito específico"
         }
       },
-      required: ["query"]
+      required: ["query", "userDescription"]
     }
   }
 };
@@ -45,9 +49,13 @@ export const ANALYZE_VIDEO_TOOL = {
         prompt: {
           type: "string",
           description: "Prompt personalizado para el análisis del video. Si no se proporciona, se usará un análisis general por defecto."
+        },
+        userDescription: {
+          type: "string",
+          description: "Descripción clara para el usuario de qué herramienta se está usando y con qué propósito específico"
         }
       },
-      required: ["videoId"]
+      required: ["videoId", "userDescription"]
     }
   }
 };
@@ -72,11 +80,15 @@ export const SEARCH_AND_ANALYZE_TOOL = {
           description: "Prompt personalizado para el análisis del video. Si no se proporciona, se usará un análisis general por defecto."
         },
         maxSearchResults: {
-          type: "number",
+          type: "string",
           description: "Número máximo de resultados de búsqueda a considerar (por defecto 5, máximo 10)"
+        },
+        userDescription: {
+          type: "string",
+          description: "Descripción clara para el usuario de qué herramienta se está usando y con qué propósito específico"
         }
       },
-      required: ["query"]
+      required: ["query", "userDescription"]
     }
   }
 };

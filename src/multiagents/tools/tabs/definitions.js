@@ -25,9 +25,13 @@ export function createExtractTabContentTool(selectedTabs) {
           reason: {
             type: "string",
             description: "Razón por la cual se necesita extraer el contenido"
+          },
+          userDescription: {
+            type: "string",
+            description: "Descripción clara para el usuario de qué herramienta se está usando y con qué propósito específico"
           }
         },
-        required: ["tabId", "reason"]
+        required: ["tabId", "reason", "userDescription"]
       }
     }
   };
@@ -52,9 +56,13 @@ export function createExtractMultipleTabsContentTool(selectedTabs) {
           reason: {
             type: "string",
             description: "Razón por la cual se necesita extraer el contenido de múltiples pestañas"
+          },
+          userDescription: {
+            type: "string",
+            description: "Descripción clara para el usuario de qué herramienta se está usando y con qué propósito específico"
           }
         },
-        required: ["reason"]
+        required: ["reason", "userDescription"]
       }
     }
   };
