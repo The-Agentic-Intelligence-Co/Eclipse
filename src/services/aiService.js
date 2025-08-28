@@ -33,7 +33,14 @@ export class AIService {
         // Llamar a la IA con callback para streaming, pestañas seleccionadas, pestaña activa y estado del indicador
         aiResponse = await getAIResponse(userMessage, chatHistory, (chunk, fullResponse, isFirstChunk) => {
           if (handleStreamingChunk) {
-            handleStreamingChunk(chunk, fullResponse, isFirstChunk, stopTyping);
+            // Manejar tanto contenido normal como descripciones de herramientas
+            if (chunk && chunk.includes('🤖 **Ejecutando herramienta:**')) {
+              // Es un mensaje de descripción de herramienta, tratarlo como primer chunk
+              handleStreamingChunk(chunk, chunk, true, stopTyping);
+            } else {
+              // Es contenido normal de streaming
+              handleStreamingChunk(chunk, fullResponse, isFirstChunk, stopTyping);
+            }
           }
         }, selectedTabs, currentActiveTab, showCurrentTabIndicator);
 

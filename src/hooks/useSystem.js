@@ -209,6 +209,7 @@ export const useStreaming = () => {
    * @param {Function} onFirstChunk - Callback para el primer chunk
    */
   const handleStreamingChunk = (chunk, fullResponse, isFirstChunk, onFirstChunk) => {
+    // Contenido normal de streaming
     setStreamingMessage(fullResponse);
     
     // Procesar markdown en tiempo real

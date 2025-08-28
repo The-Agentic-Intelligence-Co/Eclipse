@@ -246,19 +246,7 @@ body {
   opacity: 0.9;
 }
 
-.streaming-cursor {
-  display: inline-block;
-  width: 2px;
-  height: 1.2em;
-  background: #00ff88;
-  animation: blink 1s infinite;
-  margin-left: 2px;
-}
-
-@keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
+/* Cursor de streaming removido - ahora usa typing dots */
 
 .typing-dots {
   display: inline-flex;

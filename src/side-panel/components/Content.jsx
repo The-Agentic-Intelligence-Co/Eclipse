@@ -149,7 +149,11 @@ const Content = ({
               className="markdown-content"
               dangerouslySetInnerHTML={{ __html: streamingHtml }}
             />
-            <span className="streaming-cursor">|</span>
+            <span className="typing-dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
           </div>
         )}
         

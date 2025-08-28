@@ -47,11 +47,11 @@ export async function getAIResponse(userMessage, chatHistory = [], onChunk, sele
     });
 
     // Procesar streaming y tool calls
-    const { fullResponse, toolCalls } = await processStreaming(completion, onChunk);
+    const { fullResponse, toolCalls, toolDescriptions } = await processStreaming(completion, onChunk);
     
     // Si hay tool calls, ejecutarlas y hacer segunda llamada
     if (toolCalls.length > 0) {
-      return await handleToolCalls(toolCalls, enhancedMessages, allAvailableTabs, onChunk);
+      return await handleToolCalls(toolCalls, enhancedMessages, allAvailableTabs, onChunk, toolDescriptions);
     }
 
     return fullResponse;
@@ -124,11 +124,28 @@ async function processStreaming(completion, onChunk) {
     }
   }
   
-  return { fullResponse, toolCalls };
+  // Extraer userDescription de tool calls
+  const toolDescriptions = toolCalls.map(tc => {
+    try {
+      const args = JSON.parse(tc.function.arguments);
+      return args.userDescription;
+    } catch {
+      return null;
+    }
+  }).filter(Boolean);
+  
+  return { fullResponse, toolCalls, toolDescriptions };
 }
 
-async function handleToolCalls(toolCalls, enhancedMessages, allAvailableTabs, onChunk) {
+async function handleToolCalls(toolCalls, enhancedMessages, allAvailableTabs, onChunk, toolDescriptions) {
   try {
+    // Streamear descripciones antes de ejecutar herramientas
+    let toolDescriptionText = '';
+    if (toolDescriptions.length > 0) {
+      toolDescriptionText = `${toolDescriptions.join('\n\n')}\n\n`;
+      onChunk?.(toolDescriptionText, toolDescriptionText, true);
+    }
+    
     const toolResults = await executeMultipleTools(toolCalls, allAvailableTabs);
     
     // Agregar mensaje del asistente con tool_calls
@@ -154,14 +171,15 @@ async function handleToolCalls(toolCalls, enhancedMessages, allAvailableTabs, on
       temperature: CONFIG.TEMPERATURE,
     });
 
-    // Procesar respuesta final
-    let finalResponse = '';
+    // Procesar respuesta final y mantener la descripción visible
+    let finalResponse = toolDescriptionText; // Incluir descripción de herramienta
     let finalIsFirstChunk = true;
     
     for await (const chunk of finalCompletion) {
       const content = chunk.choices[0]?.delta?.content || '';
       if (content) {
         finalResponse += content;
+        // Streamear manteniendo la descripción de la herramienta visible
         onChunk?.(content, finalResponse, finalIsFirstChunk);
         finalIsFirstChunk = false;
       }
