@@ -23,7 +23,7 @@ export const SEARCH_YOUTUBE_TOOL = {
         },
         userDescription: {
           type: "string",
-          description: "Clear description for the user of what tool is being used and for what specific purpose"
+          description: "Clear description in first person of what tool is being used and for what specific purpose (e.g., 'I am searching YouTube for videos related to this topic')"
         }
       },
       required: ["query", "userDescription"]
@@ -52,7 +52,7 @@ export const ANALYZE_VIDEO_TOOL = {
         },
         userDescription: {
           type: "string",
-          description: "Clear description for the user of what tool is being used and for what specific purpose"
+          description: "Clear description in first person of what tool is being used and for what specific purpose (e.g., 'I am analyzing this YouTube video to extract key information')"
         }
       },
       required: ["videoId", "userDescription"]
@@ -85,7 +85,7 @@ export const SEARCH_AND_ANALYZE_TOOL = {
         },
         userDescription: {
           type: "string",
-          description: "Clear description for the user of what tool is being used and for what specific purpose"
+          description: "Clear description in first person of what tool is being used and for what specific purpose (e.g., 'I am searching for videos and analyzing the first result to provide insights')"
         }
       },
       required: ["query", "userDescription"]

@@ -28,7 +28,7 @@ export function createExtractTabContentTool(selectedTabs) {
           },
           userDescription: {
             type: "string",
-            description: "Clear description for the user of what tool is being used and for what specific purpose"
+            description: "Clear description in first person of what tool is being used and for what specific purpose (e.g., 'I am extracting content from this tab to analyze the information')"
           }
         },
         required: ["tabId", "reason", "userDescription"]
@@ -59,7 +59,7 @@ export function createExtractMultipleTabsContentTool(selectedTabs) {
           },
           userDescription: {
             type: "string",
-            description: "Clear description for the user of what tool is being used and for what specific purpose"
+            description: "Clear description in first person of what tool is being used and for what specific purpose (e.g., 'I am extracting content from multiple tabs to compare information')"
           }
         },
         required: ["reason", "userDescription"]
