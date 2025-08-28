@@ -43,6 +43,8 @@ export const useTabManagement = (maxLimit = TAB_LIMITS.MAX_SELECTIONS) => {
     const handleTabActivated = async (activeInfo) => {
       try {
         const activeTab = await chrome.tabs.get(activeInfo.tabId);
+        console.log('🔄 Pestaña activada:', activeTab.title, activeTab.url);
+        console.log('🔍 Debug - Estableciendo currentActiveTab con ID:', activeTab.id);
         setCurrentActiveTab(activeTab);
       } catch (error) {
         console.log('Error al obtener nueva pestaña activa:', error);
@@ -51,6 +53,28 @@ export const useTabManagement = (maxLimit = TAB_LIMITS.MAX_SELECTIONS) => {
 
     // Listener para actualizaciones de pestañas
     const handleTabUpdated = (tabId, changeInfo, tab) => {
+      // Detectar cambios de URL específicamente
+      if (changeInfo.url) {
+        console.log('🔗 URL cambiada:', changeInfo.url);
+        
+        // Verificar si esta pestaña es la activa actual usando el parámetro tab
+        // Esto evita problemas de timing con el estado React
+        if (tab.active) {
+          console.log('Flag 1 - Pestaña activa detectada por tab.active');
+          
+          // Actualizar la pestaña activa con la nueva URL
+          setCurrentActiveTab(tab);
+          console.log('🔄 Pestaña activa actualizada con nueva URL:', tab.title, changeInfo.url);
+        }
+        
+        // Actualizar la pestaña en la lista general
+        setTabs(prevTabs => {
+          const updatedTabs = prevTabs.map(t => t.id === tabId ? tab : t);
+          return updatedTabs;
+        });
+      }
+      
+      // Detectar cuando la página termina de cargar
       if (changeInfo.status === 'complete') {
         setTabs(prevTabs => {
           const updatedTabs = prevTabs.map(t => t.id === tabId ? tab : t);
@@ -60,6 +84,7 @@ export const useTabManagement = (maxLimit = TAB_LIMITS.MAX_SELECTIONS) => {
         // Si es la pestaña activa, actualizarla también
         if (currentActiveTab && currentActiveTab.id === tabId) {
           setCurrentActiveTab(tab);
+          console.log('✅ Pestaña activa cargada completamente:', tab.title, tab.url);
         }
       }
     };
