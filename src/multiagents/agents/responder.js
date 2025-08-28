@@ -1,3 +1,4 @@
+// This is the logic for the Ask Mode
 import Groq from "groq-sdk";
 import { GENERAL_SYSTEM_PROMPT } from "../prompts/systemPrompts";
 import { CONFIG } from "../config.js";
