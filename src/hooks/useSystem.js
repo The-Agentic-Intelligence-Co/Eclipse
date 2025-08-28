@@ -43,8 +43,6 @@ export const useTabManagement = (maxLimit = TAB_LIMITS.MAX_SELECTIONS) => {
     const handleTabActivated = async (activeInfo) => {
       try {
         const activeTab = await chrome.tabs.get(activeInfo.tabId);
-        console.log('🔄 Pestaña activada:', activeTab.title, activeTab.url);
-        console.log('🔍 Debug - Estableciendo currentActiveTab con ID:', activeTab.id);
         setCurrentActiveTab(activeTab);
       } catch (error) {
         console.log('Error al obtener nueva pestaña activa:', error);
@@ -53,39 +51,20 @@ export const useTabManagement = (maxLimit = TAB_LIMITS.MAX_SELECTIONS) => {
 
     // Listener para actualizaciones de pestañas
     const handleTabUpdated = (tabId, changeInfo, tab) => {
-      // Detectar cambios de URL específicamente
-      if (changeInfo.url) {
-        console.log('🔗 URL cambiada:', changeInfo.url);
-        
-        // Verificar si esta pestaña es la activa actual usando el parámetro tab
-        // Esto evita problemas de timing con el estado React
-        if (tab.active) {
-          console.log('Flag 1 - Pestaña activa detectada por tab.active');
-          
-          // Actualizar la pestaña activa con la nueva URL
-          setCurrentActiveTab(tab);
-          console.log('🔄 Pestaña activa actualizada con nueva URL:', tab.title, changeInfo.url);
-        }
-        
-        // Actualizar la pestaña en la lista general
-        setTabs(prevTabs => {
-          const updatedTabs = prevTabs.map(t => t.id === tabId ? tab : t);
-          return updatedTabs;
-        });
-      }
+      // Actualizar la lista de pestañas
+      setTabs(prevTabs => {
+        const updatedTabs = prevTabs.map(t => t.id === tabId ? tab : t);
+        return updatedTabs;
+      });
       
-      // Detectar cuando la página termina de cargar
-      if (changeInfo.status === 'complete') {
-        setTabs(prevTabs => {
-          const updatedTabs = prevTabs.map(t => t.id === tabId ? tab : t);
-          return updatedTabs;
+      // Si es la pestaña activa, actualizarla también
+      if (changeInfo.status === 'complete' || changeInfo.title || changeInfo.url) {
+        setCurrentActiveTab(prevActiveTab => {
+          if (prevActiveTab && prevActiveTab.id === tabId) {
+            return tab;
+          }
+          return prevActiveTab;
         });
-        
-        // Si es la pestaña activa, actualizarla también
-        if (currentActiveTab && currentActiveTab.id === tabId) {
-          setCurrentActiveTab(tab);
-          console.log('✅ Pestaña activa cargada completamente:', tab.title, tab.url);
-        }
       }
     };
 
@@ -107,15 +86,12 @@ export const useTabManagement = (maxLimit = TAB_LIMITS.MAX_SELECTIONS) => {
 
     // Listener para nuevas pestañas
     const handleTabCreated = (tab) => {
-      console.log('🆕 Nueva pestaña detectada:', tab.title, tab.url);
       setTabs(prevTabs => {
         // Verificar que la pestaña no esté ya en la lista
         const tabExists = prevTabs.find(t => t.id === tab.id);
         if (!tabExists) {
-          console.log('✅ Agregando nueva pestaña al contexto:', tab.title);
           return [...prevTabs, tab];
         }
-        console.log('⚠️ Pestaña ya existe en el contexto:', tab.title);
         return prevTabs;
       });
     };
@@ -133,7 +109,7 @@ export const useTabManagement = (maxLimit = TAB_LIMITS.MAX_SELECTIONS) => {
       chrome.tabs.onRemoved.removeListener(handleTabRemoved);
       chrome.tabs.onCreated.removeListener(handleTabCreated);
     };
-  }, []); // Removí currentActiveTab de las dependencias para evitar re-registro
+  }, [currentActiveTab]); // Agregar currentActiveTab como dependencia para que se actualice correctamente
 
   /**
    * Agrega una pestaña a la selección
