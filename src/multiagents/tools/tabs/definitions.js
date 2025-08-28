@@ -14,21 +14,21 @@ export function createExtractTabContentTool(selectedTabs) {
     type: "function",
     function: {
       name: "extract_tab_content",
-      description: `Extrae el contenido de texto de una pestaña específica del navegador. Pestañas disponibles:\n${availableTabsInfo}`,
+      description: `Extracts text content from a specific browser tab. Available tabs:\n${availableTabsInfo}`,
       parameters: {
         type: "object",
         properties: {
           tabId: {
             type: "number",
-            description: `ID de la pestaña de la cual extraer contenido. IDs disponibles: ${selectedTabs.map(t => t.id).join(', ')}`
+            description: `ID of the tab from which to extract content. Available IDs: ${selectedTabs.map(t => t.id).join(', ')}`
           },
           reason: {
             type: "string",
-            description: "Razón por la cual se necesita extraer el contenido"
+            description: "Reason why content extraction is needed"
           },
           userDescription: {
             type: "string",
-            description: "Descripción clara para el usuario de qué herramienta se está usando y con qué propósito específico"
+            description: "Clear description for the user of what tool is being used and for what specific purpose"
           }
         },
         required: ["tabId", "reason", "userDescription"]
@@ -49,17 +49,17 @@ export function createExtractMultipleTabsContentTool(selectedTabs) {
     type: "function",
     function: {
       name: "extract_multiple_tabs_content",
-      description: `Extrae el contenido de texto de múltiples pestañas seleccionadas. Pestañas disponibles:\n${availableTabsInfo}`,
+      description: `Extracts text content from multiple selected tabs. Available tabs:\n${availableTabsInfo}`,
       parameters: {
         type: "object",
         properties: {
           reason: {
             type: "string",
-            description: "Razón por la cual se necesita extraer el contenido de múltiples pestañas"
+            description: "Reason why content extraction from multiple tabs is needed"
           },
           userDescription: {
             type: "string",
-            description: "Descripción clara para el usuario de qué herramienta se está usando y con qué propósito específico"
+            description: "Clear description for the user of what tool is being used and for what specific purpose"
           }
         },
         required: ["reason", "userDescription"]

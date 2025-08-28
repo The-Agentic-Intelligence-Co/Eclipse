@@ -9,21 +9,21 @@ export const SEARCH_YOUTUBE_TOOL = {
   type: "function",
   function: {
     name: "search_youtube",
-    description: "Busca videos en YouTube basándose en una consulta de texto. Útil para encontrar contenido relacionado con el tema de conversación.",
+    description: "Searches for videos on YouTube based on a text query. Useful for finding content related to the conversation topic.",
     parameters: {
       type: "object",
       properties: {
         query: {
           type: "string",
-          description: "Término de búsqueda para encontrar videos en YouTube"
+          description: "Search term to find videos on YouTube"
         },
         maxResults: {
           type: "number",
-          description: "Número máximo de resultados a retornar (por defecto 5, máximo 10)"
+          description: "Maximum number of results to return (default 5, maximum 10)"
         },
         userDescription: {
           type: "string",
-          description: "Descripción clara para el usuario de qué herramienta se está usando y con qué propósito específico"
+          description: "Clear description for the user of what tool is being used and for what specific purpose"
         }
       },
       required: ["query", "userDescription"]
@@ -38,21 +38,21 @@ export const ANALYZE_VIDEO_TOOL = {
   type: "function",
   function: {
     name: "analyze_video_with_ai",
-    description: "Analiza un video de YouTube usando IA para extraer información, resumir contenido, o encontrar momentos específicos.",
+    description: "Analyzes a YouTube video using AI to extract information, summarize content, or find specific moments.",
     parameters: {
       type: "object",
       properties: {
         videoId: {
           type: "string",
-          description: "ID del video de YouTube a analizar (ej: 'dQw4w9WgXcQ')"
+          description: "YouTube video ID to analyze (e.g., 'dQw4w9WgXcQ')"
         },
         prompt: {
           type: "string",
-          description: "Prompt personalizado para el análisis del video. Si no se proporciona, se usará un análisis general por defecto."
+          description: "Custom prompt for video analysis. If not provided, a general default analysis will be used."
         },
         userDescription: {
           type: "string",
-          description: "Descripción clara para el usuario de qué herramienta se está usando y con qué propósito específico"
+          description: "Clear description for the user of what tool is being used and for what specific purpose"
         }
       },
       required: ["videoId", "userDescription"]
@@ -67,25 +67,25 @@ export const SEARCH_AND_ANALYZE_TOOL = {
   type: "function",
   function: {
     name: "search_and_analyze_video",
-    description: "Busca videos en YouTube y automáticamente analiza el primer resultado con IA. Combina búsqueda y análisis en una sola operación.",
+    description: "Searches for videos on YouTube and automatically analyzes the first result with AI. Combines search and analysis in a single operation.",
     parameters: {
       type: "object",
       properties: {
         query: {
           type: "string",
-          description: "Término de búsqueda para encontrar videos en YouTube"
+          description: "Search term to find videos on YouTube"
         },
         analysisPrompt: {
           type: "string",
-          description: "Prompt personalizado para el análisis del video. Si no se proporciona, se usará un análisis general por defecto."
+          description: "Custom prompt for video analysis. If not provided, a general default analysis will be used."
         },
         maxSearchResults: {
           type: "string",
-          description: "Número máximo de resultados de búsqueda a considerar (por defecto 5, máximo 10)"
+          description: "Maximum number of search results to consider (default 5, maximum 10)"
         },
         userDescription: {
           type: "string",
-          description: "Descripción clara para el usuario de qué herramienta se está usando y con qué propósito específico"
+          description: "Clear description for the user of what tool is being used and for what specific purpose"
         }
       },
       required: ["query", "userDescription"]
