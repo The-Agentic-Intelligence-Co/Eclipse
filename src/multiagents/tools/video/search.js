@@ -1,6 +1,5 @@
 // Configuración de la API de YouTube
-const YOUTUBE_API_KEY = "AIzaSyC3ekSF0lZN91aNLK8c0QlWzgqfo8H2kiM";
-const YOUTUBE_API_URL = "https://www.googleapis.com/youtube/v3";
+import { YOUTUBE_CONFIG, GOOGLE_AI_CONFIG } from '../core/config.js';
 
 /**
  * Busca videos en YouTube
@@ -9,23 +8,23 @@ const YOUTUBE_API_URL = "https://www.googleapis.com/youtube/v3";
  * @param {string} pageToken - Token para paginación (opcional)
  * @returns {Promise<Array>} Array con información de los videos
  */
-export async function searchYt(query, maxResults = 5, pageToken = null) {
+export async function searchYt(query, maxResults = YOUTUBE_CONFIG.DEFAULT_MAX_RESULTS, pageToken = null) {
     try {
         console.log("🔍 Buscando videos en YouTube:", query);
         const params = new URLSearchParams({
             part: "snippet",
-            maxResults: maxResults.toString(),
+            maxResults: Math.min(maxResults, YOUTUBE_CONFIG.MAX_RESULTS).toString(),
             q: query,
             videoCaption: "any",
             type: "video",
-            key: YOUTUBE_API_KEY
+            key: YOUTUBE_CONFIG.API_KEY
         });
 
         if (pageToken) {
             params.append("pageToken", pageToken);
         }
 
-        const response = await fetch(`${YOUTUBE_API_URL}/search?${params}`);
+        const response = await fetch(`${YOUTUBE_CONFIG.API_URL}/search?${params}`);
         const data = await response.json();
 
         if (!response.ok) {
@@ -69,8 +68,8 @@ export async function analyzeVideoWithAI(videoId, customPrompt = null) {
     try {
         const { GoogleGenerativeAI } = await import("@google/generative-ai");
         
-        const genAI = new GoogleGenerativeAI("AIzaSyAjhElUElRbIOQHh1hp7IokzOIwOKYSOZk");
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
+        const genAI = new GoogleGenerativeAI(GOOGLE_AI_CONFIG.API_KEY);
+        const model = genAI.getGenerativeModel({ model: GOOGLE_AI_CONFIG.MODEL });
         
         // Prompt por defecto si no se proporciona uno personalizado
         const defaultPrompt = "Analyze this video and provide a comprehensive summary. Include key points, main topics discussed, and any notable moments. Be specific and informative.";

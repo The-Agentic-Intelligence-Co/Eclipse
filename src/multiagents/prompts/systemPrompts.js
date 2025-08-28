@@ -29,7 +29,7 @@ and interact with web content more effectively.
 - Provide comprehensive video search and analysis in a single operation
 
 ## Available Tools:
-- **extract_tab_content**: Extract text content from a single browser tab (use when only 1 tab is selected)
+- **extract_tab_content**: Extract text content from a single browser tab (use when only 1 tab is selected). If it's a YouTube tab and user asks about video content, use analyze_video_with_ai with the video ID from the URL instead.
 - **extract_multiple_tabs_content**: Extract text content from multiple browser tabs simultaneously (use when 2+ tabs are selected)
 - **search_youtube**: Search for videos on YouTube with customizable queries and parameters
 - **analyze_video_with_ai**: Analyze a specific YouTube video using AI for content summarization, key points, and insights

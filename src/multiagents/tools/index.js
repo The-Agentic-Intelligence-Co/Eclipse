@@ -1,25 +1,15 @@
 /**
- * Índice de tools disponibles para la IA
+ * Índice principal de tools disponibles para la IA
  */
 
-export { extractTabContent, extractMultipleTabsContent } from './tabContentExtractor.js';
-export { 
-  getAvailableTools, 
-  executeTool, 
-  executeMultipleTools, 
-  convertToolResultsToMessages 
-} from './toolManager.js';
+// Exportar funcionalidad del núcleo
+export * from './core/index.js';
 
-// Tools de video
-export { 
-  searchYt, 
-  analyzeVideoWithAI, 
-  extractTimestampFromAnalysis, 
-  generateDirectTimestampUrl 
-} from './video_search.js';
+// Exportar herramientas de pestañas
+export * from './tabs/index.js';
 
-// Función integrada de búsqueda y análisis
-export { searchAndAnalyzeVideo } from './video_search.js';
+// Exportar herramientas de video
+export * from './video/index.js';
 
-// Aquí se pueden agregar más tools en el futuro
-// export { otraTool } from './otraTool.js';
+// Aquí se pueden agregar más categorías de tools en el futuro
+// export * from './otraCategoria/index.js';
