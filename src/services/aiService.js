@@ -1,4 +1,5 @@
 import { getAIResponse } from '../multiagents/agents/responder';
+import { getNavigatorResponse } from '../multiagents/agents/navigator';
 
 /**
  * Servicio para manejar la lógica de IA y procesamiento de mensajes
@@ -47,8 +48,16 @@ export class AIService {
         // Desactivar streaming
         if (stopStreaming) stopStreaming();
       } else {
-        // Modo Agent: Respuesta mock
-        aiResponse = `Entiendo que quieres: "${userMessage}". ¿En qué puedo ayudarte específicamente?`;
+        // Modo Agent: Llamar a navigator.js con streaming
+        if (startStreaming) startStreaming();
+        
+        aiResponse = await getNavigatorResponse(userMessage, chatHistory, selectedTabs, currentActiveTab, showCurrentTabIndicator, (chunk, fullResponse, isFirstChunk) => {
+          if (handleStreamingChunk) {
+            handleStreamingChunk(chunk, fullResponse, isFirstChunk, stopTyping);
+          }
+        });
+        
+        if (stopStreaming) stopStreaming();
         if (stopTyping) stopTyping();
       }
 

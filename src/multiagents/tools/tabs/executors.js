@@ -132,13 +132,15 @@ export async function executeGroupTabs(toolCall) {
       };
     }
     
-    // Crear el grupo de pestañas
-    const groupId = await chrome.tabGroups.create({
+    // Crear el grupo de pestañas usando la API correcta
+    // Primero mover las pestañas a una posición específica para crear el grupo
+    const firstTab = tabsToGroup[0];
+    const groupId = await chrome.tabs.group({
       tabIds: tabsToGroup.map(t => t.id)
     });
     
     // Establecer el título del grupo
-    await chrome.tabGroups.update(groupId.id, {
+    await chrome.tabGroups.update(groupId, {
       title: groupTitle,
       color: 'blue' // Color por defecto, se puede personalizar
     });
@@ -147,9 +149,9 @@ export async function executeGroupTabs(toolCall) {
     return {
       tool_call_id: toolCall.id,
       functionName: toolCall.function.name,
-      content: `✅ Grupo de pestañas creado exitosamente!\n\n**Detalles del grupo:**\n- Título: "${groupTitle}"\n- ID del grupo: ${groupId.id}\n- Pestañas agrupadas: ${tabsToGroup.length}\n- Pestañas: ${tabsToGroup.map(t => `"${t.title}" (ID: ${t.id})`).join(', ')}`,
+      content: `✅ Grupo de pestañas creado exitosamente!\n\n**Detalles del grupo:**\n- Título: "${groupTitle}"\n- ID del grupo: ${groupId}\n- Pestañas agrupadas: ${tabsToGroup.length}\n- Pestañas: ${tabsToGroup.map(t => `"${t.title}" (ID: ${t.id})`).join(', ')}`,
       success: true,
-      groupId: groupId.id
+      groupId: groupId
     };
   } catch (error) {
     console.error('Error al agrupar pestañas:', error);
