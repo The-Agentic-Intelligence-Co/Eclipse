@@ -33,8 +33,8 @@ export async function getNavigatorResponse(userMessage, chatHistory = [], select
     
     // Loop principal hasta que Groq retorne status "Done"
     while (true) {
-      console.log('🔄 **Loop principal - Enviando a Groq:**');
-      console.log('📋 Historial de mensajes:', JSON.stringify(currentMessages, null, 2));
+      //console.log('🔄 **Loop principal - Enviando a Groq:**');
+      //console.log('📋 Historial de mensajes:', JSON.stringify(currentMessages, null, 2));
       
       const completion = await groq.chat.completions.create({
         model: CONFIG.MODEL,
@@ -52,7 +52,7 @@ export async function getNavigatorResponse(userMessage, chatHistory = [], select
       
       // Si no hay tool calls, retornar la respuesta
       if (!toolCalls || toolCalls.length === 0) {
-        console.log('🔄 No hay tool calls, retornando respuesta completa:', fullResponse);
+        //console.log('🔄 No hay tool calls, retornando respuesta completa:', fullResponse);
         return fullResponse;
       }
       

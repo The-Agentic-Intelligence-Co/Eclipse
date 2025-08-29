@@ -17,9 +17,7 @@ import {
   SEARCH_AND_ANALYZE_TOOL
 } from '../video/definitions.js';
 
-import {
-  createExtractDomContentTool
-} from '../dom/definitions.js';
+
 
 import {
   executeExtractTabContent,
@@ -35,9 +33,7 @@ import {
   executeSearchAndAnalyzeVideo
 } from '../video/executors.js';
 
-import {
-  executeExtractDomContent
-} from '../dom/executors.js';
+
 
 /**
  * Obtiene las herramientas disponibles para la IA basándose en las pestañas seleccionadas y el modo
@@ -76,8 +72,7 @@ export function getAvailableTools(selectedTabs = [], mode = 'agent') {
       // Agregar tool para listar todas las pestañas
       tools.push(createListAllTabsTool());
       
-      // Agregar tool para extraer contenido del DOM (solo en agent mode)
-      tools.push(createExtractDomContentTool());
+      
       
       // Agregar tools de video
       tools.push(SEARCH_YOUTUBE_TOOL);
@@ -135,7 +130,7 @@ export async function executeTool(toolCall, selectedTabs = [], mode = 'agent') {
       'open_tab_with_url': () => executeOpenTabWithUrl(toolCall),
       'group_tabs': () => executeGroupTabs(toolCall),
       'list_all_tabs': () => executeListAllTabs(toolCall),
-      'extract_dom_content': () => executeExtractDomContent(toolCall),
+
       'search_youtube': () => executeSearchYoutube(toolCall),
       'analyze_video_with_ai': () => executeAnalyzeVideoWithAI(toolCall),
       'search_and_analyze_video': () => executeSearchAndAnalyzeVideo(toolCall)

@@ -74,11 +74,14 @@ export async function executeOpenTabWithUrl(toolCall) {
     // Crear nueva pestaña
     const newTab = await chrome.tabs.create({ url: normalizedUrl });
     
-    console.log("Nueva pestaña creada:", newTab);
+    // Esperar a que la página esté completamente cargada
+    await waitForPageLoad(newTab.id);
+    
+    console.log("Nueva pestaña creada y cargada:", newTab);
     return {
       tool_call_id: toolCall.id,
       functionName: toolCall.function.name,
-      content: `✅ Nueva pestaña abierta exitosamente con la URL: ${normalizedUrl}\n\n**Detalles de la pestaña:**\n- ID: ${newTab.id}\n- Título: ${newTab.title || 'Cargando...'}\n- URL: ${newTab.url || normalizedUrl}`,
+      content: `✅ Nueva pestaña abierta exitosamente con la URL: ${normalizedUrl}\n\n**Detalles de la pestaña:**\n- ID: ${newTab.id}\n- Título: ${newTab.title || 'Cargando...'}\n- URL: ${newTab.url || normalizedUrl}\n\n**Estado:** Página completamente cargada y lista para DOM read`,
       success: true,
       newTab: newTab
     };
@@ -161,6 +164,74 @@ export async function executeGroupTabs(toolCall) {
       content: `❌ Error al agrupar pestañas: ${error.message}`,
       success: false
     };
+  }
+}
+
+/**
+ * Espera a que una página esté completamente cargada
+ * @param {number} tabId - ID de la pestaña
+ * @returns {Promise<void>}
+ */
+async function waitForPageLoad(tabId) {
+  try {
+    // Esperar a que la pestaña esté completamente cargada
+    await new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        reject(new Error('Timeout esperando carga de página'));
+      }, 30000); // 30 segundos de timeout
+      
+      const checkPageLoad = async () => {
+        try {
+          const tab = await chrome.tabs.get(tabId);
+          
+          // Verificar si la página está completamente cargada
+          if (tab.status === 'complete') {
+            clearTimeout(timeout);
+            
+            // Esperar un poco más para asegurar que el DOM esté listo
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Verificar que el DOM esté realmente listo
+            const domReady = await chrome.scripting.executeScript({
+              target: { tabId },
+              func: () => {
+                return new Promise((resolve) => {
+                  if (document.readyState === 'complete') {
+                    resolve(true);
+                  } else {
+                    const handleLoad = () => {
+                      document.removeEventListener('load', handleLoad);
+                      resolve(true);
+                    };
+                    document.addEventListener('load', handleLoad);
+                  }
+                });
+              }
+            });
+            
+            if (domReady[0]?.result) {
+              resolve();
+            } else {
+              reject(new Error('DOM no está listo'));
+            }
+          } else {
+            // Reintentar en 500ms
+            setTimeout(checkPageLoad, 500);
+          }
+        } catch (error) {
+          clearTimeout(timeout);
+          reject(error);
+        }
+      };
+      
+      checkPageLoad();
+    });
+    
+    console.log(`✅ Pestaña ${tabId} completamente cargada y lista`);
+    
+  } catch (error) {
+    console.error(`❌ Error esperando carga de pestaña ${tabId}:`, error);
+    throw new Error(`Error esperando carga de página: ${error.message}`);
   }
 }
 
