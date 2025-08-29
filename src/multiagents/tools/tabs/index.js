@@ -8,11 +8,17 @@ export { extractTabContent, extractMultipleTabsContent } from './extractor.js';
 // Exportar definiciones de herramientas
 export { 
   createExtractTabContentTool, 
-  createExtractMultipleTabsContentTool 
+  createExtractMultipleTabsContentTool,
+  createOpenTabWithUrlTool,
+  createGroupTabsTool,
+  createListAllTabsTool
 } from './definitions.js';
 
 // Exportar ejecutores de herramientas
 export { 
   executeExtractTabContent, 
-  executeExtractMultipleTabsContent 
+  executeExtractMultipleTabsContent,
+  executeOpenTabWithUrl,
+  executeGroupTabs,
+  executeListAllTabs
 } from './executors.js';

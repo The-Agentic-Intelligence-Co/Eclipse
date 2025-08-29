@@ -21,9 +21,12 @@ const groq = new Groq({
  * @param {Array} chatHistory - Historial completo de la conversación
  * @param {Function} onChunk - Callback para manejar chunks del streaming
  * @param {Array} selectedTabs - Pestañas seleccionadas para contexto
+ * @param {Object} currentActiveTab - Pestaña activa actual
+ * @param {boolean} showCurrentTabIndicator - Si mostrar la pestaña activa en el contexto
+ * @param {string} mode - Modo de operación ('ask' o 'agent')
  * @returns {Promise<string>} Respuesta de la IA
  */
-export async function getAIResponse(userMessage, chatHistory = [], onChunk, selectedTabs = [], currentActiveTab = null, showCurrentTabIndicator = true) {
+export async function getAIResponse(userMessage, chatHistory = [], onChunk, selectedTabs = [], currentActiveTab = null, showCurrentTabIndicator = true, mode = 'agent') {
   try {
     // Preparar mensajes y contexto
     const messages = chatHistory.map(msg => ({
@@ -33,7 +36,7 @@ export async function getAIResponse(userMessage, chatHistory = [], onChunk, sele
     
     const allAvailableTabs = getUnifiedTabs(selectedTabs, currentActiveTab, showCurrentTabIndicator);
     const enhancedMessages = addTabContext(messages, selectedTabs, currentActiveTab, showCurrentTabIndicator);
-    const availableTools = getAvailableTools(allAvailableTabs);
+    const availableTools = getAvailableTools(allAvailableTabs, mode);
     
     // Primera llamada a Groq
     const completion = await groq.chat.completions.create({
@@ -52,7 +55,7 @@ export async function getAIResponse(userMessage, chatHistory = [], onChunk, sele
     
     // Si hay tool calls, ejecutarlas y hacer segunda llamada
     if (toolCalls.length > 0) {
-      return await handleToolCalls(toolCalls, enhancedMessages, allAvailableTabs, onChunk, toolDescriptions);
+      return await handleToolCalls(toolCalls, enhancedMessages, allAvailableTabs, onChunk, toolDescriptions, mode);
     }
 
     return fullResponse;
@@ -138,7 +141,7 @@ async function processStreaming(completion, onChunk) {
   return { fullResponse, toolCalls, toolDescriptions };
 }
 
-async function handleToolCalls(toolCalls, enhancedMessages, allAvailableTabs, onChunk, toolDescriptions) {
+async function handleToolCalls(toolCalls, enhancedMessages, allAvailableTabs, onChunk, toolDescriptions, mode) {
   try {
     // Streamear descripciones antes de ejecutar herramientas
     let toolDescriptionText = '';
@@ -147,7 +150,7 @@ async function handleToolCalls(toolCalls, enhancedMessages, allAvailableTabs, on
       onChunk?.(toolDescriptionText, toolDescriptionText, true);
     }
     
-    const toolResults = await executeMultipleTools(toolCalls, allAvailableTabs);
+    const toolResults = await executeMultipleTools(toolCalls, allAvailableTabs, mode);
     
     // Agregar mensaje del asistente con tool_calls
     enhancedMessages.push({

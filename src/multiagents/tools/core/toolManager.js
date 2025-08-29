@@ -5,7 +5,10 @@
 
 import { 
   createExtractTabContentTool, 
-  createExtractMultipleTabsContentTool
+  createExtractMultipleTabsContentTool,
+  createOpenTabWithUrlTool,
+  createGroupTabsTool,
+  createListAllTabsTool
 } from '../tabs/definitions.js';
 
 import {
@@ -16,7 +19,10 @@ import {
 
 import {
   executeExtractTabContent,
-  executeExtractMultipleTabsContent
+  executeExtractMultipleTabsContent,
+  executeOpenTabWithUrl,
+  executeGroupTabs,
+  executeListAllTabs
 } from '../tabs/executors.js';
 
 import {
@@ -26,11 +32,12 @@ import {
 } from '../video/executors.js';
 
 /**
- * Obtiene las herramientas disponibles para la IA basándose en las pestañas seleccionadas
+ * Obtiene las herramientas disponibles para la IA basándose en las pestañas seleccionadas y el modo
  * @param {Array} selectedTabs - Pestañas seleccionadas para contexto
+ * @param {string} mode - Modo de operación ('ask' o 'agent')
  * @returns {Array} Array de herramientas disponibles
  */
-export function getAvailableTools(selectedTabs = []) {
+export function getAvailableTools(selectedTabs = [], mode = 'agent') {
   const tools = [];
   
   // Solo incluir la tool de extracción si hay pestañas seleccionadas
@@ -44,10 +51,37 @@ export function getAvailableTools(selectedTabs = []) {
     }
   }
   
-  // Agregar tools de video (siempre disponibles)
-  tools.push(SEARCH_YOUTUBE_TOOL);
-  tools.push(ANALYZE_VIDEO_TOOL);
-  tools.push(SEARCH_AND_ANALYZE_TOOL);
+  // En modo 'ask', solo incluir herramientas de análisis y consulta
+  if (mode === 'ask') {
+    // Agregar tools de video (siempre disponibles en ask mode)
+    tools.push(SEARCH_YOUTUBE_TOOL);
+    tools.push(ANALYZE_VIDEO_TOOL);
+    tools.push(SEARCH_AND_ANALYZE_TOOL);
+  } else {
+    // En modo 'agent', incluir todas las herramientas de acción
+    // Agregar tool para abrir nuevas pestañas
+    tools.push(createOpenTabWithUrlTool());
+    
+    // Agregar tool para agrupar pestañas
+    tools.push(createGroupTabsTool());
+    
+    // Agregar tool para listar todas las pestañas
+    tools.push(createListAllTabsTool());
+    
+    // Agregar tools de video
+    tools.push(SEARCH_YOUTUBE_TOOL);
+    tools.push(ANALYZE_VIDEO_TOOL);
+    tools.push(SEARCH_AND_ANALYZE_TOOL);
+  }
+  
+  // Log detallado de las herramientas disponibles
+  const toolNames = tools.map(tool => tool.function.name);
+  const modeInfo = mode === 'ask' ? '🔍 ASK MODE' : '🤖 AGENT MODE';
+  const tabsInfo = selectedTabs.length > 0 ? `(${selectedTabs.length} tabs selected)` : '(no tabs selected)';
+  
+  console.log(`\n🛠️ ${modeInfo} - Tools disponibles ${tabsInfo}:`);
+  console.log(`   📋 ${toolNames.join(', ')}`);
+  console.log(`   📊 Total: ${tools.length} herramientas\n`);
   
   return tools;
 }
@@ -56,16 +90,40 @@ export function getAvailableTools(selectedTabs = []) {
  * Ejecuta una herramienta específica
  * @param {Object} toolCall - Llamada a la herramienta desde la IA
  * @param {Array} selectedTabs - Pestañas seleccionadas para contexto
+ * @param {string} mode - Modo de operación ('ask' o 'agent')
  * @returns {Promise<Object>} Resultado de la ejecución de la herramienta
  */
-export async function executeTool(toolCall, selectedTabs = []) {
+export async function executeTool(toolCall, selectedTabs = [], mode = 'agent') {
   try {
     const toolName = toolCall.function.name;
+    
+    // Validar que la herramienta esté permitida en el modo actual
+    if (mode === 'ask') {
+      const askModeTools = [
+        'extract_tab_content',
+        'extract_multiple_tabs_content',
+        'search_youtube',
+        'analyze_video_with_ai',
+        'search_and_analyze_video'
+      ];
+      
+      if (!askModeTools.includes(toolName)) {
+        return {
+          tool_call_id: toolCall.id,
+          functionName: toolName,
+          content: `❌ La herramienta "${toolName}" no está disponible en modo 'Ask'. Solo se permiten herramientas de análisis y consulta.`,
+          success: false
+        };
+      }
+    }
     
     // Mapeo de herramientas a sus ejecutores
     const toolExecutors = {
       'extract_tab_content': () => executeExtractTabContent(toolCall, selectedTabs),
       'extract_multiple_tabs_content': () => executeExtractMultipleTabsContent(toolCall, selectedTabs),
+      'open_tab_with_url': () => executeOpenTabWithUrl(toolCall),
+      'group_tabs': () => executeGroupTabs(toolCall),
+      'list_all_tabs': () => executeListAllTabs(toolCall),
       'search_youtube': () => executeSearchYoutube(toolCall),
       'analyze_video_with_ai': () => executeAnalyzeVideoWithAI(toolCall),
       'search_and_analyze_video': () => executeSearchAndAnalyzeVideo(toolCall)
@@ -98,9 +156,10 @@ export async function executeTool(toolCall, selectedTabs = []) {
  * Ejecuta múltiples herramientas en paralelo
  * @param {Array} toolCalls - Array de llamadas a herramientas
  * @param {Array} selectedTabs - Pestañas seleccionadas para contexto
+ * @param {string} mode - Modo de operación ('ask' o 'agent')
  * @returns {Promise<Array>} Array de resultados de las herramientas
  */
-export async function executeMultipleTools(toolCalls, selectedTabs = []) {
+export async function executeMultipleTools(toolCalls, selectedTabs = [], mode = 'agent') {
   if (!toolCalls || toolCalls.length === 0) {
     return [];
   }
@@ -112,7 +171,7 @@ export async function executeMultipleTools(toolCalls, selectedTabs = []) {
   
   // Ejecutar cada tool en paralelo
   const executionPromises = uniqueToolCalls.map(toolCall => 
-    executeTool(toolCall, selectedTabs)
+    executeTool(toolCall, selectedTabs, mode)
   );
   
   const results = await Promise.all(executionPromises);

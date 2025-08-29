@@ -42,7 +42,7 @@ export class AIService {
               handleStreamingChunk(chunk, fullResponse, isFirstChunk, stopTyping);
             }
           }
-        }, selectedTabs, currentActiveTab, showCurrentTabIndicator);
+        }, selectedTabs, currentActiveTab, showCurrentTabIndicator, mode);
 
         // Desactivar streaming
         if (stopStreaming) stopStreaming();
@@ -97,7 +97,7 @@ export class AIService {
         if (handleStreamingChunk) {
           handleStreamingChunk(chunk, fullResponse, isFirstChunk, stopTyping);
         }
-      }, selectedTabs, currentActiveTab, showCurrentTabIndicator);
+      }, selectedTabs, currentActiveTab, showCurrentTabIndicator, mode);
 
       // Desactivar streaming
       if (stopStreaming) stopStreaming();
