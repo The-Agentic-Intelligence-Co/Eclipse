@@ -33,7 +33,9 @@ export async function getNavigatorResponse(userMessage, chatHistory = [], select
     
     // Loop principal hasta que Groq retorne status "Done"
     while (true) {
-      console.log('Loop principal');
+      console.log('🔄 **Loop principal - Enviando a Groq:**');
+      console.log('📋 Historial de mensajes:', JSON.stringify(currentMessages, null, 2));
+      
       const completion = await groq.chat.completions.create({
         model: CONFIG.MODEL,
         messages: currentMessages,
@@ -83,10 +85,7 @@ export async function getNavigatorResponse(userMessage, chatHistory = [], select
       });
       currentMessages.push(...toolResults);
       
-      // Verificar si Groq retornó status "Done"
-      if (fullResponse && fullResponse.includes("Done")) {
-        return fullResponse;
-      }
+    
     }
   } catch (error) {
     console.error('Error en navigator:', error);
