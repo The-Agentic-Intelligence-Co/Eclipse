@@ -4,11 +4,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc && vite build",
     "preview": "vite preview",
-    "build:extension": "vite build && npm run copy-manifest",
-    "copy-manifest": "copy manifest.json dist\\ && copy src\\background\\background.js dist\\",
-    "watch": "vite build --watch & npm run copy-manifest"
+    "build:extension": "tsc && vite build && npm run copy-manifest",
+    "copy-manifest": "copy manifest.json dist\\ && copy src\\background\\background.ts dist\\",
+    "watch": "vite build --watch & npm run copy-manifest",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "groq-sdk": "^0.3.0",
