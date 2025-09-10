@@ -1,11 +1,18 @@
 import React from 'react';
+import logo from '../assets/icons/eclipse_logo.svg';
 
-
-const Header = () => {
+const Header = ({ hasStartedChat }) => {
   return (
     <header className="sidebar-header">
       <div className="header-content">
-        <h1>Yellow Sky</h1>
+        {hasStartedChat && (
+          <img 
+            src={logo} 
+            alt="Eclipse Logo" 
+            className="header-logo"
+          />
+        )}
+        <h1>eclipse</h1>
       </div>
     </header>
   );

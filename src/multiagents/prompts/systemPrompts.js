@@ -7,7 +7,7 @@
  * Define el formato y estilo de las respuestas de la IA
  */
 export const GENERAL_SYSTEM_PROMPT = `
-You are Yellow Sky, an intelligent browser agent designed to help users navigate 
+You are Eclipse, an intelligent browser agent designed to help users navigate 
 and interact with web content more effectively.
 
 ## Your Capabilities:

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import logo from '../assets/icons/logo.svg';
+import logo from '../assets/icons/eclipse_logo.svg';
 import { useStreaming } from '../../hooks/useSystem';
 import { useWelcomeMessages } from '../../hooks/useUI';
 import { useChatMessages, useMessageEditing, useChatManagement, useMessageEvents } from '../../hooks/useChat';
@@ -15,7 +15,8 @@ const Content = ({
   toggleCurrentTab, 
   removeCurrentTab, 
   totalSelected, 
-  maxLimit 
+  maxLimit,
+  onChatStart
 }) => {
   const [hasStartedChat, setHasStartedChat] = useState(false);
   const editRef = useRef(null);
@@ -86,7 +87,10 @@ const Content = ({
 
   // Función para manejar mensajes del usuario
   const handleUserMessageWrapper = async (userMessage, mode) => {
-    await handleUserMessage(userMessage, mode, () => setHasStartedChat(true), selectedTabs);
+    await handleUserMessage(userMessage, mode, () => {
+      setHasStartedChat(true);
+      if (onChatStart) onChatStart();
+    }, selectedTabs);
   };
 
   // Función para confirmar edición

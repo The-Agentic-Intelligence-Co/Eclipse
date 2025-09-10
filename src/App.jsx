@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Header from './side-panel/components/Header';
 import Content from './side-panel/components/Content';
 import Footer from './side-panel/components/Footer';
@@ -22,9 +22,12 @@ const App = () => {
     maxLimit
   } = useTabManagement();
 
+  // Estado para saber si el chat ha comenzado
+  const [hasStartedChat, setHasStartedChat] = useState(false);
+
   return (
     <div className="sidebar-container">
-      <Header />
+      <Header hasStartedChat={hasStartedChat} />
       <Content 
         selectedTabs={selectedTabs}
         tabs={tabs}
@@ -36,6 +39,7 @@ const App = () => {
         removeCurrentTab={removeCurrentTab}
         totalSelected={totalSelected}
         maxLimit={maxLimit}
+        onChatStart={() => setHasStartedChat(true)}
       />
       <Footer 
         selectedTabs={selectedTabs}
