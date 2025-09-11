@@ -18,7 +18,7 @@ import {
   handleAIError,
   type StreamingCallback,
   type GroqMessage
-} from "../shared/aiUtils";
+} from "../shared";
 
 /**
  * Función principal para el modo agente que ejecuta un loop hasta que Groq retorne status "Done"

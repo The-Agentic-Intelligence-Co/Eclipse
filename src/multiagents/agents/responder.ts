@@ -18,7 +18,7 @@ import {
   handleAIError,
   type StreamingCallback,
   type GroqMessage
-} from "../shared/aiUtils";
+} from "../shared";
 
 /**
  * Función principal para obtener respuesta de la IA
