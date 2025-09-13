@@ -1,19 +1,7 @@
 import { useState } from 'react';
-import type { 
-  Tab, 
-  UseTabIndicatorsReturn 
-} from '../../types/hooks';
+import type { Tab, UseTabIndicatorsReturn } from '../../types/hooks';
 
-/**
- * Hook personalizado para manejar la lógica de indicadores de pestañas
- * @param {Tab[]} selectedTabs - Pestañas seleccionadas
- * @param {Tab | null} currentActiveTab - Pestaña activa actual
- * @param {boolean} showCurrentTabIndicator - Si mostrar el indicador de pestaña actual
- * @param {Function} addTab - Función para agregar pestaña
- * @param {Function} removeTab - Función para remover pestaña
- * @param {Function} removeCurrentTab - Función para remover indicador de pestaña actual
- * @returns {UseTabIndicatorsReturn} Estados y funciones para indicadores de pestañas
- */
+// Handles tab indicators and visual selection logic
 export const useTabIndicators = (
   selectedTabs: Tab[], 
   currentActiveTab: Tab | null, 
@@ -24,16 +12,12 @@ export const useTabIndicators = (
 ): UseTabIndicatorsReturn => {
   const [hoveredIndicator, setHoveredIndicator] = useState<string | null>(null);
 
-  /**
-   * Maneja la selección de una pestaña
-   * @param {Tab} tab - Pestaña a seleccionar
-   * @returns {boolean} True si la operación fue exitosa
-   */
+  // Handle tab selection logic
   const handleTabSelection = (tab: Tab): boolean => {
-    // Si es la pestaña activa y está activada, desactivar el current tab context
+    // If it's the active tab and indicator is on, turn off indicator
     if (showCurrentTabIndicator && currentActiveTab && currentActiveTab.id === tab.id) {
       removeCurrentTab();
-      // Después de desactivar, permitir seleccionar la pestaña manualmente
+      // After turning off, allow manual selection
       if (!addTab(tab)) {
         return false;
       }
@@ -53,25 +37,16 @@ export const useTabIndicators = (
     }
   };
 
-  /**
-   * Maneja la opción de contexto seleccionada
-   * @param {Object} option - Opción seleccionada
-   * @param {Function} closeAllDropdowns - Función para cerrar dropdowns
-   * @returns {boolean} True si la operación fue exitosa
-   */
+  // Handle context option selection
   const handleContextOption = (option: { value: string }, _closeAllDropdowns: () => void): boolean => {
     if (option.value === 'current-tab') {
-      // La lógica de toggle se maneja en el componente padre
+      // Toggle logic is handled in parent component
       return true;
     }
     return false;
   };
 
-  /**
-   * Verifica si una pestaña debe mostrar checkmark
-   * @param {Tab} tab - Pestaña a verificar
-   * @returns {boolean} True si debe mostrar checkmark
-   */
+  // Check if tab should show checkmark
   const shouldShowCheckmark = (tab: Tab): boolean => {
     const isSelected = !!selectedTabs.find(t => t.id === tab.id);
     const isCurrentActiveTab = showCurrentTabIndicator && currentActiveTab?.id === tab.id;
@@ -79,10 +54,10 @@ export const useTabIndicators = (
   };
 
   return {
-    // Estado
+    // State
     hoveredIndicator,
     
-    // Acciones
+    // Actions
     setHoveredIndicator,
     handleTabSelection,
     handleContextOption,

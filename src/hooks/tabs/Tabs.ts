@@ -1,29 +1,22 @@
 import { useState, useEffect } from 'react';
 import { loadTabs, validateTabSelection, canShowCurrentTab } from '../../services/tabService';
 import { TAB_LIMITS } from '../../constants';
-import type { 
-  Tab, 
-  UseTabManagementReturn
-} from '../../types/hooks';
+import type { Tab, UseTabManagementReturn } from '../../types/hooks';
 
-/**
- * Hook personalizado para manejar la gestión de pestañas
- * @param {number} maxLimit - Límite máximo de pestañas seleccionables
- * @returns {UseTabManagementReturn} Estados y funciones para gestión de pestañas
- */
+// Manages browser tabs and their selection
 export const useTabManagement = (maxLimit: number = TAB_LIMITS.MAX_SELECTIONS): UseTabManagementReturn => {
   const [tabs, setTabs] = useState<Tab[]>([]);
   const [selectedTabs, setSelectedTabs] = useState<Tab[]>([]);
-  const [showCurrentTabIndicator, setShowCurrentTabIndicator] = useState<boolean>(true); // Cambiado a true por defecto
-  const [currentActiveTab, setCurrentActiveTab] = useState<Tab | null>(null); // Nueva: pestaña activa actual
+  const [showCurrentTabIndicator, setShowCurrentTabIndicator] = useState<boolean>(true);
+  const [currentActiveTab, setCurrentActiveTab] = useState<Tab | null>(null);
 
-  // Cargar pestañas al inicializar
+  // Load tabs on initialization
   useEffect(() => {
     const initializeTabs = async (): Promise<void> => {
       const tabsData = await loadTabs();
       setTabs(tabsData);
       
-      // Obtener la pestaña activa actual
+      // Get current active tab
       if (chrome && chrome.tabs) {
         try {
           const activeTab = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -31,36 +24,36 @@ export const useTabManagement = (maxLimit: number = TAB_LIMITS.MAX_SELECTIONS): 
             setCurrentActiveTab(activeTab[0] as Tab);
           }
         } catch (error) {
-          console.log('Error al obtener pestaña activa:', error);
+          console.log('Error getting active tab:', error);
         }
       }
     };
     initializeTabs();
   }, []);
 
-  // Listeners para cambios de pestaña en tiempo real
+  // Listen for real-time tab changes
   useEffect(() => {
     if (!chrome || !chrome.tabs) return;
 
-    // Listener para cambios de pestaña activa
+    // Handle active tab changes
     const handleTabActivated = async (activeInfo: chrome.tabs.TabActiveInfo): Promise<void> => {
       try {
         const activeTab = await chrome.tabs.get(activeInfo.tabId);
         setCurrentActiveTab(activeTab as Tab);
       } catch (error) {
-        console.log('Error al obtener nueva pestaña activa:', error);
+        console.log('Error getting new active tab:', error);
       }
     };
 
-    // Listener para actualizaciones de pestañas
+    // Handle tab updates
     const handleTabUpdated = (tabId: number, changeInfo: chrome.tabs.TabChangeInfo, tab: chrome.tabs.Tab): void => {
-      // Actualizar la lista de pestañas
+      // Update tabs list
       setTabs(prevTabs => {
         const updatedTabs = prevTabs.map(t => t.id === tabId ? (tab as Tab) : t);
         return updatedTabs;
       });
       
-      // Si es la pestaña activa, actualizarla también
+      // Update active tab if it's the current one
       if (changeInfo.status === 'complete' || changeInfo.title || changeInfo.url) {
         setCurrentActiveTab(prevActiveTab => {
           if (prevActiveTab && prevActiveTab.id === tabId) {
@@ -71,26 +64,26 @@ export const useTabManagement = (maxLimit: number = TAB_LIMITS.MAX_SELECTIONS): 
       }
     };
 
-    // Listener para cierre de pestañas
+    // Handle tab removal
     const handleTabRemoved = (tabId: number): void => {
       setTabs(prevTabs => {
         const filteredTabs = prevTabs.filter(t => t.id !== tabId);
         return filteredTabs;
       });
       
-      // Si se cerró la pestaña activa, limpiar el estado
+      // Clear active tab if it was closed
       if (currentActiveTab && currentActiveTab.id === tabId) {
         setCurrentActiveTab(null);
       }
       
-      // Remover de pestañas seleccionadas si estaba ahí
+      // Remove from selected tabs if it was there
       setSelectedTabs(prev => prev.filter(t => t.id !== tabId));
     };
 
-    // Listener para nuevas pestañas
+    // Handle new tabs
     const handleTabCreated = (tab: chrome.tabs.Tab): void => {
       setTabs(prevTabs => {
-        // Verificar que la pestaña no esté ya en la lista
+        // Check if tab already exists in list
         const tabExists = prevTabs.find(t => t.id === tab.id);
         if (!tabExists) {
           return [...prevTabs, tab as Tab];
@@ -99,26 +92,22 @@ export const useTabManagement = (maxLimit: number = TAB_LIMITS.MAX_SELECTIONS): 
       });
     };
 
-    // Agregar listeners
+    // Add listeners
     chrome.tabs.onActivated.addListener(handleTabActivated);
     chrome.tabs.onUpdated.addListener(handleTabUpdated);
     chrome.tabs.onRemoved.addListener(handleTabRemoved);
     chrome.tabs.onCreated.addListener(handleTabCreated);
 
-    // Cleanup: remover listeners
+    // Cleanup: remove listeners
     return () => {
       chrome.tabs.onActivated.removeListener(handleTabActivated);
       chrome.tabs.onUpdated.removeListener(handleTabUpdated);
       chrome.tabs.onRemoved.removeListener(handleTabRemoved);
       chrome.tabs.onCreated.removeListener(handleTabCreated);
     };
-  }, [currentActiveTab]); // Agregar currentActiveTab como dependencia para que se actualice correctamente
+  }, [currentActiveTab]);
 
-  /**
-   * Agrega una pestaña a la selección
-   * @param {Tab} tab - Pestaña a agregar
-   * @returns {boolean} True si se agregó exitosamente
-   */
+  // Add tab to selection
   const addTab = (tab: Tab): boolean => {
     if (validateTabSelection(selectedTabs, showCurrentTabIndicator, maxLimit)) {
       setSelectedTabs(prev => [...prev, tab]);
@@ -127,18 +116,12 @@ export const useTabManagement = (maxLimit: number = TAB_LIMITS.MAX_SELECTIONS): 
     return false;
   };
 
-  /**
-   * Remueve una pestaña de la selección
-   * @param {number} tabId - ID de la pestaña a remover
-   */
+  // Remove tab from selection
   const removeTab = (tabId: number): void => {
     setSelectedTabs(prev => prev.filter(t => t.id !== tabId));
   };
 
-  /**
-   * Toggle del indicador de pestaña actual
-   * @returns {boolean} True si se cambió exitosamente
-   */
+  // Toggle current tab indicator
   const toggleCurrentTab = (): boolean => {
     if (canShowCurrentTab(selectedTabs, showCurrentTabIndicator, maxLimit)) {
       setShowCurrentTabIndicator(prev => !prev);
@@ -147,32 +130,28 @@ export const useTabManagement = (maxLimit: number = TAB_LIMITS.MAX_SELECTIONS): 
     return false;
   };
 
-  /**
-   * Remueve el indicador de pestaña actual
-   */
+  // Remove current tab indicator
   const removeCurrentTab = (): void => {
     setShowCurrentTabIndicator(false);
   };
 
-  /**
-   * Calcula el total de opciones seleccionadas
-   */
+  // Calculate total selected options
   const totalSelected = selectedTabs.length + (showCurrentTabIndicator ? 1 : 0);
 
   return {
-    // Estado
+    // State
     tabs,
     selectedTabs,
     showCurrentTabIndicator,
-    currentActiveTab, // Nuevo estado
+    currentActiveTab,
     
-    // Acciones
+    // Actions
     addTab,
     removeTab,
     toggleCurrentTab,
     removeCurrentTab,
     
-    // Valores calculados
+    // Computed values
     totalSelected,
     maxLimit
   };
