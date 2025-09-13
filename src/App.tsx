@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import Header from './side-panel/components/Header';
 import Content from './side-panel/components/Content';
 import Footer from './side-panel/components/Footer';
-import { useChromeAPI } from './hooks/useChromeAPI';
 import { useTabManagement } from './hooks/useSystem';
 import type { AppProps } from './types/hooks';
 
 const App: React.FC<AppProps> = () => {
-  useChromeAPI(); // Solo para logging, no necesitamos el return
 
   // Hook para gestión de pestañas - ahora compartido entre Content y Footer
   const {
