@@ -1,18 +1,13 @@
 import { useState, useEffect } from 'react';
-import type { 
-  UseDropdownManagementReturn
-} from '../../types/hooks';
+import type { UseDropdownManagementReturn } from '../../types/hooks';
 
-/**
- * Hook personalizado para manejar la gestión de dropdowns
- * @returns {UseDropdownManagementReturn} Estados y funciones para gestión de dropdowns
- */
+// Manages dropdown states and interactions for the UI
 export const useDropdownManagement = (): UseDropdownManagementReturn => {
   const [isContextDropdownOpen, setIsContextDropdownOpen] = useState<boolean>(false);
   const [isModeDropdownOpen, setIsModeDropdownOpen] = useState<boolean>(false);
   const [showTabSelection, setShowTabSelection] = useState<boolean>(false);
 
-  // Cerrar dropdowns al hacer clic fuera
+  // Close dropdowns when user clicks outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent): void => {
       const target = event.target as Element;
@@ -36,7 +31,7 @@ export const useDropdownManagement = (): UseDropdownManagementReturn => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isContextDropdownOpen, showTabSelection, isModeDropdownOpen]);
 
-  // Cerrar con Escape
+  // Close dropdowns when user presses Escape key
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent): void => {
       if (event.key === 'Escape') {
@@ -53,37 +48,27 @@ export const useDropdownManagement = (): UseDropdownManagementReturn => {
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isContextDropdownOpen, showTabSelection, isModeDropdownOpen]);
 
-  /**
-   * Abre o cierra el dropdown de contexto
-   */
+  // Toggle context dropdown visibility
   const toggleContextDropdown = (): void => {
     setIsContextDropdownOpen(prev => !prev);
   };
 
-  /**
-   * Abre o cierra el dropdown de modo
-   */
+  // Toggle mode dropdown visibility
   const toggleModeDropdown = (): void => {
     setIsModeDropdownOpen(prev => !prev);
   };
 
-  /**
-   * Muestra la selección de pestañas
-   */
+  // Show tab selection interface
   const showTabSelectionMode = (): void => {
     setShowTabSelection(true);
   };
 
-  /**
-   * Oculta la selección de pestañas
-   */
+  // Hide tab selection interface
   const hideTabSelectionMode = (): void => {
     setShowTabSelection(false);
   };
 
-  /**
-   * Cierra todos los dropdowns
-   */
+  // Close all open dropdowns at once
   const closeAllDropdowns = (): void => {
     setIsContextDropdownOpen(false);
     setIsModeDropdownOpen(false);
@@ -91,12 +76,9 @@ export const useDropdownManagement = (): UseDropdownManagementReturn => {
   };
 
   return {
-    // Estado
     isContextDropdownOpen,
     isModeDropdownOpen,
     showTabSelection,
-    
-    // Acciones
     setIsContextDropdownOpen,
     setIsModeDropdownOpen,
     setShowTabSelection,

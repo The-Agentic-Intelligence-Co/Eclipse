@@ -1,18 +1,12 @@
 import { useState, useEffect } from 'react';
 import { WELCOME_MESSAGES, WELCOME_MESSAGE_INTERVAL } from '../../constants/welcomeMessages';
-import type { 
-  UseWelcomeMessagesReturn
-} from '../../types/hooks';
+import type { UseWelcomeMessagesReturn } from '../../types/hooks';
 
-/**
- * Hook personalizado para manejar los mensajes de bienvenida rotativos
- * @param {boolean} hasStartedChat - Si el chat ha comenzado
- * @returns {UseWelcomeMessagesReturn} Estado del mensaje de bienvenida actual
- */
+// Manages rotating welcome messages for the UI
 export const useWelcomeMessages = (hasStartedChat: boolean): UseWelcomeMessagesReturn => {
   const [welcomeMessageIndex, setWelcomeMessageIndex] = useState<number>(0);
 
-  // Rotar mensajes de bienvenida cada 3 segundos
+  // Rotate welcome messages every 3 seconds when chat hasn't started
   useEffect(() => {
     if (!hasStartedChat) {
       const interval = setInterval(() => {
