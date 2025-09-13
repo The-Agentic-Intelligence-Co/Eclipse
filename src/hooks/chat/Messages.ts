@@ -1,23 +1,13 @@
 import { useState } from 'react';
 import { generateMessageId } from '../../utils/messageUtils';
-import type { 
-  ChatMessage, 
-  UseChatMessagesReturn
-} from '../../types/hooks';
+import type { ChatMessage, UseChatMessagesReturn } from '../../types/hooks';
 
-/**
- * Hook personalizado para manejar los mensajes del chat
- * @returns {UseChatMessagesReturn} Estados y funciones para gestión de mensajes
- */
+// Manages chat messages (add, update, delete)
 export const useChatMessages = (): UseChatMessagesReturn => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isTyping, setIsTyping] = useState<boolean>(false);
 
-  /**
-   * Agrega un mensaje del usuario
-   * @param {string} content - Contenido del mensaje
-   * @returns {ChatMessage[]} Nuevo array de mensajes
-   */
+  // Add a user message
   const addUserMessage = (content: string): ChatMessage[] => {
     const newMessage: ChatMessage = {
       id: generateMessageId(),
@@ -30,10 +20,7 @@ export const useChatMessages = (): UseChatMessagesReturn => {
     return newMessages;
   };
 
-  /**
-   * Agrega una respuesta de la IA
-   * @param {string} content - Contenido de la respuesta
-   */
+  // Add AI response
   const addAIResponse = (content: string): void => {
     const aiMessage: ChatMessage = {
       id: generateMessageId(),
@@ -44,11 +31,8 @@ export const useChatMessages = (): UseChatMessagesReturn => {
     setMessages(prev => [...prev, aiMessage]);
   };
 
-  /**
-   * Agrega un mensaje de error
-   * @param {string} errorMessage - Mensaje de error
-   */
-  const addErrorMessage = (errorMessage: string = "Lo siento, hubo un error al procesar tu consulta. Por favor, intenta de nuevo."): void => {
+  // Add error message
+  const addErrorMessage = (errorMessage: string = "Sorry, there was an error processing your request. Please try again."): void => {
     const errorMsg: ChatMessage = {
       id: generateMessageId(),
       type: 'ai',
@@ -58,11 +42,7 @@ export const useChatMessages = (): UseChatMessagesReturn => {
     setMessages(prev => [...prev, errorMsg]);
   };
 
-  /**
-   * Actualiza el contenido de un mensaje existente
-   * @param {string} messageId - ID del mensaje a actualizar
-   * @param {string} newContent - Nuevo contenido del mensaje
-   */
+  // Update existing message content
   const updateMessage = (messageId: string, newContent: string): void => {
     setMessages(prev => prev.map(msg => 
       msg.id === messageId 
@@ -71,10 +51,7 @@ export const useChatMessages = (): UseChatMessagesReturn => {
     ));
   };
 
-  /**
-   * Elimina todos los mensajes posteriores a un mensaje específico
-   * @param {string} messageId - ID del mensaje hasta donde mantener la conversación
-   */
+  // Remove all messages after a specific message
   const removeMessagesAfter = (messageId: string): void => {
     setMessages(prev => {
       const messageIndex = prev.findIndex(msg => msg.id === messageId);
@@ -83,16 +60,12 @@ export const useChatMessages = (): UseChatMessagesReturn => {
     });
   };
 
-  /**
-   * Activa el estado de typing
-   */
+  // Show typing indicator
   const startTyping = (): void => {
     setIsTyping(true);
   };
 
-  /**
-   * Desactiva el estado de typing
-   */
+  // Hide typing indicator
   const stopTyping = (): void => {
     setIsTyping(false);
   };
