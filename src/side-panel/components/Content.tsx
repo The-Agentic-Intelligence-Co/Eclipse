@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import logo from '../assets/icons/eclipse_logo.svg';
-import { useStreaming } from '../../hooks/useSystem';
-import { useWelcomeMessages } from '../../hooks/useUI';
-import { useChatMessages, useMessageEditing, useChatManagement, useMessageEvents } from '../../hooks/useChat';
+import { useStreaming } from '../../hooks/streaming';
+import { useWelcomeMessages } from '../../hooks/ui';
+import { useChatMessages, useMessageEditing, useChatManagement, useMessageEvents } from '../../hooks/chat';
 import MessageItem from './MessageItem';
 import type { ContentProps } from '../../types/hooks';
 

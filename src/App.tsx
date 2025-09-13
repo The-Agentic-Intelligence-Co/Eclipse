@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Header from './side-panel/components/Header';
 import Content from './side-panel/components/Content';
 import Footer from './side-panel/components/Footer';
-import { useTabManagement } from './hooks/useSystem';
+import { useTabManagement } from './hooks/tabs';
 import type { AppProps } from './types/hooks';
 
 const App: React.FC<AppProps> = () => {
