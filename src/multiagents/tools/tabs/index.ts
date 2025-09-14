@@ -9,9 +9,9 @@ export { extractTabContent, extractMultipleTabsContent } from './extractor';
 export { 
   createExtractTabContentTool, 
   createExtractMultipleTabsContentTool,
-  createOpenTabWithUrlTool,
-  createGroupTabsTool,
-  createListAllTabsTool
+  OPEN_TAB_WITH_URL_TOOL,
+  GROUP_TABS_TOOL,
+  LIST_ALL_TABS_TOOL
 } from './definitions';
 
 // Exportar ejecutores de herramientas

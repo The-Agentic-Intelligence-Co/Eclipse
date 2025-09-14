@@ -6,9 +6,9 @@
 import { 
   createExtractTabContentTool, 
   createExtractMultipleTabsContentTool,
-  createOpenTabWithUrlTool,
-  createGroupTabsTool,
-  createListAllTabsTool
+  OPEN_TAB_WITH_URL_TOOL,
+  GROUP_TABS_TOOL,
+  LIST_ALL_TABS_TOOL
 } from '../tabs/definitions';
 
 import {
@@ -62,13 +62,13 @@ export function getAvailableTools(selectedTabs: Tab[] = [], mode: 'ask' | 'agent
   } else {
     // En modo 'agent', incluir todas las herramientas de acción
     // Agregar tool para abrir nuevas pestañas
-    tools.push(createOpenTabWithUrlTool());
+    tools.push(OPEN_TAB_WITH_URL_TOOL);
     
     // Agregar tool para agrupar pestañas
-    tools.push(createGroupTabsTool());
+    tools.push(GROUP_TABS_TOOL);
     
     // Agregar tool para listar todas las pestañas
-    tools.push(createListAllTabsTool());
+    tools.push(LIST_ALL_TABS_TOOL);
     
     // Agregar tools de video
     tools.push(SEARCH_YOUTUBE_TOOL);
