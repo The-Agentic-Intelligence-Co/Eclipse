@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { AIService } from '../../services/aiService';
+import { processUserMessage, regenerateResponse } from '../../services/conversation';
 import { isMessageEmpty } from '../../utils/messageUtils';
 import type { 
   MessageCallbacks, 
@@ -49,7 +49,7 @@ export const useChatManagement = (
     
     try {
       // Ask AI for response with tab context
-      const aiResponse = await AIService.processUserMessage(
+      const aiResponse = await processUserMessage(
         userMessage, newMessages, mode, streamingHandlers, 
         contextParams.selectedTabs, contextParams.currentActiveTab, contextParams.showCurrentTabIndicator
       );
@@ -78,7 +78,7 @@ export const useChatManagement = (
 
     try {
       // Ask AI to regenerate response with new message
-      const aiResponse = await AIService.regenerateResponse(
+      const aiResponse = await regenerateResponse(
         messageId, newContent, messages, streamingHandlers,
         contextParams.selectedTabs, contextParams.currentActiveTab, 
         contextParams.showCurrentTabIndicator, 'ask'

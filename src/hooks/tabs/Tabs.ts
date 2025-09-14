@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { loadTabs, validateTabSelection, canShowCurrentTab } from '../../services/tabService';
+import { loadTabs, validateTabSelection, canShowCurrentTab } from '../../services/tabs';
 import { TAB_LIMITS } from '../../constants';
 import type { Tab, UseTabManagementReturn } from '../../types/hooks';
 

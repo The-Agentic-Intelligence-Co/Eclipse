@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { useDropdownManagement, useFooterState } from '../../hooks/ui';
 import { useTabIndicators } from '../../hooks/tabs';
 import { formatTabTitle, formatTabTitleShort, shouldShowPlaceholder, getDefaultFavicon, handleFaviconError, isCurrentActiveTab, isTabSelected } from '../../utils/helpers';
-import { handleTabSelection, handleContextOption } from '../../services/tabService';
+import { handleTabSelection, handleContextOption } from '../../services/tabs';
 import { MODES, CONTEXT_OPTIONS, ICONS, TAB_LIMITS } from '../../constants';
 import type { FooterProps, Tab } from '../../types/hooks';
 
