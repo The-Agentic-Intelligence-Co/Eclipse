@@ -52,8 +52,9 @@ ${validatorFeedback ? `Validator feedback: ${validatorFeedback}` : ''}
     );
     
     const { fullResponse, toolCalls } = await processStreaming(completion, onChunk);
+    console.log('completion', completion);
     console.log('fullResponse', fullResponse);
-    console.log('toolCalls', toolCalls);
+    console.log('toolCalls jiji', toolCalls);
     
     if (toolCalls && toolCalls.length > 0) {
       return {

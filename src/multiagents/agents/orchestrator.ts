@@ -2,7 +2,7 @@ import { getPlannerResponse } from './planner';
 import { getExecutorResponse } from './executor';
 import { getValidatorResponse } from './validator';
 import { executeTool } from '../tools/index';
-import { handleAIError } from '../shared';
+import { handleAIError, getUnifiedTabs } from '../shared';
 import type { Tab, ChatMessage } from '../../types/hooks';
 import type { Plan, ToolCallHistory } from '../types/plan';
 import type { StreamingCallback } from '../shared';
@@ -16,6 +16,8 @@ export async function getAgentResponse(
   onChunk?: StreamingCallback
 ): Promise<string> {
   try {
+    const allAvailableTabs = getUnifiedTabs(selectedTabs, currentActiveTab, showCurrentTabIndicator);
+    
     const plannerResponse = await getPlannerResponse(
       userMessage,
       chatHistory,
@@ -37,7 +39,8 @@ export async function getAgentResponse(
       selectedTabs,
       currentActiveTab,
       showCurrentTabIndicator,
-      onChunk
+      onChunk,
+      allAvailableTabs
     );
     
   } catch (error) {
@@ -51,7 +54,8 @@ async function executePlanWithValidation(
   selectedTabs: Tab[],
   currentActiveTab: Tab | null,
   showCurrentTabIndicator: boolean,
-  onChunk?: StreamingCallback
+  onChunk?: StreamingCallback,
+  allAvailableTabs?: Tab[]
 ): Promise<string> {
   const MAX_ITERATIONS = 20;
   let currentStepIndex = 0;
@@ -95,9 +99,10 @@ async function executePlanWithValidation(
     let toolResult;
     if (executorResponse.type === 'tool_call') {
       console.log('executorResponse.toolCall', executorResponse.toolCall);
+      console.log('selectedTabs in executePlanWithValidation R', selectedTabs);
       toolResult = await executeTool(
         executorResponse.toolCall!,
-        selectedTabs,
+        allAvailableTabs,
         'agent'
       );
       console.log('toolResult', toolResult);

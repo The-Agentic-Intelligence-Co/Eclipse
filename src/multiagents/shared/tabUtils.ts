@@ -16,6 +16,7 @@ export function getUnifiedTabs(
   if (currentActiveTab && showCurrentTabIndicator && !selectedTabs.some(tab => tab.id === currentActiveTab.id)) {
     allTabs.push(currentActiveTab);
   }
+  console.log('allTabs in getUnifiedTabs', allTabs);
   return allTabs;
 }
 
@@ -37,6 +38,7 @@ export function addTabContext(
   if (currentActiveTab && showCurrentTabIndicator) {
     contextParts.push(`**Current active tab:**\n- **${currentActiveTab.title}** (${currentActiveTab.url})`);
   }
+  console.log('contextParts in addTabContext', contextParts);
   
   const enhancedMessages = [...messages];
   if (enhancedMessages.length > 0) {

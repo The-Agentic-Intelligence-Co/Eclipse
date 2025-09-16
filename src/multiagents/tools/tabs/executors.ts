@@ -10,10 +10,26 @@ import type { Tab, ToolCall, ToolResult } from './types';
  */
 export async function executeExtractTabContent(toolCall: ToolCall, selectedTabs: Tab[]): Promise<ToolResult> {
   const args = JSON.parse(toolCall.function.arguments);
+  console.log('args in executeExtractTabContent', args);
+  console.log('Type info:', {
+    typeof: typeof args,
+    constructor: args.constructor.name,
+    isArray: Array.isArray(args),
+    isObject: args instanceof Object,
+    isNull: args === null,
+    isUndefined: args === undefined
+  });
+  console.log('args in executeExtractTabContent', args);
+  console.log('JSON.stringify(args):', JSON.stringify(args));
+  console.log('Object.keys(args):', Object.keys(args));
+  console.log('Object.values(args):', Object.values(args));
   const { tabId } = args;
+  console.log('tabId in executeExtractTabContent', tabId);
+  console.log('selectedTabs in executeExtractTabContent', selectedTabs);
   
   // Verificar que la pestaña esté en las seleccionadas
   const tab = selectedTabs.find(t => t.id === tabId);
+  console.log('tab in executeExtractTabContent', tab);
   if (!tab) {
     console.log('❌ Pestaña no encontrada. IDs disponibles:', selectedTabs.map(t => t.id));
     return {

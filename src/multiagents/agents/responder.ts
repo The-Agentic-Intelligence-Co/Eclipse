@@ -58,6 +58,7 @@ export async function getAIResponse(
     
     // Si hay tool calls, ejecutarlas y hacer segunda llamada
     if (toolCalls.length > 0) {
+      console.log('toolCalls in responder', toolCalls);
       return await handleToolCalls(toolCalls, enhancedMessages, allAvailableTabs, onChunk, toolDescriptions, mode);
     }
 

@@ -22,6 +22,7 @@ export const processUserMessage = async (
 
     if (mode === 'ask') {
       if (startStreaming) startStreaming();
+      console.log('selectedTabs in messageProcessor', selectedTabs);
 
       aiResponse = await getAIResponse(userMessage, chatHistory, (chunk: string, fullResponse: string, isFirstChunk: boolean) => {
         if (handleStreamingChunk) {
@@ -37,7 +38,7 @@ export const processUserMessage = async (
       if (stopStreaming) stopStreaming();
     } else {
       if (startStreaming) startStreaming();
-      
+      console.log('selectedTabs in messageProcessor', selectedTabs);
       aiResponse = await getAgentResponse(userMessage, chatHistory, selectedTabs, currentActiveTab, showCurrentTabIndicator, (chunk: string, fullResponse: string, isFirstChunk: boolean) => {
         if (handleStreamingChunk) {
           handleStreamingChunk(chunk, fullResponse, isFirstChunk, stopTyping);
