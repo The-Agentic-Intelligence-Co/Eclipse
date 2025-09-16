@@ -23,6 +23,10 @@ export const SEARCH_YOUTUBE_TOOL: ToolDefinition = {
           type: "number",
           description: "Maximum number of results to return (default 5, maximum 10)"
         },
+        reason: {
+          type: "string",
+          description: "Reason why searching for videos is needed"
+        },
         userDescription: {
           type: "string",
           description: "Clear description in first person of what tool is being used and for what specific purpose (e.g., 'I am searching YouTube for videos related to this topic')"
@@ -51,6 +55,10 @@ export const ANALYZE_VIDEO_TOOL: ToolDefinition = {
         prompt: {
           type: "string",
           description: "Custom prompt for video analysis. If not provided, a general default analysis will be used."
+        },
+        reason: {
+          type: "string",
+          description: "Reason why analyzing this video is needed"
         },
         userDescription: {
           type: "string",
@@ -84,6 +92,10 @@ export const SEARCH_AND_ANALYZE_TOOL: ToolDefinition = {
         maxSearchResults: {
           type: "string",
           description: "Maximum number of search results to consider (default 5, maximum 10)"
+        },
+        reason: {
+          type: "string",
+          description: "Reason why searching and analyzing videos is needed"
         },
         userDescription: {
           type: "string",

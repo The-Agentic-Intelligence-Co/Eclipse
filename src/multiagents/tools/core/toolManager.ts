@@ -149,6 +149,7 @@ export async function executeTool(
     
   } catch (error) {
     console.error('Error ejecutando tool:', error);
+    console.error('Error en tool call:', toolCall);
     return {
       tool_call_id: toolCall.id,
       functionName: toolCall.function.name,

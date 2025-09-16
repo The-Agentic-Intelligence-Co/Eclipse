@@ -48,7 +48,10 @@ export async function getAIResponse(
     const availableTools = getAvailableTools(allAvailableTabs, mode);
     
     // Primera llamada a Groq usando utilidad compartida
-    const completion = await createGroqCompletion(enhancedMessages, availableTools, GENERAL_SYSTEM_PROMPT);
+    const completion = await createGroqCompletion(
+      [{ role: "system", content: GENERAL_SYSTEM_PROMPT }, ...enhancedMessages], 
+      availableTools
+    );
 
     // Procesar streaming y tool calls usando utilidad compartida
     const { fullResponse, toolCalls, toolDescriptions } = await processStreaming(completion, onChunk);
@@ -89,7 +92,10 @@ async function handleToolCalls(
     enhancedMessages.push(...toolMessages as any);
     
     // Segunda llamada a Groq usando utilidad compartida
-    const finalCompletion = await createGroqCompletion(enhancedMessages as GroqMessage[], [], GENERAL_SYSTEM_PROMPT);
+    const finalCompletion = await createGroqCompletion(
+      [{ role: "system", content: GENERAL_SYSTEM_PROMPT }, ...enhancedMessages as GroqMessage[]], 
+      []
+    );
 
     // Procesar respuesta final y mantener la descripción visible
     let finalResponse = toolDescriptionText; // Incluir descripción de herramienta

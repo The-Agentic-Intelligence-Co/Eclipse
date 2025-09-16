@@ -19,16 +19,39 @@ export const groq = new Groq({
  */
 export async function createGroqCompletion(
   messages: GroqMessage[],
-  tools: any[],
-  systemPrompt: string
+  tools: any[]
 ): Promise<any> {
-  return await groq.chat.completions.create({
-    model: CONFIG.MODEL,
-    messages: [{ role: "system", content: systemPrompt }, ...messages],
-    tools: tools,
-    tool_choice: "auto" as any,
-    stream: true,
-    max_tokens: CONFIG.MAX_COMPLETION_TOKENS,
-    temperature: CONFIG.TEMPERATURE,
-  } as any);
+  try {
+    const baseConfig = {
+      model: CONFIG.MODEL,
+      messages: messages, // Los mensajes ya incluyen el system prompt
+      tools: tools,
+      tool_choice: "auto" as any,
+      stream: true,
+      max_tokens: CONFIG.MAX_COMPLETION_TOKENS,
+      temperature: CONFIG.TEMPERATURE,
+    };
+
+    // Log de configuración para debugging
+    if (CONFIG.DEBUG) {
+      console.log('🔧 Groq Completion Config:', {
+        model: baseConfig.model,
+        messagesCount: messages.length,
+        toolsCount: tools.length,
+        maxTokens: baseConfig.max_tokens,
+        temperature: baseConfig.temperature
+      });
+    }
+
+    return await groq.chat.completions.create(baseConfig as any);
+  } catch (error) {
+    console.error('❌ Error en createGroqCompletion:', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      model: CONFIG.MODEL,
+      messagesCount: messages.length,
+      toolsCount: tools.length
+    });
+    throw error;
+  }
 }

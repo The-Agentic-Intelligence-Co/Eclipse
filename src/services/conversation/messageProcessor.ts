@@ -1,5 +1,5 @@
 import { getAIResponse } from '../../multiagents/agents/responder';
-import { getNavigatorResponse } from '../../multiagents/agents/navigator';
+import { getAgentResponse } from '../../multiagents/agents/orchestrator';
 import type { ChatMessage, Tab } from '../../types/hooks';
 import type { StreamingCallbacks } from '../streaming/callbackHandler';
 
@@ -38,7 +38,7 @@ export const processUserMessage = async (
     } else {
       if (startStreaming) startStreaming();
       
-      aiResponse = await getNavigatorResponse(userMessage, chatHistory, selectedTabs, currentActiveTab, showCurrentTabIndicator, (chunk: string, fullResponse: string, isFirstChunk: boolean) => {
+      aiResponse = await getAgentResponse(userMessage, chatHistory, selectedTabs, currentActiveTab, showCurrentTabIndicator, (chunk: string, fullResponse: string, isFirstChunk: boolean) => {
         if (handleStreamingChunk) {
           handleStreamingChunk(chunk, fullResponse, isFirstChunk, stopTyping);
         }
