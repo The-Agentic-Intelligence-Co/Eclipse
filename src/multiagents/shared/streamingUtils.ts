@@ -70,3 +70,26 @@ export function streamToolDescriptions(
   }
   return '';
 }
+
+/**
+ * Simula streaming del userDescription con delay rápido y uniforme
+ * Utilidad compartida para planner y validator
+ */
+export async function streamUserDescription(userDescription: string, onChunk: StreamingCallback): Promise<void> {
+  const words = userDescription.split(' ');
+  let currentText = '';
+  
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
+    const space = i < words.length - 1 ? ' ' : '';
+    currentText += word + space;
+    
+    // Delay uniforme y muy rápido para todas las palabras (5-15ms)
+    const delay = Math.random() * 10 + 5;
+    
+    await new Promise(resolve => setTimeout(resolve, delay));
+    
+    // Llamar al callback con el chunk actual
+    onChunk(word + space, currentText, i === 0);
+  }
+}

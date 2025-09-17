@@ -7,22 +7,28 @@ Mode: ai_mode | Status: [X]Pass/Failed | Reason: [X]reason of failure. | Solved?
 
 
 
-SINGLE TOOL TEST EXECUTION
+SINGLE TOOL EXECUTION TEST
 **Tool: Extract Tab content
-LLM Model: groq/openai-120b
+*LLM Model: groq/openai-120b
+
+*Prompt: can you make a summary of this tab pls
+Footer Tab Context: 1 selected tab (including current tab)
+Mode: Agent | Status: ✅Pass
+Mode: Ask | Status: ✅Pass
 
 **Tool: Extract Multiple Tab content
 *LLM Model: groq/openai-120b
+
 *Prompt: can you make a summary of this 4 tabs pls?
 Footer Tab Context: 4 selected tabs (not including current tab)
-Mode: Agent | Status: Pass | Reason: NA | Solved? NA
-Mode: Ask | Status: Pass | Reason: NA | Solved? NA
+Mode: Agent | Status: ✅Pass | Reason: NA | Solved? NA
+Mode: Ask | Status: ✅Pass | Reason: NA | Solved? NA
 
 
 *Prompt: Can you check in which of these 4 tabs it mentions that it is 100% free?
 Footer Tab Context: 4 selected tabs (including current tab)
-Mode: Agent | Status: Failed, Pass | Reason: Text was inside a closed div accordion. | Solved? Yes. Accordion was manually opened, then retried and worked.
-Mode: Ask | Status: [1]Failed, [2]Failed, Pass | Reason: [1]Model selected wrong tool, [2]Same as above. | Solved? Yes. [1]Ask Prompt got refined with clearer instructions of how and when to use extract_multiple_tab_content. [2]Same as above.
+Mode: Agent | Status: Failed, ✅Pass | Reason: Text was inside a closed div accordion. | Solved? Yes. Accordion was manually opened, then retried and worked.
+Mode: Ask | Status: [1]Failed, [2]Failed, ✅Pass | Reason: [1]Model selected wrong tool, [2]Same as above. | Solved? Yes. [1]Ask Prompt got refined with clearer instructions of how and when to use extract_multiple_tab_content. [2]Same as above.
 
 
 **Tool: Analyze Video with AI
@@ -42,3 +48,13 @@ LLM Model: groq/openai-120b
 
 **Tool: Open new tab with URL
 LLM Model: groq/openai-120b
+
+
+
+THREE TOOLS EXECUTION TESTS
+**Tools: extract_multiple_tab_content & list_all_tabs & group_tabs
+LLM Model: groq/openai-120b
+
+*Prompt: can you make a summary of this tabs and create tabgroups by topic pls?
+Footer Tab Context: 4 tabs selected (including selected tab)
+Mode: Agent | Status: ✅Pass | Reliability: Unstable

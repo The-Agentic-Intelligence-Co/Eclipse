@@ -4,6 +4,7 @@ import {
   addTabContext,
   processStreaming,
   createGroqCompletion,
+  streamUserDescription,
   type StreamingCallback
 } from '../shared';
 import type { Tab, ChatMessage } from '../../types/hooks';
@@ -83,9 +84,21 @@ ${pendingSteps.map(step => `- ${step.title}`).join('\n')}
       []
     );
     
-    const { fullResponse } = await processStreaming(completion, onChunk);
+    // FASE 1: Recibir JSON completo sin streaming
+    const { fullResponse } = await processStreaming(completion, undefined);
+    console.log('fullResponse validator', fullResponse);
     
-    return parseValidatorResponse(fullResponse);
+    // Parsear la respuesta para extraer userDescription
+    const parsedResponse = parseValidatorResponse(fullResponse);
+    
+    // FASE 2: Hacer streaming del userDescription si hay callback y es plan_completed
+    if (onChunk && parsedResponse.userDescription && parsedResponse.type === 'plan_completed') {
+      console.log('🎬 Starting streaming of validator userDescription:', parsedResponse.userDescription);
+      await streamUserDescription(parsedResponse.userDescription, onChunk);
+      console.log('✅ Finished streaming validator userDescription');
+    }
+    
+    return parsedResponse;
   } catch (error) {
     return {
       type: 'step_in_progress',

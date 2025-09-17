@@ -4,7 +4,8 @@ import {
   addTabContext,
   createGroqCompletion,
   type StreamingCallback,
-  processStreaming
+  processStreaming,
+  streamUserDescription
 } from '../shared';
 import type { Tab, ChatMessage } from '../../types/hooks';
 import type { PlannerResponse } from '../types/agent';
@@ -26,10 +27,21 @@ export async function getPlannerResponse(
       []
     );
     
-    const { fullResponse } = await processStreaming(completion, onChunk);
+    // FASE 1: Recibir JSON completo sin streaming
+    const { fullResponse } = await processStreaming(completion, undefined);
     console.log('fullResponse', fullResponse);
     
-    return parsePlannerResponse(fullResponse);
+    // Parsear la respuesta para extraer userDescription
+    const parsedResponse = parsePlannerResponse(fullResponse);
+    
+    // FASE 2: Hacer streaming del userDescription si hay callback
+    if (onChunk && parsedResponse.userDescription) {
+      console.log('🎬 Starting streaming of userDescription:', parsedResponse.userDescription);
+      await streamUserDescription(parsedResponse.userDescription, onChunk);
+      console.log('✅ Finished streaming userDescription');
+    }
+    
+    return parsedResponse;
   } catch (error) {
     return {
       type: 'direct_response',

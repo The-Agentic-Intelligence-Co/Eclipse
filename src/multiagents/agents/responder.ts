@@ -98,15 +98,15 @@ async function handleToolCalls(
       []
     );
 
-    // Procesar respuesta final y mantener la descripción visible
-    let finalResponse = toolDescriptionText; // Incluir descripción de herramienta
+    // Procesar respuesta final sin incluir la descripción de la herramienta
+    let finalResponse = '';
     let finalIsFirstChunk = true;
     
     for await (const chunk of finalCompletion as any) {
       const content = chunk.choices[0]?.delta?.content || '';
       if (content) {
         finalResponse += content;
-        // Streamear manteniendo la descripción de la herramienta visible
+        // Streamear solo la respuesta final
         onChunk?.(content, finalResponse, finalIsFirstChunk);
         finalIsFirstChunk = false;
       }

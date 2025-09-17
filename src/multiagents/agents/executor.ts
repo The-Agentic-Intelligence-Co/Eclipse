@@ -5,6 +5,7 @@ import {
   addTabContext,
   processStreaming,
   createGroqCompletion,
+  streamUserDescription,
   type StreamingCallback
 } from '../shared';
 import { getAvailableTools } from '../tools/index';
@@ -51,11 +52,24 @@ ${validatorFeedback ? `Validator feedback: ${validatorFeedback}` : ''}
       availableTools
     );
     
-    const { fullResponse, toolCalls } = await processStreaming(completion, onChunk);
+    // FASE 1: Recibir JSON completo sin streaming
+    const { fullResponse, toolCalls } = await processStreaming(completion, undefined);
     console.log('fullResponse', fullResponse);
     console.log('toolCalls jiji', toolCalls);
     
     if (toolCalls && toolCalls.length > 0) {
+      // FASE 2: Hacer streaming del userDescription de la herramienta si hay callback
+      if (onChunk) {
+        const toolCall = toolCalls[0];
+        const toolUserDescription = extractUserDescriptionFromToolCall(toolCall);
+        
+        if (toolUserDescription) {
+          console.log('🎬 Starting streaming of tool userDescription:', toolUserDescription);
+          await streamUserDescription(toolUserDescription, onChunk);
+          console.log('✅ Finished streaming tool userDescription');
+        }
+      }
+      
       return {
         type: 'tool_call',
         toolCall: toolCalls[0],
@@ -83,6 +97,15 @@ function extractReasonFromToolCall(toolCall: any): string {
     return args.reason || 'No reason provided';
   } catch {
     return 'No reason provided';
+  }
+}
+
+function extractUserDescriptionFromToolCall(toolCall: any): string | null {
+  try {
+    const args = JSON.parse(toolCall.function.arguments);
+    return args.userDescription || null;
+  } catch {
+    return null;
   }
 }
 

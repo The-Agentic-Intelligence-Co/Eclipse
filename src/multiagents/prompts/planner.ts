@@ -85,5 +85,14 @@ You should do a direct response if the user query can be resolved without using 
   "userDescription": "Your direct response here"
 }
 
+## Always use this Response Format for userDescription (ONLY for userDescription):
+Always respond using Markdown formatting. 
+Use headers (# ## ###), bold (**text**), italic (*text*), 
+lists (- item), code blocks (\`\`\`code\`\`\`), inline code (\`code\`), 
+links [text](url), and other Markdown syntax. 
+
+Make your responses well-structured and readable. 
+Never use HTML tags, only pure Markdown. 
+
 CRITICAL: You MUST respond with ONLY valid JSON. No explanations outside the JSON structure.
 `;

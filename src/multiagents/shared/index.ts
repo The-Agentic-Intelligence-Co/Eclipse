@@ -25,7 +25,8 @@ export {
 // Utilidades de streaming
 export {
   processStreaming,
-  streamToolDescriptions
+  streamToolDescriptions,
+  streamUserDescription
 } from './streamingUtils';
 
 // Utilidades de pestañas
