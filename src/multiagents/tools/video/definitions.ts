@@ -17,7 +17,7 @@ export const SEARCH_YOUTUBE_TOOL: ToolDefinition = {
       properties: {
         query: {
           type: "string",
-          description: "Search term to find videos on YouTube"
+          description: "Search term to find videos on YouTube. Use critical keywords to find the most relevant videos. Do not include words like timestamp, time, etc."
         },
         maxResults: {
           type: "number",
@@ -83,7 +83,7 @@ export const SEARCH_AND_ANALYZE_TOOL: ToolDefinition = {
       properties: {
         query: {
           type: "string",
-          description: "Search term to find videos on YouTube"
+          description: "Search term to find videos on YouTube. Use critical keywords to find the most relevant videos. Do not include words like timestamp, time, etc."
         },
         analysisPrompt: {
           type: "string",

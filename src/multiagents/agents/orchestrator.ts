@@ -91,15 +91,13 @@ async function executePlanWithValidation(
       lastValidatorFeedback
     );
     
-    if (executorResponse.type === 'human_request') {
+    if (executorResponse.type === 'no_tool_call') {
       plan.status = 'paused';
-      return createPauseResponse(plan, executorResponse.humanRequest!);
+      return createPauseResponse(plan, executorResponse.content);
     }
     
     let toolResult;
     if (executorResponse.type === 'tool_call') {
-      console.log('executorResponse.toolCall', executorResponse.toolCall);
-      console.log('selectedTabs in executePlanWithValidation R', selectedTabs);
       toolResult = await executeTool(
         executorResponse.toolCall!,
         allAvailableTabs,
@@ -114,8 +112,6 @@ async function executePlanWithValidation(
         timestamp: new Date(),
         stepId: currentStep.id
       };
-      console.log('Tool use registered: ', toolCallHistory);
-      console.log('Full toolCallHistory: ', plan.toolCallHistory);
       plan.toolCallHistory.push(toolCallHistory);
     }
     
@@ -129,8 +125,6 @@ async function executePlanWithValidation(
     );
     console.log('validatorResponse', validatorResponse);
     if (validatorResponse.updatedPlan) {
-      console.log('plan before update', plan);
-      console.log('validatorResponse.updatedPlan before update', validatorResponse.updatedPlan);
       
       const updatedPlan = validatorResponse.updatedPlan;
       
@@ -155,8 +149,6 @@ async function executePlanWithValidation(
           }
         });
       }
-      console.log('plan after update', plan);
-      console.log('validatorResponse.updatedPlan after update', validatorResponse.updatedPlan);
     }
 
     // Store feedback for next iteration
@@ -167,7 +159,7 @@ async function executePlanWithValidation(
       lastValidatorFeedback = undefined;
     } else if (validatorResponse.type === 'plan_completed') {
       plan.status = 'completed';
-      return createPlanCompletionResponse(plan);
+      return validatorResponse.userResponse
     }
   }
   console.log('plan', plan);
@@ -184,8 +176,8 @@ function createPlanCompletionResponse(plan: Plan): string {
   return `✅ Plan completed successfully!\n\n**${plan.title}**\n\nCompleted ${completedSteps} out of ${plan.steps.length} steps.\n\n${plan.description}`;
 }
 
-function createPauseResponse(plan: Plan, humanRequest: any): string {
-  return `⏸️ Plan paused for user input.\n\n**${plan.title}**\n\n${humanRequest.message}\n\nPlease provide the requested information to continue.`;
+function createPauseResponse(plan: Plan, message: string): string {
+  return `⏸️ Plan paused.\n\n**${plan.title}**\n\n${message}`;
 }
 
 function createErrorResponse(plan: Plan, error: string): string {

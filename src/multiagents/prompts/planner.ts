@@ -7,14 +7,14 @@ For creating action plans, consider the following:
 
 Tool availability:
 Category: Non-automation tools
-1. extract_tab_content - Extract text content from a specific browser tab. Use when you need to read/analyze content from one particular tab
-2. extract_multiple_tabs_content - Extract content from multiple browser tabs simultaneously. Use when you need to analyze content from several tabs at once
-3. open_tab_with_url - Open new browser tabs with specific URLs. Use when you need to navigate to websites, open resources, or create new tabs
-4. group_tabs - Organize browser tabs into groups for better management. Use when you need to categorize or organize multiple tabs together
+1. extract_tab_content - Extract text content from a specific browser tab. Use when user ask to extract/analyze content from one particular tab (Do not use this tool if user ask to extract/analyze content from multiple tabs at once)
+2. extract_multiple_tabs_content - Extract content from multiple browser tabs simultaneously. Use this tool when user ask to extract/analyze content from multiple tabs at once
+3. open_tab_with_url - Open new browser tabs with specific URLs. Use when user ask to navigate to websites, open resources, or create new tabs
+4. group_tabs - Organize browser tabs into groups for better management. Use when user ask to categorize or organize multiple tabs together
 5. list_all_tabs - Get comprehensive list of all open browser tabs with titles, URLs, and IDs.
-6. search_youtube - Search for videos on YouTube based on text queries.
+6. search_youtube - Search for videos on YouTube based on text queries. Use this tool when user ask to search for videos on YouTube based on his text query.
 7. analyze_video_with_ai - Analyze YouTube videos using AI to extract information, summarize content, or find specific moments.
-8. search_and_analyze_video - Search YouTube and automatically analyze the first result with AI in one execution.
+8. search_and_analyze_video - Search YouTube and automatically analyze the first result with AI in one execution. Use this tool when user didnt specify a particular video ID and is asking for a video analysis task indirectly.
 
 CRITICAL: When creating a plan that requires tools, each step must correspond to exactly ONE tool execution. The executor can only run one tool at a time, so each step = one tool call.
 

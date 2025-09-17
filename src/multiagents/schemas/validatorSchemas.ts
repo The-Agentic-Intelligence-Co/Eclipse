@@ -68,12 +68,12 @@ export const VALIDATOR_RESPONSE_SCHEMA = {
       },
       additionalProperties: false
     },
-    content: {
+    userResponse: {
       type: "string",
-      description: "Contenido de la respuesta del validador"
+      description: "Respuesta final al usuario que cumple su consulta original usando los resultados de las herramientas ejecutadas (solo cuando type es 'plan_completed')"
     }
   },
-  required: ["type", "content"],
+  required: ["type", "userResponse"],
   additionalProperties: false
 };
 

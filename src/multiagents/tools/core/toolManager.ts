@@ -76,15 +76,6 @@ export function getAvailableTools(selectedTabs: Tab[] = [], mode: 'ask' | 'agent
     tools.push(SEARCH_AND_ANALYZE_TOOL);
   }
 
-  // Log detallado de las herramientas disponibles
-  const toolNames = tools.map(tool => tool.function.name);
-  const modeInfo = mode === 'ask' ? '🔍 ASK MODE' : '🤖 AGENT MODE';
-  const tabsInfo = selectedTabs.length > 0 ? `(${selectedTabs.length} tabs selected)` : '(no tabs selected)';
-  
-  console.log(`\n🛠️ ${modeInfo} - Tools disponibles ${tabsInfo}:`);
-  console.log(`   📋 ${toolNames.join(', ')}`);
-  console.log(`   📊 Total: ${tools.length} herramientas\n`);
-  
   return tools;
 }
 

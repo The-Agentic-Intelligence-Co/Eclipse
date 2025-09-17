@@ -35,29 +35,6 @@ export const EXECUTOR_RESPONSE_SCHEMA = {
       required: ["id", "function"],
       additionalProperties: false
     },
-    humanRequest: {
-      type: "object",
-      properties: {
-        message: {
-          type: "string",
-          description: "Mensaje para el usuario"
-        },
-        type: {
-          type: "string",
-          enum: ["information", "confirmation", "action"]
-        },
-        required: {
-          type: "boolean",
-          description: "Si la información es requerida para continuar"
-        },
-        context: {
-          type: "string",
-          description: "Contexto adicional para la solicitud"
-        }
-      },
-      required: ["message", "type", "required"],
-      additionalProperties: false
-    },
     reason: {
       type: "string",
       description: "Explicación de por qué se eligió esta acción"

@@ -52,7 +52,6 @@ ${validatorFeedback ? `Validator feedback: ${validatorFeedback}` : ''}
     );
     
     const { fullResponse, toolCalls } = await processStreaming(completion, onChunk);
-    console.log('completion', completion);
     console.log('fullResponse', fullResponse);
     console.log('toolCalls jiji', toolCalls);
     
@@ -67,22 +66,12 @@ ${validatorFeedback ? `Validator feedback: ${validatorFeedback}` : ''}
     
     // Si no hay tool calls, significa que el executor no pudo determinar qué herramienta usar
     return {
-      type: 'human_request',
-      humanRequest: {
-        message: 'I need clarification on what to do next',
-        type: 'information',
-        required: true
-      },
+      type: 'no_tool_call',
       content: 'I was unable to determine which tool to use for this step. Please provide more specific instructions.'
     };
   } catch (error) {
     return {
-      type: 'human_request',
-      humanRequest: {
-        message: 'I need clarification on what to do next',
-        type: 'information',
-        required: true
-      },
+      type: 'no_tool_call',
       content: 'I encountered an error processing the request. Please provide more information.'
     };
   }

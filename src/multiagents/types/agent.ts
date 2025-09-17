@@ -1,4 +1,4 @@
-import type { Plan, ToolCall, HumanRequest } from './plan';
+import type { Plan, ToolCall } from './plan';
 
 export interface PlannerResponse {
   type: 'direct_response' | 'plan';
@@ -9,9 +9,8 @@ export interface PlannerResponse {
 export type { Plan, PlanStep, ToolResult } from './plan';
 
 export interface ExecutorResponse {
-  type: 'tool_call' | 'human_request' | 'step_completed';
+  type: 'tool_call' | 'no_tool_call' | 'step_completed';
   toolCall?: ToolCall;
-  humanRequest?: HumanRequest;
   reason?: string;
   content: string;
 }
@@ -21,5 +20,5 @@ export interface ValidatorResponse {
   stepId?: string;
   feedback?: string;
   updatedPlan?: Plan;
-  content: string;
+  userResponse: string;
 }

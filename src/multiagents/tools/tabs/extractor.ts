@@ -25,7 +25,7 @@ export async function extractTabContent(
       throw new Error('Chrome scripting API no disponible');
     }
     
-    console.log("Desde extractor.js, Extrayendo contenido de la pestaña:", tabId);
+    console.log("Desde extractor.ts, Extrayendo contenido de la pestaña:", tabId);
 
     // Verificar caché
     const cached = tabContentCache.get(tabId);
@@ -33,8 +33,6 @@ export async function extractTabContent(
     if (cached && cached.expiresAt > now) {
       return cached.content;
     }
-
-    console.log("Desde extractor.js, Caché:", tabContentCache);
 
     // Ejecutar script para extraer contenido
     const results = await chrome.scripting.executeScript({
@@ -51,7 +49,6 @@ export async function extractTabContent(
             const element = document.querySelector(selector);
             if (element) {
               content = (element as HTMLElement).innerText || element.textContent || '';
-              console.log("Contenido encontrado en selector:", selector);
               break;
             }
           }
@@ -59,11 +56,8 @@ export async function extractTabContent(
           // Si no hay contenido principal, usar el body
           if (!content) {
             content = document.body.innerText || document.body.textContent || '';
-            console.log("Usando contenido del body");
           }
-          
-          console.log("Contenido extraído, longitud:", content.length);
-          
+                    
           // Limpiar y formatear el texto
           return content
             .replace(/\s+/g, ' ')
@@ -71,7 +65,6 @@ export async function extractTabContent(
             .substring(0, maxLength); // Limitar según configuración
         };
         
-        console.log("Ejecutando script para extraer contenido");
         return getPageContent();
       },
       args: [CACHE_CONFIG.MAX_CONTENT_LENGTH, [...CONTENT_SELECTORS]] // Pasar maxLength y selectors como argumentos

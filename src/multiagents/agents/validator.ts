@@ -73,7 +73,7 @@ ${completedSteps.map(step => {
 PENDING STEPS:
 ${pendingSteps.map(step => `- ${step.title}`).join('\n')}
 `;
-    
+    console.log('contextMessage in validator', contextMessage);
     const completion = await createGroqCompletion(
       [
         { role: "system", content: VALIDATOR_SYSTEM_PROMPT },
@@ -90,7 +90,7 @@ ${pendingSteps.map(step => `- ${step.title}`).join('\n')}
     return {
       type: 'step_in_progress',
       feedback: 'Unable to validate step completion',
-      content: 'I encountered an error validating the step. Please try again.'
+      userResponse: 'I encountered an error validating the step. Please try again.'
     };
   }
 }
@@ -106,14 +106,13 @@ function parseValidatorResponse(response: string): ValidatorResponse {
     const parsed = JSON.parse(jsonMatch[0]);
     
     if (parsed.type === 'step_completed' || parsed.type === 'step_in_progress' || parsed.type === 'plan_completed') {
-      console.log('✅ Validator response:', parsed.type);
       console.log('✅ Validator response:', parsed);
       return {
         type: parsed.type,
         stepId: parsed.stepId,
         feedback: parsed.feedback,
         updatedPlan: parsed.updatedPlan,
-        content: parsed.content
+        userResponse: parsed.userResponse
       };
     }
     
@@ -126,7 +125,7 @@ function parseValidatorResponse(response: string): ValidatorResponse {
     return {
       type: 'step_in_progress',
       feedback: 'Unable to validate step completion',
-      content: 'I encountered an error validating the step. Please try again.'
+      userResponse: 'I encountered an error validating the step. Please try again.'
     };
   }
 }
