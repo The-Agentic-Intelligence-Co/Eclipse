@@ -23,19 +23,9 @@ export const useFooterState = (): UseFooterStateReturn => {
     setContent('');
   };
 
-  // Get current input content
-  const getContent = (): string => {
-    return content;
-  };
-
   // Check if input has content
   const hasContent = (): boolean => {
     return content.trim().length > 0;
-  };
-
-  // Get currently selected mode
-  const getSelectedMode = (): string => {
-    return selectedMode;
   };
 
   // Change the selected mode
@@ -50,9 +40,7 @@ export const useFooterState = (): UseFooterStateReturn => {
     handleInput,
     handleFocus,
     clearContent,
-    getContent,
     hasContent,
-    getSelectedMode,
     changeMode
   };
 };

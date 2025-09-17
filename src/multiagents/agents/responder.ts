@@ -80,7 +80,7 @@ async function handleToolCalls(
 ): Promise<string> {
   try {
     // Streamear descripciones usando utilidad compartida
-    const toolDescriptionText = streamToolDescriptions(toolDescriptions, onChunk);
+    streamToolDescriptions(toolDescriptions, onChunk);
     
     const toolResults: ToolResult[] = await executeMultipleTools(toolCalls, allAvailableTabs, mode);
     

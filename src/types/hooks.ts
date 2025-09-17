@@ -74,9 +74,6 @@ export interface UseStreamingReturn {
 export interface UseTabIndicatorsReturn {
   hoveredIndicator: string | null;
   setHoveredIndicator: (indicator: string | null) => void;
-  handleTabSelection: (tab: Tab) => boolean;
-  handleContextOption: (option: { value: string }, closeAllDropdowns: () => void) => boolean;
-  shouldShowCheckmark: (tab: Tab) => boolean;
 }
 
 // Tipos para el hook de gestión de dropdowns
@@ -84,9 +81,6 @@ export interface UseDropdownManagementReturn {
   isContextDropdownOpen: boolean;
   isModeDropdownOpen: boolean;
   showTabSelection: boolean;
-  setIsContextDropdownOpen: (open: boolean) => void;
-  setIsModeDropdownOpen: (open: boolean) => void;
-  setShowTabSelection: (show: boolean) => void;
   toggleContextDropdown: () => void;
   toggleModeDropdown: () => void;
   showTabSelectionMode: () => void;
@@ -108,9 +102,7 @@ export interface UseFooterStateReturn {
   handleInput: (e: React.FormEvent<HTMLDivElement>) => void;
   handleFocus: (focused: boolean) => void;
   clearContent: () => void;
-  getContent: () => string;
   hasContent: () => boolean;
-  getSelectedMode: () => string;
   changeMode: (mode: string) => void;
 }
 

@@ -46,7 +46,7 @@ const Footer: React.FC<FooterProps> = ({
   const {
     hoveredIndicator,
     setHoveredIndicator
-  } = useTabIndicators(selectedTabs, currentActiveTab, showCurrentTabIndicator, addTab, removeTab, removeCurrentTab);
+  } = useTabIndicators();
 
   const selectedModeData = MODES.find(mode => mode.value === selectedMode);
 
@@ -223,12 +223,6 @@ const Footer: React.FC<FooterProps> = ({
               className="current-tab-icon"
             />
             Current tab
-            {/* Debug: Mostrar info de la pestaña actual */}
-            {currentActiveTab && (
-              <span style={{fontSize: '10px', marginLeft: '5px'}}>
-                ({currentActiveTab.title?.substring(0, 15)}...)
-              </span>
-            )}
           </div>
         )}
         {selectedTabs.map((tab) => (

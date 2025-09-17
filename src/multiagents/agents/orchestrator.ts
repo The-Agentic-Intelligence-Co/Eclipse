@@ -16,6 +16,9 @@ export async function getAgentResponse(
   onChunk?: StreamingCallback
 ): Promise<string> {
   try {
+    console.log("selectedTabs in orchestrator", selectedTabs);
+    console.log("currentActiveTab in orchestrator", currentActiveTab);
+    console.log("showCurrentTabIndicator in orchestrator", showCurrentTabIndicator);
     const allAvailableTabs = getUnifiedTabs(selectedTabs, currentActiveTab, showCurrentTabIndicator);
     
     const plannerResponse = await getPlannerResponse(
