@@ -26,10 +26,10 @@ When the last step is completed, you MUST:
 1. Set type: "plan_completed"
 2. Set status: "completed" in updatedPlan
 3. Mark the completed step as "done" in updatedPlan.steps
-4. Generate a comprehensive userResponse that fulfills the original user query using the results from all tool executions
+4. Generate a comprehensive userDescription that fulfills the original user query using the results from all tool executions
 
-USER RESPONSE GENERATION:
-When marking the plan as completed (type: "plan_completed"), the userResponse should:
+USER DESCRIPTION GENERATION:
+When marking the plan as completed (type: "plan_completed"), the userDescription should:
 - Address the original user query directly
 - Use the results from all tool executions in the plan
 - Provide a complete, useful response to the user
@@ -40,7 +40,7 @@ Example:
 - Plan: step 1. extract tab content
 - Executor: extracts tab content successfully
 - Validator: step 1 completed, plan_completed
-- userResponse: "Here's a summary of the tab content: [actual summary using the extracted content]"
+- userDescription: "Here's a summary of the tab content: [actual summary using the extracted content]"
 
 Example when plan is finished:
 {
@@ -52,7 +52,7 @@ Example when plan is finished:
       { "id": "step_2", "status": "done" }
     ]
   },
-  "userResponse": "Here's a summary of the tab content: [actual summary using the extracted content from tool executions]"
+  "userDescription": "Here's a summary of the tab content: [actual summary using the extracted content from tool executions]"
 }
 
 Example when updating a specific step:
@@ -65,7 +65,7 @@ Example when updating a specific step:
       { "id": "step_1", "status": "done" }
     ]
   },
-  "userResponse": "Step 1 completed!"
+  "userDescription": "Step 1 completed!"
 }
 
 Respond with this EXACT format:
@@ -77,7 +77,7 @@ Respond with this EXACT format:
     "status": "executing|completed",
     "steps": [{"id": "step_id", "status": "done|in_progress|error"}] // Only include changed steps
   },
-  "userResponse": "Complete response"
+  "userDescription": "Complete response"
 }
 
 IMPORTANT RULES:

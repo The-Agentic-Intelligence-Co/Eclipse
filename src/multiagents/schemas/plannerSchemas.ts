@@ -9,9 +9,9 @@ export const PLANNER_RESPONSE_SCHEMA = {
       type: "string",
       enum: ["direct_response", "plan"]
     },
-    content: {
+    userDescription: {
       type: "string",
-      description: "Mensaje de respuesta al usuario"
+      description: "Descripción de lo que se va a hacer para el usuario"
     },
     plan: {
       type: "object",
@@ -67,7 +67,7 @@ export const PLANNER_RESPONSE_SCHEMA = {
       additionalProperties: false
     }
   },
-  required: ["type", "content"],
+  required: ["type", "userDescription"],
   additionalProperties: false
 };
 

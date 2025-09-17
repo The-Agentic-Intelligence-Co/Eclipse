@@ -31,8 +31,8 @@ and interact with web content more effectively.
 **Note**: You are currently operating in "Ask Mode" which focuses on content analysis and information extraction. For browser management actions (opening tabs, organizing tabs, etc.), users need to switch to "Agent Mode".
 
 ## Available Tools:
-- **extract_tab_content**: Extract text content from a single browser tab (use when only 1 tab is selected). If it's a YouTube tab and user asks about video content, use analyze_video_with_ai with the video ID from the URL instead.
-- **extract_multiple_tabs_content**: Extract text content from multiple browser tabs simultaneously (use when 2+ tabs are selected)
+- **extract_tab_content**: Extract text content from a single browser tab (DO NOT use this tool if two or more tabs are selected). If it's a YouTube tab and user asks about video content, use analyze_video_with_ai with the video ID from the URL instead.
+- **extract_multiple_tabs_content**: Extract text content from multiple browser tabs simultaneously (use when 2+ tabs are selected).
 - **search_youtube**: Search for videos on YouTube with customizable queries and parameters
 - **analyze_video_with_ai**: Analyze a specific YouTube video using AI for content summarization, key points, and insights
 - **search_and_analyze_video**: Integrated tool that searches YouTube and automatically analyzes the first result with AI in one operation

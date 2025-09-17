@@ -33,7 +33,7 @@ export async function getPlannerResponse(
   } catch (error) {
     return {
       type: 'direct_response',
-      content: 'I apologize, but I encountered an error processing your request. Please try again.'
+      userDescription: 'I apologize, but I encountered an error processing your request. Please try again.'
     };
   }
 }
@@ -51,17 +51,19 @@ function parsePlannerResponse(response: string): PlannerResponse {
     
     if (parsed.type === 'direct_response') {
       console.log('✅ Planner direct response:', parsed);
+      console.log('✅ Planner direct response userDescription:', parsed.userDescription);
       return {
         type: 'direct_response',
-        content: parsed.content
+        userDescription: parsed.userDescription
       };
     }
     
     if (parsed.type === 'plan' && parsed.plan) {
       console.log('✅ Planner created plan:', parsed);
+      console.log('✅ Planner created plan userDescription:', parsed.userDescription);
       return {
         type: 'plan',
-        content: parsed.content,
+        userDescription: parsed.userDescription,
         plan: {
           ...parsed.plan,
           toolCallHistory: [], // Inicializar historial de herramientas
@@ -79,7 +81,7 @@ function parsePlannerResponse(response: string): PlannerResponse {
     
     return {
       type: 'direct_response',
-      content: 'I apologize, but I encountered an error processing your request. Please try again.'
+      userDescription: 'I apologize, but I encountered an error processing your request. Please try again.'
     };
   }
 }

@@ -2,7 +2,7 @@ import type { Plan, ToolCall } from './plan';
 
 export interface PlannerResponse {
   type: 'direct_response' | 'plan';
-  content: string;
+  userDescription: string;
   plan?: Plan;
 }
 
@@ -20,5 +20,5 @@ export interface ValidatorResponse {
   stepId?: string;
   feedback?: string;
   updatedPlan?: Plan;
-  userResponse: string;
+  userDescription: string;
 }

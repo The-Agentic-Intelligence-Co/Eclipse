@@ -28,7 +28,7 @@ export async function getAgentResponse(
     );
     
     if (plannerResponse.type === 'direct_response') {
-      return plannerResponse.content;
+      return plannerResponse.userDescription;
     }
     
     const plan = plannerResponse.plan!;
@@ -57,7 +57,7 @@ async function executePlanWithValidation(
   onChunk?: StreamingCallback,
   allAvailableTabs?: Tab[]
 ): Promise<string> {
-  const MAX_ITERATIONS = 20;
+  const MAX_ITERATIONS = 7;
   let currentStepIndex = 0;
   let lastValidatorFeedback: string | undefined;
   
@@ -159,7 +159,7 @@ async function executePlanWithValidation(
       lastValidatorFeedback = undefined;
     } else if (validatorResponse.type === 'plan_completed') {
       plan.status = 'completed';
-      return validatorResponse.userResponse
+      return validatorResponse.userDescription
     }
   }
   console.log('plan', plan);

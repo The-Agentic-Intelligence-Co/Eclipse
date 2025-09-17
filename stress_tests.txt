@@ -1,0 +1,44 @@
+***TEST FORMAT DOCUMENTATION
+**Tool: tool_name
+*LLM Model: model_name
+*Prompt: string
+Footer Tab Context: X selected tabs (including/not including current tab)
+Mode: ai_mode | Status: [X]Pass/Failed | Reason: [X]reason of failure. | Solved? [X]Description of how it got solved.
+
+
+
+SINGLE TOOL TEST EXECUTION
+**Tool: Extract Tab content
+LLM Model: groq/openai-120b
+
+**Tool: Extract Multiple Tab content
+*LLM Model: groq/openai-120b
+*Prompt: can you make a summary of this 4 tabs pls?
+Footer Tab Context: 4 selected tabs (not including current tab)
+Mode: Agent | Status: Pass | Reason: NA | Solved? NA
+Mode: Ask | Status: Pass | Reason: NA | Solved? NA
+
+
+*Prompt: Can you check in which of these 4 tabs it mentions that it is 100% free?
+Footer Tab Context: 4 selected tabs (including current tab)
+Mode: Agent | Status: Failed, Pass | Reason: Text was inside a closed div accordion. | Solved? Yes. Accordion was manually opened, then retried and worked.
+Mode: Ask | Status: [1]Failed, [2]Failed, Pass | Reason: [1]Model selected wrong tool, [2]Same as above. | Solved? Yes. [1]Ask Prompt got refined with clearer instructions of how and when to use extract_multiple_tab_content. [2]Same as above.
+
+
+**Tool: Analyze Video with AI
+LLM Model: groq/openai-120b | gemini
+
+
+**Tool: Search Youtube Videos
+LLM Model: groq/openai-120b | gemini
+
+
+**Tool: List All Tabs
+LLM Model: groq/openai-120b
+
+**Tool: Group Tabs
+LLM Model: groq/openai-120b
+
+
+**Tool: Open new tab with URL
+LLM Model: groq/openai-120b

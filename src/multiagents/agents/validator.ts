@@ -90,7 +90,7 @@ ${pendingSteps.map(step => `- ${step.title}`).join('\n')}
     return {
       type: 'step_in_progress',
       feedback: 'Unable to validate step completion',
-      userResponse: 'I encountered an error validating the step. Please try again.'
+      userDescription: 'I encountered an error validating the step. Please try again.'
     };
   }
 }
@@ -112,7 +112,7 @@ function parseValidatorResponse(response: string): ValidatorResponse {
         stepId: parsed.stepId,
         feedback: parsed.feedback,
         updatedPlan: parsed.updatedPlan,
-        userResponse: parsed.userResponse
+        userDescription: parsed.userDescription
       };
     }
     
@@ -125,7 +125,7 @@ function parseValidatorResponse(response: string): ValidatorResponse {
     return {
       type: 'step_in_progress',
       feedback: 'Unable to validate step completion',
-      userResponse: 'I encountered an error validating the step. Please try again.'
+      userDescription: 'I encountered an error validating the step. Please try again.'
     };
   }
 }

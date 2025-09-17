@@ -68,12 +68,12 @@ export const VALIDATOR_RESPONSE_SCHEMA = {
       },
       additionalProperties: false
     },
-    userResponse: {
+    userDescription: {
       type: "string",
-      description: "Respuesta final al usuario que cumple su consulta original usando los resultados de las herramientas ejecutadas (solo cuando type es 'plan_completed')"
+      description: "Descripción de la respuesta final al usuario que cumple su consulta original usando los resultados de las herramientas ejecutadas (solo cuando type es 'plan_completed')"
     }
   },
-  required: ["type", "userResponse"],
+  required: ["type", "userDescription"],
   additionalProperties: false
 };
 
