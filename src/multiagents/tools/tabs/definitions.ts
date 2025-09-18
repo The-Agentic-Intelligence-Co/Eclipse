@@ -156,3 +156,32 @@ export const LIST_ALL_TABS_TOOL: ToolDefinition = {
     }
   }
 };
+
+/**
+ * Definición de la herramienta switch_to_tab
+ */
+export const SWITCH_TO_TAB_TOOL: ToolDefinition = {
+  type: "function",
+  function: {
+    name: "switch_to_tab",
+    description: "Switches the active browser tab to a specific tab by its ID. Useful for navigating between different tabs during multi-tab workflows.",
+    parameters: {
+      type: "object",
+      properties: {
+        tabId: {
+          type: "number",
+          description: "ID of the tab to switch to. Use list_all_tabs to see available tab IDs."
+        },
+        reason: {
+          type: "string",
+          description: "Reason why switching to this tab is needed"
+        },
+        userDescription: {
+          type: "string",
+          description: "Clear description in first person of what tool is being used and for what specific purpose (e.g., 'I am switching to this tab to continue working on the current task')"
+        }
+      },
+      required: ["tabId", "reason", "userDescription"]
+    }
+  }
+};

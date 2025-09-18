@@ -1,7 +1,7 @@
 Implementaciones pendientes para terminar V1:
 Started - 17/09 | Finished - Pending
 ✅DONE (A) Prompt coordination & refinement entre executor y validator -> Dar consejos de uso de herramientas y mejor evaluación, etc.
-(B) Refactor para simplificar entre Footer, ChatOrchestration.ts y MessageProcessor.ts
+✅DONE (B) Refactor para simplificar entre Footer, ChatOrchestration.ts y MessageProcessor.ts
 (C) Agregar tool de cambiar de una pestaña a otra.
 (D) Importar dom-engine y planear arquitectura de tool pool (feature: browser automation)
 

@@ -11,7 +11,8 @@ export {
   createExtractMultipleTabsContentTool,
   OPEN_TAB_WITH_URL_TOOL,
   GROUP_TABS_TOOL,
-  LIST_ALL_TABS_TOOL
+  LIST_ALL_TABS_TOOL,
+  SWITCH_TO_TAB_TOOL
 } from './definitions';
 
 // Exportar ejecutores de herramientas
@@ -20,7 +21,8 @@ export {
   executeExtractMultipleTabsContent,
   executeOpenTabWithUrl,
   executeGroupTabs,
-  executeListAllTabs
+  executeListAllTabs,
+  executeSwitchToTab
 } from './executors';
 
 // Exportar tipos

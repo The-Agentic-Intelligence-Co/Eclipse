@@ -276,3 +276,49 @@ export async function executeListAllTabs(toolCall: ToolCall): Promise<ToolResult
     };
   }
 }
+
+/**
+ * Ejecuta la herramienta switch_to_tab
+ */
+export async function executeSwitchToTab(toolCall: ToolCall): Promise<ToolResult & { switchedTab?: chrome.tabs.Tab }> {
+  const args = JSON.parse(toolCall.function.arguments);
+  const { tabId } = args;
+  
+  try {
+    // Verificar que la pestaña existe
+    const tab = await chrome.tabs.get(tabId);
+    
+    if (!tab) {
+      return {
+        tool_call_id: toolCall.id,
+        functionName: toolCall.function.name,
+        content: `❌ Error: La pestaña con ID ${tabId} no existe. Use list_all_tabs para ver las pestañas disponibles.`,
+        success: false
+      };
+    }
+    
+    // Cambiar a la pestaña especificada
+    await chrome.tabs.update(tabId, { active: true });
+    
+    // También enfocar la ventana si es necesario
+    await chrome.windows.update(tab.windowId, { focused: true });
+    
+    console.log("Cambio de pestaña exitoso:", tab);
+    return {
+      tool_call_id: toolCall.id,
+      functionName: toolCall.function.name,
+      content: `✅ **Cambio de pestaña exitoso!**\n\n**Pestaña activa:**\n- ID: ${tab.id}\n- Título: "${tab.title}"\n- URL: ${tab.url}\n- Estado: ${tab.status === 'complete' ? '✅ Completamente cargada' : '⏳ Cargando'}\n\n**Estado:** Ahora trabajando en esta pestaña.`,
+      success: true,
+      switchedTab: tab
+    };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+    console.error('Error al cambiar de pestaña:', error);
+    return {
+      tool_call_id: toolCall.id,
+      functionName: toolCall.function.name,
+      content: `❌ Error al cambiar de pestaña: ${errorMessage}\n\n**Sugerencia:** Use list_all_tabs para ver las pestañas disponibles y sus IDs.`,
+      success: false
+    };
+  }
+}

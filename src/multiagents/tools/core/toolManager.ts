@@ -8,7 +8,8 @@ import {
   createExtractMultipleTabsContentTool,
   OPEN_TAB_WITH_URL_TOOL,
   GROUP_TABS_TOOL,
-  LIST_ALL_TABS_TOOL
+  LIST_ALL_TABS_TOOL,
+  SWITCH_TO_TAB_TOOL
 } from '../tabs/definitions';
 
 import {
@@ -22,7 +23,8 @@ import {
   executeExtractMultipleTabsContent,
   executeOpenTabWithUrl,
   executeGroupTabs,
-  executeListAllTabs
+  executeListAllTabs,
+  executeSwitchToTab
 } from '../tabs/executors';
 
 import {
@@ -69,6 +71,9 @@ export function getAvailableTools(selectedTabs: Tab[] = [], mode: 'ask' | 'agent
     
     // Agregar tool para listar todas las pestañas
     tools.push(LIST_ALL_TABS_TOOL);
+    
+    // Agregar tool para cambiar de pestaña
+    tools.push(SWITCH_TO_TAB_TOOL);
     
     // Agregar tools de video
     tools.push(SEARCH_YOUTUBE_TOOL);
@@ -121,6 +126,7 @@ export async function executeTool(
       'open_tab_with_url': () => executeOpenTabWithUrl(toolCall),
       'group_tabs': () => executeGroupTabs(toolCall),
       'list_all_tabs': () => executeListAllTabs(toolCall),
+      'switch_to_tab': () => executeSwitchToTab(toolCall),
       'search_youtube': () => executeSearchYoutube(toolCall),
       'analyze_video_with_ai': () => executeAnalyzeVideoWithAI(toolCall),
       'search_and_analyze_video': () => executeSearchAndAnalyzeVideo(toolCall)

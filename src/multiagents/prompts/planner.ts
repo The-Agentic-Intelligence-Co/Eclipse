@@ -15,12 +15,13 @@ Category: Non-automation tools
 3. open_tab_with_url - Open new browser tabs with specific URLs. Use when user asks to navigate to websites, open resources, or create new tabs
 4. group_tabs - Organize browser tabs into groups for better management. Use when user asks to categorize or organize multiple tabs together
 5. list_all_tabs - Get comprehensive list of all open browser tabs with titles, URLs, and IDs
-6. search_youtube - Search for videos on YouTube based on text queries. Use this tool when user asks to search for videos on YouTube based on their text query
-7. analyze_video_with_ai - Analyze YouTube videos using AI to extract information, summarize content, or find specific moments
-8. search_and_analyze_video - Search YouTube and automatically analyze the first result with AI in one execution. Use this tool when user didn't specify a particular video ID and is asking for a video analysis task indirectly
+6. switch_to_tab - Switch the active browser tab to a specific tab by its ID. Use when user or you need to navigate or focus on a specific tab different from the current tab
+7. search_youtube - Search for videos on YouTube based on text queries. Use this tool when user asks to search for videos on YouTube based on their text query
+8. analyze_video_with_ai - Analyze YouTube videos using AI to extract information, summarize content, or find specific moments
+9. search_and_analyze_video - Search YouTube and automatically analyze the first result with AI in one execution. Use this tool when user didn't specify a particular video ID and is asking for a video analysis task indirectly
 
 ## PLANNING RULES
-- When grouping tabs, use the list_all_tabs tool to get the list of tabs and then use the group_tabs tool to group them by topic (2 steps required)
+- When grouping tabs or switching to a specific tab, use the list_all_tabs tool to get the list of tabs and then use the group_tabs or switch_to_tab tool to group them by topic or switch to the specific tab (2 steps required)
 - Each tool must be its own separate step
 - Plan steps should be clear, specific, and actionable
 
