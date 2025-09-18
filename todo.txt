@@ -1,9 +1,11 @@
 Implementaciones pendientes para terminar V1:
-(A) Prompt coordination & refinement entre executor y validator -> Dar consejos de uso de herramientas y mejor evaluación, etc.
+Started - 17/09 | Finished - Pending
+✅DONE (A) Prompt coordination & refinement entre executor y validator -> Dar consejos de uso de herramientas y mejor evaluación, etc.
 (B) Refactor para simplificar entre Footer, ChatOrchestration.ts y MessageProcessor.ts
 (C) Agregar tool de cambiar de una pestaña a otra.
 (D) Importar dom-engine y planear arquitectura de tool pool (feature: browser automation)
 
+Started - Undefined lol | Finished - 16/09
 ✅DONE (E) Investigar error de extract_tab_content en agent mode.
 ✅DONE (F) streaming de las tool calls del executor, y empatar su response object al sistema actual de tools executors.
 ✅DONE (A) Streaming del content del planner para el usuario en chat. 

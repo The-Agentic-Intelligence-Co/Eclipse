@@ -10,6 +10,27 @@ import type {
   ChatMessage
 } from '../../types/hooks';
 
+// Helper function for error handling
+const handleAIError = (error: unknown, context: string, addErrorMessage: () => void) => {
+  console.error(`Error ${context}:`, error);
+  addErrorMessage();
+};
+
+// Helper function to process AI response
+const processAIResponse = async (
+  processFn: () => Promise<string>,
+  addAIResponse: (response: string) => void,
+  addErrorMessage: () => void,
+  context: string
+) => {
+  try {
+    const aiResponse = await processFn();
+    addAIResponse(aiResponse);
+  } catch (error) {
+    handleAIError(error, context, addErrorMessage);
+  }
+};
+
 // Manages chat conversations with AI
 export const useChatManagement = (
   messageCallbacks: MessageCallbacks, 
@@ -18,22 +39,10 @@ export const useChatManagement = (
   currentActiveTab: Tab | null = null, 
   showCurrentTabIndicator: boolean = true
 ): UseChatManagementReturn => {
-  // Functions to handle messages (add, update, delete)
   const {
     addUserMessage, addAIResponse, addErrorMessage, updateMessage, 
     removeMessagesAfter, startTyping, stopTyping
   } = messageCallbacks;
-
-  // Functions to show real-time responses
-  const { startStreaming, stopStreaming, handleStreamingChunk } = streamingCallbacks;
-
-  // Groups all streaming functions together
-  const streamingHandlers = {
-    startTyping, stopTyping, startStreaming, stopStreaming, handleStreamingChunk
-  };
-
-  // Information about selected tabs to give context to AI
-  const contextParams = { selectedTabs, currentActiveTab, showCurrentTabIndicator };
 
   // Handles when user sends a message
   const handleUserMessage = useCallback(async (
@@ -41,25 +50,24 @@ export const useChatManagement = (
     mode: string, 
     onChatStart?: () => void
   ): Promise<void> => {
-    // Notify that conversation started
     onChatStart?.();
-    
-    // Save user's message
     const newMessages = addUserMessage(userMessage);
     
-    try {
-      // Ask AI for response with tab context
-      const aiResponse = await processUserMessage(
-        userMessage, newMessages, mode, streamingHandlers, 
-        contextParams.selectedTabs, contextParams.currentActiveTab, contextParams.showCurrentTabIndicator
-      );
-      addAIResponse(aiResponse);
-    } catch (error) {
-      console.error('Error getting AI response:', error);
-      // Show error message if something fails
-      addErrorMessage();
-    }
-  }, [addUserMessage, addAIResponse, addErrorMessage, streamingHandlers, contextParams]);
+    await processAIResponse(
+      () => processUserMessage(
+        userMessage, 
+        newMessages, 
+        mode, 
+        { startTyping, stopTyping, ...streamingCallbacks }, 
+        selectedTabs, 
+        currentActiveTab, 
+        showCurrentTabIndicator
+      ),
+      addAIResponse,
+      addErrorMessage,
+      'getting AI response'
+    );
+  }, [addUserMessage, addAIResponse, addErrorMessage, startTyping, stopTyping, streamingCallbacks, selectedTabs, currentActiveTab, showCurrentTabIndicator]);
 
   // Handles when user edits a message
   const handleConfirmEdit = useCallback(async (
@@ -68,30 +76,29 @@ export const useChatManagement = (
     messages: ChatMessage[], 
     onEditComplete?: () => void
   ): Promise<void> => {
-    // Don't do anything if message is empty
     if (isMessageEmpty(newContent)) return;
 
-    // Update the edited message
     updateMessage(messageId, newContent);
-    // Remove all messages after this one
     removeMessagesAfter(messageId);
 
-    try {
-      // Ask AI to regenerate response with new message
-      const aiResponse = await regenerateResponse(
-        messageId, newContent, messages, streamingHandlers,
-        contextParams.selectedTabs, contextParams.currentActiveTab, 
-        contextParams.showCurrentTabIndicator, 'ask'
-      );
-      addAIResponse(aiResponse);
-    } catch (error) {
-      console.error('Error regenerating AI response:', error);
-      addErrorMessage();
-    }
+    await processAIResponse(
+      () => regenerateResponse(
+        messageId, 
+        newContent, 
+        messages, 
+        { startTyping, stopTyping, ...streamingCallbacks },
+        selectedTabs, 
+        currentActiveTab, 
+        showCurrentTabIndicator, 
+        'ask'
+      ),
+      addAIResponse,
+      addErrorMessage,
+      'regenerating AI response'
+    );
 
-    // Notify that editing is complete
     onEditComplete?.();
-  }, [updateMessage, removeMessagesAfter, addAIResponse, addErrorMessage, streamingHandlers, contextParams]);
+  }, [updateMessage, removeMessagesAfter, addAIResponse, addErrorMessage, startTyping, stopTyping, streamingCallbacks, selectedTabs, currentActiveTab, showCurrentTabIndicator]);
 
   return {
     handleUserMessage,
@@ -101,8 +108,7 @@ export const useChatManagement = (
 
 // Listens for messages from the input area
 export const useMessageEvents = (
-  onUserMessage: (userMessage: string, mode: string) => Promise<void>, 
-  hasStartedChat: boolean
+  onUserMessage: (userMessage: string, mode: string) => Promise<void>
 ): void => {
   useEffect(() => {
     // Handle when user types a message
@@ -115,5 +121,5 @@ export const useMessageEvents = (
     window.addEventListener('addUserMessage', handleUserMessage);
     // Stop listening when component is removed
     return () => window.removeEventListener('addUserMessage', handleUserMessage);
-  }, [onUserMessage, hasStartedChat]);
+  }, [onUserMessage]);
 };

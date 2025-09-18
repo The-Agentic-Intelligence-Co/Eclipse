@@ -3,9 +3,22 @@ import { renderMarkdown } from '../../utils/markdownUtils';
 import { positionCursorAtEnd } from '../../utils/cursorUtils';
 import type { MessageItemProps } from '../../types/hooks';
 
-/**
- * Componente para renderizar un mensaje individual del chat
- */
+// Helper functions for cleaner code
+const createMessageClasses = (messageType: string, isEditing: boolean) => 
+  `message ${messageType === 'user' ? 'user-message' : 'ai-message'} ${isEditing ? 'editing' : ''}`;
+
+const createMessageStyle = (messageType: string) => 
+  messageType === 'user' ? { cursor: 'pointer' } : {};
+
+const setupEditMode = (editRef: React.RefObject<HTMLSpanElement>, initialContent: string) => {
+  setTimeout(() => {
+    if (editRef.current) {
+      editRef.current.textContent = initialContent;
+      positionCursorAtEnd(editRef.current);
+    }
+  }, 0);
+};
+
 const MessageItem: React.FC<MessageItemProps> = ({
   message,
   isEditing,
@@ -16,17 +29,11 @@ const MessageItem: React.FC<MessageItemProps> = ({
   onCancel,
   editRef
 }) => {
+  // Event handlers
   const handleClick = (): void => {
     if (message.type === 'user') {
       const initialContent = onStartEdit(message.id, message.content);
-      // Establecer el contenido inicial directamente en el DOM después de un pequeño delay
-      setTimeout(() => {
-        if (editRef.current) {
-          editRef.current.textContent = initialContent;
-          // Colocar el cursor al final del texto después de establecer el contenido
-          positionCursorAtEnd(editRef.current);
-        }
-      }, 0);
+      setupEditMode(editRef, initialContent);
     }
   };
 
@@ -41,15 +48,13 @@ const MessageItem: React.FC<MessageItemProps> = ({
 
   return (
     <div 
-      className={`message ${message.type === 'user' ? 'user-message' : 'ai-message'} ${isEditing ? 'editing' : ''}`}
+      className={createMessageClasses(message.type, isEditing)}
       onClick={message.type === 'user' ? handleClick : undefined}
-      style={message.type === 'user' ? { cursor: 'pointer' } : {}}
+      style={createMessageStyle(message.type)}
     >
       {message.type === 'user' ? (
-        // Mensaje del usuario - editable al hacer click
         <div className="user-message-content">
           {isEditing ? (
-            // Modo edición
             <div className="edit-mode">
               <span
                 ref={editRef}
@@ -63,12 +68,10 @@ const MessageItem: React.FC<MessageItemProps> = ({
               />
             </div>
           ) : (
-            // Modo visualización
             <span className="user-text">{message.content}</span>
           )}
         </div>
       ) : (
-        // Mensaje de IA - no editable
         <div 
           className="markdown-content"
           dangerouslySetInnerHTML={{ __html: renderMarkdown(message.content) }}

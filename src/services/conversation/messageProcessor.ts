@@ -3,7 +3,24 @@ import { getAgentResponse } from '../../multiagents/agents/orchestrator';
 import type { ChatMessage, Tab } from '../../types/hooks';
 import type { StreamingCallbacks } from '../streaming/callbackHandler';
 
-// Process user messages and coordinate with AI agents
+// Helper functions for cleaner code
+const createStreamingCallback = (callbacks: StreamingCallbacks) => {
+  return (chunk: string, fullResponse: string, isFirstChunk: boolean) => {
+    callbacks.handleStreamingChunk?.(chunk, fullResponse, isFirstChunk, callbacks.stopTyping);
+  };
+};
+
+const handleStreamingLifecycle = (callbacks: StreamingCallbacks, action: 'start' | 'stop') => {
+  if (action === 'start') {
+    callbacks.startTyping?.();
+    callbacks.startStreaming?.();
+  } else {
+    callbacks.stopStreaming?.();
+    callbacks.stopTyping?.();
+  }
+};
+
+// Main function - clean and elegant
 export const processUserMessage = async (
   userMessage: string, 
   chatHistory: ChatMessage[], 
@@ -13,47 +30,21 @@ export const processUserMessage = async (
   currentActiveTab: Tab | null = null, 
   showCurrentTabIndicator: boolean = true
 ): Promise<string> => {
-  const { startTyping, stopTyping, startStreaming, stopStreaming, handleStreamingChunk } = streamingCallbacks;
-
-  if (startTyping) startTyping();
+  handleStreamingLifecycle(streamingCallbacks, 'start');
 
   try {
-    let aiResponse;
+    const streamingCallback = createStreamingCallback(streamingCallbacks);
+    
+    const aiResponse = mode === 'ask' 
+      ? await getAIResponse(userMessage, chatHistory, streamingCallback, selectedTabs, currentActiveTab, showCurrentTabIndicator, 'ask')
+      : await getAgentResponse(userMessage, chatHistory, selectedTabs, currentActiveTab, showCurrentTabIndicator, streamingCallback);
 
-    if (mode === 'ask') {
-      if (startStreaming) startStreaming();
-      console.log('selectedTabs in messageProcessor', selectedTabs);
-
-      aiResponse = await getAIResponse(userMessage, chatHistory, (chunk: string, fullResponse: string, isFirstChunk: boolean) => {
-        if (handleStreamingChunk) {
-          // Handle both normal content and tool descriptions
-          if (chunk && chunk.includes('🤖 **Ejecutando herramienta:**')) {
-            handleStreamingChunk(chunk, chunk, true, stopTyping);
-          } else {
-            handleStreamingChunk(chunk, fullResponse, isFirstChunk, stopTyping);
-          }
-        }
-      }, selectedTabs, currentActiveTab, showCurrentTabIndicator, mode);
-
-      if (stopStreaming) stopStreaming();
-    } else {
-      if (startStreaming) startStreaming();
-      console.log('selectedTabs in messageProcessor', selectedTabs);
-      aiResponse = await getAgentResponse(userMessage, chatHistory, selectedTabs, currentActiveTab, showCurrentTabIndicator, (chunk: string, fullResponse: string, isFirstChunk: boolean) => {
-        if (handleStreamingChunk) {
-          handleStreamingChunk(chunk, fullResponse, isFirstChunk, stopTyping);
-        }
-      });
-      
-      if (stopStreaming) stopStreaming();
-      if (stopTyping) stopTyping();
-    }
-
+    handleStreamingLifecycle(streamingCallbacks, 'stop');
     return aiResponse;
 
   } catch (error) {
     console.error('Error al obtener respuesta de la IA:', error);
-    if (stopTyping) stopTyping();
+    streamingCallbacks.stopTyping?.();
     throw error;
   }
 };

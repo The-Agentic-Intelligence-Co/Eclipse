@@ -6,6 +6,23 @@ import { useChatMessages, useMessageEditing, useChatManagement, useMessageEvents
 import MessageItem from './MessageItem';
 import type { ContentProps } from '../../types/hooks';
 
+// Helper functions for cleaner code
+const createChatCallbacks = (chatMessages: any) => ({
+  addUserMessage: chatMessages.addUserMessage,
+  addAIResponse: chatMessages.addAIResponse,
+  addErrorMessage: chatMessages.addErrorMessage,
+  updateMessage: chatMessages.updateMessage,
+  removeMessagesAfter: chatMessages.removeMessagesAfter,
+  startTyping: chatMessages.startTyping,
+  stopTyping: chatMessages.stopTyping
+});
+
+const createStreamingCallbacks = (streaming: any) => ({
+  startStreaming: streaming.startStreaming,
+  stopStreaming: streaming.stopStreaming,
+  handleStreamingChunk: streaming.handleStreamingChunk
+});
+
 const Content: React.FC<ContentProps> = ({ 
   selectedTabs, 
   showCurrentTabIndicator, 
@@ -16,85 +33,38 @@ const Content: React.FC<ContentProps> = ({
   const editRef = useRef<HTMLSpanElement>(null);
   
   // Hooks personalizados
-  const {
-    streamingHtml,
-    isStreaming,
-    startStreaming,
-    stopStreaming,
-    handleStreamingChunk,
-  } = useStreaming();
-  
-  const {
-    messages,
-    isTyping,
-    addUserMessage,
-    addAIResponse,
-    addErrorMessage,
-    startTyping,
-    stopTyping,
-    updateMessage,
-    removeMessagesAfter,
-  } = useChatMessages();
+  const streaming = useStreaming();
+  const chatMessages = useChatMessages();
+  const messageEditing = useMessageEditing();
+  const { currentWelcomeMessage, hasWelcomeMessages } = useWelcomeMessages(hasStartedChat);
 
-  const {
-    editingMessageId,
-    editingContent,
-    startEdit,
-    cancelEdit,
-    updateEditingContent,
-  } = useMessageEditing();
-
-  const {
-    currentWelcomeMessage,
-    hasWelcomeMessages
-  } = useWelcomeMessages(hasStartedChat);
-
-  // Hook para gestión del chat
+  // Chat management
   const { handleUserMessage, handleConfirmEdit } = useChatManagement(
-    {
-      addUserMessage,
-      addAIResponse,
-      addErrorMessage,
-      updateMessage,
-      removeMessagesAfter,
-      startTyping,
-      stopTyping
-    },
-    {
-      startStreaming,
-      stopStreaming,
-      handleStreamingChunk
-    },
-    selectedTabs, // ← Pasar las pestañas seleccionadas
-    currentActiveTab, // ← Pasar la pestaña activa
-    showCurrentTabIndicator // ← Pasar el estado del indicador
+    createChatCallbacks(chatMessages),
+    createStreamingCallbacks(streaming),
+    selectedTabs,
+    currentActiveTab,
+    showCurrentTabIndicator
   );
 
-  // Efecto para manejar el foco automático cuando se activa la edición
+  // Auto-focus when editing starts
   useEffect(() => {
-    if (editingMessageId && editRef.current) {
-      // Solo establecer foco cuando se activa la edición, no cuando cambia el contenido
+    if (messageEditing.editingMessageId && editRef.current) {
       editRef.current.focus();
     }
-  }, [editingMessageId]); // Solo se ejecuta cuando cambia editingMessageId, no editingContent
+  }, [messageEditing.editingMessageId]);
 
-  // Función para manejar mensajes del usuario
+  // Event handlers
   const handleUserMessageWrapper = async (userMessage: string, mode: string): Promise<void> => {
     await handleUserMessage(userMessage, mode, () => {
       setHasStartedChat(true);
-      if (onChatStart) onChatStart();
+      onChatStart?.();
     });
   };
 
-  // Función para confirmar edición
-  const handleConfirmEditWrapper = async (messageId: string, newContent: string): Promise<void> => {
-    await handleConfirmEdit(messageId, newContent, messages, cancelEdit);
-  };
+  useMessageEvents(handleUserMessageWrapper);
 
-  // Usar el hook de eventos de mensajes
-  useMessageEvents(handleUserMessageWrapper, hasStartedChat);
-
-  // Estado inicial: Mensaje de bienvenida
+  // Welcome state
   if (hasWelcomeMessages) {
     return (
       <main className="sidebar-content">
@@ -108,27 +78,25 @@ const Content: React.FC<ContentProps> = ({
     );
   }
 
-  // Estado de chat: Historial de conversación
+  // Chat state
   return (
     <main className="sidebar-content chat-mode">
       <div className="chat-container">
-        {/* Mensajes de la conversación */}
-        {messages.map((message) => (
+        {chatMessages.messages.map((message) => (
           <MessageItem
             key={message.id}
             message={message}
-            isEditing={editingMessageId === message.id}
-            onStartEdit={startEdit}
-            onUpdateContent={updateEditingContent}
-            onBlur={cancelEdit}
-            onConfirm={() => handleConfirmEditWrapper(message.id, editingContent)}
-            onCancel={cancelEdit}
+            isEditing={messageEditing.editingMessageId === message.id}
+            onStartEdit={messageEditing.startEdit}
+            onUpdateContent={messageEditing.updateEditingContent}
+            onBlur={messageEditing.cancelEdit}
+            onConfirm={() => handleConfirmEdit(message.id, messageEditing.editingContent, chatMessages.messages, messageEditing.cancelEdit)}
+            onCancel={messageEditing.cancelEdit}
             editRef={editRef}
           />
         ))}
         
-        {/* Indicador de escritura */}
-        {isTyping && (
+        {chatMessages.isTyping && (
           <div className="message ai-message typing">
             <span className="typing-dots">
               <span></span>
@@ -138,12 +106,11 @@ const Content: React.FC<ContentProps> = ({
           </div>
         )}
         
-        {/* Mensaje de streaming en tiempo real */}
-        {isStreaming && streamingHtml && (
+        {streaming.isStreaming && streaming.streamingHtml && (
           <div className="message ai-message streaming">
             <div 
               className="markdown-content"
-              dangerouslySetInnerHTML={{ __html: streamingHtml }}
+              dangerouslySetInnerHTML={{ __html: streaming.streamingHtml }}
             />
             <span className="typing-dots">
               <span></span>
@@ -153,7 +120,6 @@ const Content: React.FC<ContentProps> = ({
           </div>
         )}
         
-        {/* Espaciador para separar el último mensaje del footer */}
         <div className="chat-bottom-spacer"></div>
       </div>
     </main>
