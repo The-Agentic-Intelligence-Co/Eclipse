@@ -1,7 +1,11 @@
 Implementaciones pendientes para terminar V1:
-DONE (A) Streaming del content del planner para el usuario en chat. 
-DONE (B) Streaming del content del Validator para el usuario en chat.
-DONE (C) Agregar al prompt y structured output del validator el plan_completed_summary para el usuario del chat.
-(D) Prompt coordination & refinement entre executor y validator -> Dar consejos de uso de herramientas y mejor evaluación, etc.
-DONE (E) Investigar error de extract_tab_content en agent mode.
-DONE (F) streaming de las tool calls del executor, y empatar su response object al sistema actual de tools executors.
+(A) Prompt coordination & refinement entre executor y validator -> Dar consejos de uso de herramientas y mejor evaluación, etc.
+(B) Refactor para simplificar entre Footer, ChatOrchestration.ts y MessageProcessor.ts
+(C) Agregar tool de cambiar de una pestaña a otra.
+(D) Importar dom-engine y planear arquitectura de tool pool (feature: browser automation)
+
+✅DONE (E) Investigar error de extract_tab_content en agent mode.
+✅DONE (F) streaming de las tool calls del executor, y empatar su response object al sistema actual de tools executors.
+✅DONE (A) Streaming del content del planner para el usuario en chat. 
+✅DONE (B) Streaming del content del Validator para el usuario en chat.
+✅DONE (C) Agregar al prompt y structured output del validator el plan_completed_summary para el usuario del chat.
