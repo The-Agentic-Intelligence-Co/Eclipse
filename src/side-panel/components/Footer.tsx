@@ -9,7 +9,7 @@ import type { FooterProps, Tab } from '../../types/hooks';
 // Helper functions for cleaner code
 const createTabIcon = (tab: Tab, hoveredIndicator: string | null) => {
   const isHovered = hoveredIndicator === `tab-${tab.id}`;
-  return isHovered ? ICONS.delete : (tab.favIconUrl || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiByeD0iMiIgZmlsbD0iIzY2NjY2NiIvPgo8L3N2Zz4K');
+  return isHovered ? ICONS.delete : (tab.favIconUrl || getDefaultFavicon());
 };
 
 const createCurrentTabIcon = (hoveredIndicator: string | null) => {
