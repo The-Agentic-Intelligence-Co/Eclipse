@@ -1,5 +1,3 @@
 // Browser services - Handle tab operations and browser interactions
-export { loadTabs } from './tabLoader';
-export { handleTabSelection } from './tabSelector';
-export { handleContextOption } from './contextManager';
-export { validateTabSelection, canShowCurrentTab } from './selectionValidator';
+export { loadTabs, validateTabSelection, canShowCurrentTab } from './tabUtils';
+export { handleTabSelection, handleContextOption } from './tabManager';
