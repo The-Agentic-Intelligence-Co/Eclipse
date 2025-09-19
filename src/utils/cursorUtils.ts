@@ -1,11 +1,6 @@
-/**
- * Utilidades para manejar el posicionamiento del cursor en elementos editables
- */
+// Cursor positioning utilities for editable elements
 
-/**
- * Posiciona el cursor al final del contenido de un elemento editable
- * @param {HTMLElement} element - Elemento editable (contentEditable)
- */
+// Moves cursor to the end of an editable element
 export const positionCursorAtEnd = (element: HTMLElement | null): void => {
   if (!element) return;
   

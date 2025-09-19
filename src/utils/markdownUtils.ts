@@ -1,29 +1,25 @@
 import { marked } from 'marked';
 
-/**
- * Renderiza Markdown de forma segura
- * @param {string} markdownText - Texto en Markdown
- * @returns {string} HTML renderizado
- */
+// Converts markdown text to safe HTML
 export const renderMarkdown = (markdownText: string): string => {
   try {
-    // Usar marked.parse con configuración explícita para asegurar que devuelve string
+    // Parse markdown with safe settings
     const result = marked.parse(markdownText, {
-      breaks: true,        // Permitir saltos de línea
+      breaks: true,        // Allow line breaks
       gfm: true,          // GitHub Flavored Markdown
-      async: false        // Asegurar que devuelve string, no Promise
+      async: false        // Ensure string output, not Promise
     });
     
-    // Verificar si el resultado es una Promise y manejarlo
+    // Handle unexpected Promise result
     if (result && typeof result === 'object' && 'then' in result) {
-      console.warn('marked.parse devolvió una Promise inesperadamente');
-      return markdownText; // Fallback a texto plano
+      console.warn('marked.parse returned Promise unexpectedly');
+      return markdownText; // Fallback to plain text
     }
     
     return result as string;
   } catch (error) {
-    console.error('Error al renderizar Markdown:', error);
-    // En caso de error, devolver el texto plano
+    console.error('Error rendering Markdown:', error);
+    // Return plain text on error
     return markdownText;
   }
 };

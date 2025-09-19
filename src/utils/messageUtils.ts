@@ -1,20 +1,11 @@
-/**
- * Utilidades para el manejo de mensajes del chat
- */
+// Chat message handling utilities
 
-/**
- * Valida si un mensaje está vacío o solo contiene espacios
- * @param {string} content - Contenido del mensaje
- * @returns {boolean} True si el mensaje está vacío
- */
+// Checks if message is empty or only whitespace
 export const isMessageEmpty = (content: string): boolean => {
   return !content || content.trim() === '';
 };
 
-/**
- * Genera un ID único para un mensaje
- * @returns {string} ID único del mensaje
- */
+// Creates unique ID for messages
 export const generateMessageId = (): string => {
   return Date.now().toString() + Math.random().toString(36).substr(2, 9);
 };
