@@ -10,11 +10,14 @@ const createMessageClasses = (messageType: string, isEditing: boolean) =>
 const createMessageStyle = (messageType: string) => 
   messageType === 'user' ? { cursor: 'pointer' } : {};
 
-const setupEditMode = (editRef: React.RefObject<HTMLSpanElement>, initialContent: string) => {
+const setupEditMode = (editRef: React.RefObject<HTMLSpanElement>, initialContent: string, isFirstTime: boolean) => {
   setTimeout(() => {
     if (editRef.current) {
       editRef.current.textContent = initialContent;
-      positionCursorAtEnd(editRef.current);
+      // Solo posicionar cursor al final si es la primera vez que se entra en modo edición
+      if (isFirstTime) {
+        positionCursorAtEnd(editRef.current);
+      }
     }
   }, 0);
 };
@@ -33,7 +36,9 @@ const MessageItem: React.FC<MessageItemProps> = ({
   const handleClick = (): void => {
     if (message.type === 'user') {
       const initialContent = onStartEdit(message.id, message.content);
-      setupEditMode(editRef, initialContent);
+      // Solo es la primera vez si no estamos ya en modo de edición
+      const isFirstTime = !isEditing;
+      setupEditMode(editRef, initialContent, isFirstTime);
     }
   };
 
