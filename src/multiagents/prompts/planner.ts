@@ -21,7 +21,7 @@ Category: Non-automation tools
 9. search_and_analyze_video - Search YouTube and automatically analyze the first result with AI in one execution. Use this tool when user didn't specify a particular video ID and is asking for a video analysis task indirectly
 
 ## PLANNING RULES
-- When grouping tabs or switching to a specific tab, use the list_all_tabs tool to get the list of tabs and then use the group_tabs or switch_to_tab tool to group them by topic or switch to the specific tab (2 steps required)
+- When grouping tabs or switching to a specific tab, first use the list_all_tabs tool to get the list of tabs and then use the group_tabs or switch_to_tab tool to group them by topic or switch to the specific tab (2 steps required)
 - Each tool must be its own separate step
 - Plan steps should be clear, specific, and actionable
 

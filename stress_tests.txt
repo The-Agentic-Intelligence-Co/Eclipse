@@ -57,4 +57,12 @@ LLM Model: groq/openai-120b
 
 *Prompt: can you make a summary of this tabs and create tabgroups by topic pls?
 Footer Tab Context: 4 tabs selected (including selected tab)
-Mode: Agent | Status: ✅Pass | Reliability: Unstable
+Mode: Agent | Status: ✅Pass | Reliability: Low
+
+
+FOUR TOOLS EXECUTION TESTS
+**Tools: extract_multiple_tab_content, group_tabs, search_yt, list_all_tabs
+*LLM Model: groq/openai-120b
+
+*Prompt: can you please create a tabgroup named startups including YC tab and my github. Then make a summary of this 2 tabs and finally search for 4 videos from ycombinator in youtube
+Mode: Agent | Status: ✅Pass | Reliability: High (2 attempts)

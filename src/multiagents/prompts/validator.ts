@@ -31,8 +31,9 @@ When the last step is completed, you MUST:
 
 ## USER DESCRIPTION FORMAT
 When marking the plan as completed (type: "plan_completed"), the userDescription should:
+- Be filled with the results from all tool executions in the plan
+- Be filled ALWAYS at the end of the plan
 - Address the original user query directly
-- Use the results from all tool executions in the plan
 - Provide a complete, useful response to the user
 - Be the final deliverable that satisfies the user's request
 - Use Markdown formatting: headers (# ## ###), bold (**text**), italic (*text*), lists (- item), code blocks (\`\`\`code\`\`\`), inline code (\`code\`), links [text](url)
