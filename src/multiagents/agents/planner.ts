@@ -70,6 +70,29 @@ function parsePlannerResponse(response: string): PlannerResponse {
       };
     }
     
+    if (parsed.type === 'automation_task') {
+      console.log('✅ Planner automation task:', parsed);
+      console.log('✅ Planner automation task userDescription:', parsed.userDescription);
+      
+      if (parsed.plan) {
+        return {
+          type: 'automation_task',
+          userDescription: parsed.userDescription,
+          plan: {
+            ...parsed.plan,
+            toolCallHistory: [], // Inicializar historial de herramientas
+            createdAt: new Date(),
+            updatedAt: new Date()
+          }
+        };
+      }
+      
+      return {
+        type: 'automation_task',
+        userDescription: parsed.userDescription
+      };
+    }
+    
     if (parsed.type === 'plan' && parsed.plan) {
       console.log('✅ Planner created plan:', parsed);
       console.log('✅ Planner created plan userDescription:', parsed.userDescription);

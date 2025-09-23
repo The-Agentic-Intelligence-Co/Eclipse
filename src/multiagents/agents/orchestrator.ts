@@ -34,6 +34,21 @@ export async function getAgentResponse(
       return plannerResponse.userDescription;
     }
     
+    if (plannerResponse.type === 'automation_task') {
+      if (plannerResponse.plan) {
+        return await executePlanWithValidation(
+          plannerResponse.plan,
+          chatHistory,
+          selectedTabs,
+          currentActiveTab,
+          showCurrentTabIndicator,
+          onChunk,
+          allAvailableTabs
+        );
+      }
+      return plannerResponse.userDescription;
+    }
+    
     const plan = plannerResponse.plan!;
         
     return await executePlanWithValidation(

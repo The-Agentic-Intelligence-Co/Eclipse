@@ -1,7 +1,7 @@
 import type { Plan, ToolCall } from './plan';
 
 export interface PlannerResponse {
-  type: 'direct_response' | 'plan';
+  type: 'direct_response' | 'plan' | 'automation_task';
   userDescription: string;
   plan?: Plan;
 }
