@@ -16,9 +16,6 @@ export async function getAgentResponse(
   onChunk?: StreamingCallback
 ): Promise<string> {
   try {
-    console.log("selectedTabs in orchestrator", selectedTabs);
-    console.log("currentActiveTab in orchestrator", currentActiveTab);
-    console.log("showCurrentTabIndicator in orchestrator", showCurrentTabIndicator);
     const allAvailableTabs = getUnifiedTabs(selectedTabs, currentActiveTab, showCurrentTabIndicator);
     
     const plannerResponse = await getPlannerResponse(
@@ -83,12 +80,6 @@ async function executePlanWithValidation(
   
   for (let i = 0; i < MAX_ITERATIONS; i++) {
     const currentStep = plan.steps[currentStepIndex];
-    console.log('currentStep', currentStepIndex);
-    
-    if (!currentStep) {
-      plan.status = 'completed';
-      return createPlanCompletionResponse(plan);
-    }
     
     if (currentStep.status === 'done') {
       currentStepIndex++;
@@ -121,7 +112,6 @@ async function executePlanWithValidation(
         allAvailableTabs,
         'agent'
       );
-      console.log('toolResult', toolResult);
       const toolCallHistory: ToolCallHistory = {
         id: generateId(),
         toolCall: executorResponse.toolCall!,
@@ -141,9 +131,7 @@ async function executePlanWithValidation(
       showCurrentTabIndicator,
       onChunk
     );
-    console.log('validatorResponse', validatorResponse);
-    if (validatorResponse.updatedPlan) {
-      
+    if (validatorResponse.updatedPlan) {      
       const updatedPlan = validatorResponse.updatedPlan;
       
       // Actualizar propiedades no-array directamente
@@ -171,7 +159,6 @@ async function executePlanWithValidation(
 
     // Store feedback for next iteration
     lastValidatorFeedback = validatorResponse.feedback;
-    console.log('lastValidatorFeedback', lastValidatorFeedback);
     if (validatorResponse.type === 'step_completed') {
       currentStepIndex++;
       lastValidatorFeedback = undefined;
@@ -180,18 +167,12 @@ async function executePlanWithValidation(
       return validatorResponse.userDescription
     }
   }
-  console.log('plan', plan);
   plan.status = 'error';
   return createErrorResponse(plan, 'Maximum steps reached');
 }
 
 function generateId(): string {
   return Math.random().toString(36).substr(2, 9);
-}
-
-function createPlanCompletionResponse(plan: Plan): string {
-  const completedSteps = plan.steps.filter(step => step.status === 'done').length;
-  return `✅ Plan completed successfully!\n\n**${plan.title}**\n\nCompleted ${completedSteps} out of ${plan.steps.length} steps.\n\n${plan.description}`;
 }
 
 function createPauseResponse(plan: Plan, message: string): string {

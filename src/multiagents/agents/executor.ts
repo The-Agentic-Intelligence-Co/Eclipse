@@ -25,12 +25,8 @@ export async function getExecutorResponse(
   try {
     const messages = mapChatHistoryToMessages(chatHistory);
     const allAvailableTabs = getUnifiedTabs(selectedTabs, currentActiveTab, showCurrentTabIndicator);
-    const enhancedMessages = addTabContext(messages, selectedTabs, currentActiveTab, showCurrentTabIndicator);
-    
+    const enhancedMessages = addTabContext(messages, selectedTabs, currentActiveTab, showCurrentTabIndicator);    
     const availableTools = getAvailableTools(allAvailableTabs, 'agent');
-    const toolsList = availableTools.map((t: any) => t.function.name).join(', ');
-    
-    const executorPrompt = EXECUTOR_SYSTEM_PROMPT.replace('{tools}', toolsList);
     
     const contextMessage = `
 Current plan:
@@ -41,11 +37,9 @@ ${JSON.stringify(currentStep, null, 2)}
 
 ${validatorFeedback ? `Validator feedback: ${validatorFeedback}` : ''}
 `;
-    console.log('enhancedMessages in executor', enhancedMessages);
-    console.log('contextMessage in executor', contextMessage);
     const completion = await createGroqCompletion(
       [
-        { role: "system", content: executorPrompt },
+        { role: "system", content: EXECUTOR_SYSTEM_PROMPT },
         { role: "user", content: contextMessage },
         ...enhancedMessages
       ],
@@ -55,7 +49,7 @@ ${validatorFeedback ? `Validator feedback: ${validatorFeedback}` : ''}
     // FASE 1: Recibir JSON completo sin streaming
     const { fullResponse, toolCalls } = await processStreaming(completion, undefined);
     console.log('fullResponse', fullResponse);
-    console.log('toolCalls jiji', toolCalls);
+    console.log('toolCalls from executor', toolCalls);
     
     if (toolCalls && toolCalls.length > 0) {
       // FASE 2: Hacer streaming del userDescription de la herramienta si hay callback
@@ -64,9 +58,7 @@ ${validatorFeedback ? `Validator feedback: ${validatorFeedback}` : ''}
         const toolUserDescription = extractUserDescriptionFromToolCall(toolCall);
         
         if (toolUserDescription) {
-          console.log('🎬 Starting streaming of tool userDescription:', toolUserDescription);
           await streamUserDescription(toolUserDescription, onChunk);
-          console.log('✅ Finished streaming tool userDescription');
         }
       }
       
