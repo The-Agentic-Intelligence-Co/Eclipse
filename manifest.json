@@ -19,5 +19,9 @@
   },
   "side_panel": {
     "default_path": "src/side-panel/index.html"
-  }
+  },
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["src/content/domContentScript.js"]
+  }]
 }
