@@ -6,6 +6,12 @@ export interface InteractiveContextResult {
   error?: string;
 }
 
+export interface ScrollPageResult {
+  success: boolean;
+  message: string;
+  error?: string;
+}
+
 export interface DomToolCall {
   toolName: string;
   parameters: {

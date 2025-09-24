@@ -9,7 +9,7 @@ export const GET_INTERACTIVE_CONTEXT_TOOL: ToolDefinition = {
   type: "function",
   function: {
     name: "get_interactive_context",
-    description: "Analyzes the current page's interactive elements and DOM structure to understand what actions are possible. Useful for understanding page layout, forms, buttons, and other interactive components.",
+    description: "Extracts the current page's visible interactive elements to understand what actions are possible.",
     parameters: {
       type: "object",
       properties: {
@@ -26,3 +26,29 @@ export const GET_INTERACTIVE_CONTEXT_TOOL: ToolDefinition = {
     }
   }
 };
+
+/**
+ * Definition for scroll_page tool
+ */
+export const SCROLL_PAGE_TOOL: ToolDefinition = {
+  type: "function",
+  function: {
+    name: "scroll_page",
+    description: "Scrolls the current page down to navigate through content.",
+    parameters: {
+      type: "object",
+      properties: {
+        reason: {
+          type: "string",
+          description: "Reason why scrolling is needed"
+        },
+        userDescription: {
+          type: "string",
+          description: "Clear description in first person of what tool is being used and for what specific purpose (e.g., 'I am scrolling down to find more content')"
+        }
+      },
+      required: ["direction", "reason", "userDescription"]
+    }
+  }
+};
+
