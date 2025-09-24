@@ -5,6 +5,7 @@ export interface Plan {
   description: string;
   steps: PlanStep[];
   toolCallHistory: ToolCallHistory[];  // Historial global de todas las herramientas
+  needsBrowserControl: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
