@@ -30,7 +30,7 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
     return true; // Mantener el canal abierto para respuesta asíncrona
   }
   
-  if (request.action === 'extractPageContentAndContext') {
+  if (request.action === 'getPageContext') {
     try {
       // Extract text content and clean it
       const rawTextContent = document.body.innerText || document.body.textContent || '';

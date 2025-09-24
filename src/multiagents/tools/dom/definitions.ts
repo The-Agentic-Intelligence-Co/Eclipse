@@ -53,12 +53,12 @@ export const SCROLL_PAGE_TOOL: ToolDefinition = {
 };
 
 /**
- * Definition for extract_page_content_and_context tool
+ * Definition for get_page_context tool
  */
-export const EXTRACT_PAGE_CONTENT_AND_CONTEXT_TOOL: ToolDefinition = {
+export const GET_PAGE_CONTEXT_TOOL: ToolDefinition = {
   type: "function",
   function: {
-    name: "extract_page_content_and_context",
+    name: "get_page_context",
     description: "Extracts both the text content and interactive elements from a specific browser tab. Provides comprehensive page analysis including readable text and clickable elements.",
     parameters: {
       type: "object",

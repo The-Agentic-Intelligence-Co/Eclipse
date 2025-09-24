@@ -40,11 +40,11 @@ export const executeGetInteractiveContext = async (toolCall: any): Promise<ToolR
 };
 
 /**
- * Executes the extract_page_content_and_context tool using content script messaging
+ * Executes the get_page_context tool using content script messaging
  */
-export const executeExtractPageContentAndContext = async (toolCall: any): Promise<ToolResult> => {
+export const executeGetPageContext = async (toolCall: any): Promise<ToolResult> => {
   try {
-    console.log('Executing extract_page_content_and_context with parameters:', toolCall);
+    console.log('Executing get_page_context with parameters:', toolCall);
     
     const { tabId } = JSON.parse(toolCall.function.arguments);
     
@@ -56,7 +56,7 @@ export const executeExtractPageContentAndContext = async (toolCall: any): Promis
 
     // Send message to content script for both content extraction and interactive context
     const response = await sendMessageWithInjection(tab.id, {
-      action: 'extractPageContentAndContext'
+      action: 'getPageContext'
     }, 10000);
 
     console.log('Page content and context retrieved:', response);
@@ -68,7 +68,7 @@ export const executeExtractPageContentAndContext = async (toolCall: any): Promis
       success: response.success
     };
   } catch (error) {
-    console.error('Error executing extract_page_content_and_context:', error);
+    console.error('Error executing get_page_context:', error);
     
     return {
       tool_call_id: toolCall.id,
