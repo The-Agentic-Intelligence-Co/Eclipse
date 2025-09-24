@@ -2,6 +2,11 @@ import { getInteractiveContext, scrollToNewContent } from '@agentic-intelligence
 
 // Escuchar mensajes del background script
 chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
+  if (request.action === 'ping') {
+    sendResponse({ success: true, loaded: true });
+    return true;
+  }
+  
   if (request.action === 'getInteractiveContext') {
     try {
       // Usar la librería con el contexto de la página actual
@@ -23,6 +28,47 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
       });
     }
     return true; // Mantener el canal abierto para respuesta asíncrona
+  }
+  
+  if (request.action === 'extractPageContentAndContext') {
+    try {
+      // Extract text content and clean it
+      const rawTextContent = document.body.innerText || document.body.textContent || '';
+      const textContent = rawTextContent
+        .replace(/[\n\t]+/g, ' ')  // Replace newlines and tabs with single space
+        .replace(/\s+/g, ' ')      // Replace multiple spaces with single space
+        .trim();                   // Remove leading/trailing whitespace
+      
+      // Get interactive context using DOM engine
+      const interactiveContext = getInteractiveContext({ 
+        injectTrackers: true, 
+        context: { document, window } 
+      });
+      
+      // Combine both results
+      const combinedData = {
+        url: window.location.href,
+        title: document.title,
+        textContent: textContent.trim(),
+        interactiveElements: interactiveContext,
+        timestamp: new Date().toISOString(),
+        viewport: {
+          width: window.innerWidth,
+          height: window.innerHeight
+        }
+      };
+      
+      sendResponse({ 
+        success: true, 
+        data: combinedData
+      });
+    } catch (error) {
+      sendResponse({ 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+    return true;
   }
   
   if (request.action === 'scrollPage') {

@@ -1,4 +1,5 @@
 import type { ToolResult } from '../tabs/types';
+import { sendMessageWithInjection } from './utils';
 
 /**
  * Executes the get_interactive_context tool using content script messaging
@@ -12,23 +13,11 @@ export const executeGetInteractiveContext = async (toolCall: any): Promise<ToolR
     if (!activeTab.id) {
       throw new Error('No se pudo obtener la pestaña activa');
     }
-
-    // Check if content script is loaded
-    console.log('Sending message to tab:', activeTab.id, 'URL:', activeTab.url);
     
-    // Send message to content script with timeout
-    const response = await Promise.race([
-      chrome.tabs.sendMessage(activeTab.id, {
-        action: 'getInteractiveContext'
-      }),
-      new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Content script timeout')), 5000)
-      )
-    ]) as any;
-
-    if (!response) {
-      throw new Error('No se recibió respuesta del content script');
-    }
+    // Send message to content script with automatic injection
+    const response = await sendMessageWithInjection(activeTab.id, {
+      action: 'getInteractiveContext'
+    });
 
     console.log('Interactive context retrieved:', response);
     
@@ -40,6 +29,46 @@ export const executeGetInteractiveContext = async (toolCall: any): Promise<ToolR
     };
   } catch (error) {
     console.error('Error executing get_interactive_context:', error);
+    
+    return {
+      tool_call_id: toolCall.id,
+      functionName: toolCall.function.name,
+      content: error instanceof Error ? error.message : 'Unknown error occurred',
+      success: false
+    };
+  }
+};
+
+/**
+ * Executes the extract_page_content_and_context tool using content script messaging
+ */
+export const executeExtractPageContentAndContext = async (toolCall: any): Promise<ToolResult> => {
+  try {
+    console.log('Executing extract_page_content_and_context with parameters:', toolCall);
+    
+    const { tabId } = JSON.parse(toolCall.function.arguments);
+    
+    // Get the specific tab
+    const tab = await chrome.tabs.get(tabId);
+    if (!tab.id) {
+      throw new Error(`Tab with ID ${tabId} not found`);
+    }
+
+    // Send message to content script for both content extraction and interactive context
+    const response = await sendMessageWithInjection(tab.id, {
+      action: 'extractPageContentAndContext'
+    }, 10000);
+
+    console.log('Page content and context retrieved:', response);
+    
+    return {
+      tool_call_id: toolCall.id,
+      functionName: toolCall.function.name,
+      content: response.success ? JSON.stringify(response.data) : response.error || 'Error desconocido',
+      success: response.success
+    };
+  } catch (error) {
+    console.error('Error executing extract_page_content_and_context:', error);
     
     return {
       tool_call_id: toolCall.id,
@@ -64,13 +93,9 @@ export const executeScrollPage = async (toolCall: any): Promise<ToolResult> => {
     }
 
     // Send message to content script
-    const response = await chrome.tabs.sendMessage(activeTab.id, {
+    const response = await sendMessageWithInjection(activeTab.id, {
       action: 'scrollPage'
     });
-
-    if (!response) {
-      throw new Error('No se recibió respuesta del content script');
-    }
 
     console.log('Page scroll response:', response);
     
