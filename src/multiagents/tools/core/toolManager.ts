@@ -34,6 +34,8 @@ import {
 } from '../video/executors';
 
 import type { Tab, ToolDefinition, ToolCall, ToolResult } from '../tabs/types';
+import { GET_INTERACTIVE_CONTEXT_TOOL, SCROLL_PAGE_TOOL } from '../dom/definitions';
+import { executeGetInteractiveContext, executeScrollPage } from '../dom/executors';
 
 /**
  * Obtiene las herramientas disponibles para la IA basándose en las pestañas seleccionadas y el modo
@@ -55,30 +57,20 @@ export function getAvailableTools(selectedTabs: Tab[] = [], mode: 'ask' | 'agent
     }
   }
   
-  // En modo 'ask', solo incluir herramientas de análisis y consulta
   if (mode === 'ask') {
-    // Agregar tools de video (siempre disponibles en ask mode)
     tools.push(SEARCH_YOUTUBE_TOOL);
     tools.push(ANALYZE_VIDEO_TOOL);
     tools.push(SEARCH_AND_ANALYZE_TOOL);
   } else {
-    // En modo 'agent', incluir todas las herramientas de acción
-    // Agregar tool para abrir nuevas pestañas
     tools.push(OPEN_TAB_WITH_URL_TOOL);
-    
-    // Agregar tool para agrupar pestañas
     tools.push(GROUP_TABS_TOOL);
-    
-    // Agregar tool para listar todas las pestañas
     tools.push(LIST_ALL_TABS_TOOL);
-    
-    // Agregar tool para cambiar de pestaña
     tools.push(SWITCH_TO_TAB_TOOL);
-    
-    // Agregar tools de video
     tools.push(SEARCH_YOUTUBE_TOOL);
     tools.push(ANALYZE_VIDEO_TOOL);
     tools.push(SEARCH_AND_ANALYZE_TOOL);
+    tools.push(GET_INTERACTIVE_CONTEXT_TOOL);
+    tools.push(SCROLL_PAGE_TOOL);
   }
 
   return tools;
@@ -129,7 +121,9 @@ export async function executeTool(
       'switch_to_tab': () => executeSwitchToTab(toolCall),
       'search_youtube': () => executeSearchYoutube(toolCall),
       'analyze_video_with_ai': () => executeAnalyzeVideoWithAI(toolCall),
-      'search_and_analyze_video': () => executeSearchAndAnalyzeVideo(toolCall)
+      'search_and_analyze_video': () => executeSearchAndAnalyzeVideo(toolCall),
+      'get_interactive_context': () => executeGetInteractiveContext(toolCall),
+      'scroll_page': () => executeScrollPage(toolCall)
     };
     
     const executor = toolExecutors[toolName];
