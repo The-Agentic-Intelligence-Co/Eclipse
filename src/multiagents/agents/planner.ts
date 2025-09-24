@@ -36,9 +36,7 @@ export async function getPlannerResponse(
     
     // FASE 2: Hacer streaming del userDescription si hay callback
     if (onChunk && parsedResponse.userDescription) {
-      console.log('🎬 Starting streaming of userDescription:', parsedResponse.userDescription);
       await streamUserDescription(parsedResponse.userDescription, onChunk);
-      console.log('✅ Finished streaming userDescription');
     }
     
     return parsedResponse;
@@ -70,29 +68,6 @@ function parsePlannerResponse(response: string): PlannerResponse {
       };
     }
     
-    if (parsed.type === 'automation_task') {
-      console.log('✅ Planner automation task:', parsed);
-      console.log('✅ Planner automation task userDescription:', parsed.userDescription);
-      
-      if (parsed.plan) {
-        return {
-          type: 'automation_task',
-          userDescription: parsed.userDescription,
-          plan: {
-            ...parsed.plan,
-            toolCallHistory: [], // Inicializar historial de herramientas
-            createdAt: new Date(),
-            updatedAt: new Date()
-          }
-        };
-      }
-      
-      return {
-        type: 'automation_task',
-        userDescription: parsed.userDescription
-      };
-    }
-    
     if (parsed.type === 'plan' && parsed.plan) {
       console.log('✅ Planner created plan:', parsed);
       console.log('✅ Planner created plan userDescription:', parsed.userDescription);
@@ -102,6 +77,7 @@ function parsePlannerResponse(response: string): PlannerResponse {
         plan: {
           ...parsed.plan,
           toolCallHistory: [], // Inicializar historial de herramientas
+          needsBrowserControl: parsed.plan.needsBrowserControl || false, // Usar el valor del prompt o false por defecto
           createdAt: new Date(),
           updatedAt: new Date()
         }
@@ -110,7 +86,9 @@ function parsePlannerResponse(response: string): PlannerResponse {
     
     console.warn('⚠️ Invalid response format in planner:', parsed);
     throw new Error('Invalid response format');
+  
   } catch (error) {
+
     console.error('❌ Error parsing planner response:', error);
     console.error('📝 Raw response:', response.substring(0, 500));
     
