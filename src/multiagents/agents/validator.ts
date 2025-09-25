@@ -20,7 +20,7 @@ export async function getValidatorResponse(
 ): Promise<ValidatorResponse> {
   try {
     const messages = mapChatHistoryToMessages(chatHistory);
-    const enhancedMessages = addTabContext(messages, selectedTabs, currentActiveTab, showCurrentTabIndicator);
+    const enhancedMessages = await addTabContext(messages, selectedTabs, currentActiveTab, showCurrentTabIndicator);
     
     // Extraer el step actual del plan (el que está in_progress)
     const currentStep = plan.steps.find(step => step.status === 'in_progress');
@@ -46,7 +46,6 @@ export async function getValidatorResponse(
       toolHistory: toolHistory,
       lastToolUsed: lastToolCall?.toolCall?.function?.name,
       lastToolResult: lastToolCall?.result?.success,
-      lastToolContent: lastToolCall?.result?.content
     } : null;
     
     const contextMessage = `
@@ -54,6 +53,7 @@ PLAN OVERVIEW:
 - Plan ID: ${plan.id}
 - Plan Status: ${plan.status}
 - Plan Title: ${plan.title}
+- Needs Browser Control: ${plan.needsBrowserControl}
 - Total Steps: ${plan.steps.length}
 - Completed Steps: ${completedSteps.length}
 - In Progress: ${currentStep ? 1 : 0}

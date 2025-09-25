@@ -20,7 +20,7 @@ export async function getPlannerResponse(
 ): Promise<PlannerResponse> {
   try {
     const messages = mapChatHistoryToMessages(chatHistory);
-    const enhancedMessages = addTabContext(messages, selectedTabs, currentActiveTab, showCurrentTabIndicator);
+    const enhancedMessages = await addTabContext(messages, selectedTabs, currentActiveTab, showCurrentTabIndicator);
     
     const completion = await createGroqCompletion(
       [{ role: "system", content: PLANNER_SYSTEM_PROMPT }, ...enhancedMessages],

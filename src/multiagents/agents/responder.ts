@@ -44,7 +44,7 @@ export async function getAIResponse(
     // Preparar mensajes y contexto usando utilidades compartidas
     const messages = mapChatHistoryToMessages(chatHistory);
     const allAvailableTabs = getUnifiedTabs(selectedTabs, currentActiveTab, showCurrentTabIndicator);
-    const enhancedMessages = addTabContext(messages, selectedTabs, currentActiveTab, showCurrentTabIndicator);
+    const enhancedMessages = await addTabContext(messages, selectedTabs, currentActiveTab, showCurrentTabIndicator);
     const availableTools = getAvailableTools(allAvailableTabs, mode);
     
     // Primera llamada a Groq usando utilidad compartida

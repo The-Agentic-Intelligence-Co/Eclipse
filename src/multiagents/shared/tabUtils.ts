@@ -21,24 +21,30 @@ export function getUnifiedTabs(
 }
 
 /**
- * Añade contexto de pestañas a los mensajes
+ * Añade contexto de pestañas a los mensajes con estado actualizado en tiempo real
  */
-export function addTabContext(
+export async function addTabContext(
   messages: Array<{ role: 'user' | 'assistant'; content: string }>, 
   selectedTabs: Tab[], 
   currentActiveTab: Tab | null, 
   showCurrentTabIndicator: boolean
-): Array<{ role: 'user' | 'assistant'; content: string }> {
+): Promise<Array<{ role: 'user' | 'assistant'; content: string }>> {
   if (!selectedTabs?.length && !(currentActiveTab && showCurrentTabIndicator)) return messages;
+  
+  // Obtener el estado actual de las pestañas en tiempo real
+  const currentActiveTabInfo = await getCurrentActiveTab();
   
   const contextParts: string[] = [];
   if (selectedTabs?.length) {
     contextParts.push(`**Selected tabs:**\n${selectedTabs.map(tab => `- **${tab.title}** (${tab.url})`).join('\n')}`);
   }
-  if (currentActiveTab && showCurrentTabIndicator) {
-    contextParts.push(`**Current active tab:**\n- **${currentActiveTab.title}** (${currentActiveTab.url})`);
+  
+  // Usar la pestaña activa actual en lugar de la obsoleta
+  if (currentActiveTabInfo && showCurrentTabIndicator) {
+    contextParts.push(`**Current active tab:**\n- **${currentActiveTabInfo.title}** (${currentActiveTabInfo.url})`);
   }
-  console.log('contextParts in addTabContext', contextParts);
+  
+  console.log('contextParts in addTabContext (updated)', contextParts);
   
   const enhancedMessages = [...messages];
   if (enhancedMessages.length > 0) {
@@ -48,4 +54,24 @@ export function addTabContext(
     };
   }
   return enhancedMessages;
+}
+
+/**
+ * Obtiene la pestaña activa actual en tiempo real
+ */
+async function getCurrentActiveTab(): Promise<Tab | null> {
+  try {
+    const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (activeTab && activeTab.id && activeTab.url) {
+      return {
+        id: activeTab.id,
+        title: activeTab.title || 'Untitled',
+        url: activeTab.url
+      };
+    }
+    return null;
+  } catch (error) {
+    console.warn('Error getting current active tab:', error);
+    return null;
+  }
 }

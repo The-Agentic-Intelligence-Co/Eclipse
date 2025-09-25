@@ -25,7 +25,7 @@ export async function getExecutorResponse(
   try {
     const messages = mapChatHistoryToMessages(chatHistory);
     const allAvailableTabs = getUnifiedTabs(selectedTabs, currentActiveTab, showCurrentTabIndicator);
-    const enhancedMessages = addTabContext(messages, selectedTabs, currentActiveTab, showCurrentTabIndicator);    
+    const enhancedMessages = await addTabContext(messages, selectedTabs, currentActiveTab, showCurrentTabIndicator);    
     const availableTools = getAvailableTools(allAvailableTabs, 'agent');
     
     const contextMessage = `
@@ -37,6 +37,8 @@ ${JSON.stringify(currentStep, null, 2)}
 
 ${validatorFeedback ? `Validator feedback: ${validatorFeedback}` : ''}
 `;
+    console.log('enhancedMessages in executor', enhancedMessages);
+    console.log('contextMessage in executor', contextMessage);
     const completion = await createGroqCompletion(
       [
         { role: "system", content: EXECUTOR_SYSTEM_PROMPT },
