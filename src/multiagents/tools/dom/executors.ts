@@ -80,6 +80,47 @@ export const executeGetPageContext = async (toolCall: any): Promise<ToolResult> 
 };
 
 /**
+ * Executes the execute_dom_actions tool using content script messaging
+ */
+export const executeDomActions = async (toolCall: any): Promise<ToolResult> => {
+  try {
+    console.log('Executing execute_dom_actions with parameters:', toolCall);
+    
+    const { tabId, actions } = JSON.parse(toolCall.function.arguments);
+    
+    // Get the specific tab
+    const tab = await chrome.tabs.get(tabId);
+    if (!tab.id) {
+      throw new Error(`Tab with ID ${tabId} not found`);
+    }
+
+    // Send message to content script to execute DOM actions
+    const response = await sendMessageWithInjection(tab.id, {
+      action: 'executeDomActions',
+      actions: actions
+    }, 15000); // Longer timeout for multiple actions
+
+    console.log('DOM actions executed:', response);
+    
+    return {
+      tool_call_id: toolCall.id,
+      functionName: toolCall.function.name,
+      content: response.success ? JSON.stringify(response.results) : response.error || 'Error executing DOM actions',
+      success: response.success
+    };
+  } catch (error) {
+    console.error('Error executing execute_dom_actions:', error);
+    
+    return {
+      tool_call_id: toolCall.id,
+      functionName: toolCall.function.name,
+      content: error instanceof Error ? error.message : 'Unknown error occurred',
+      success: false
+    };
+  }
+};
+
+/**
  * Executes the scroll_page tool using content script messaging
  */
 export const executeScrollPage = async (toolCall: any): Promise<ToolResult> => {

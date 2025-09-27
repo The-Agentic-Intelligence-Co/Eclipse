@@ -81,3 +81,56 @@ export const GET_PAGE_CONTEXT_TOOL: ToolDefinition = {
   }
 };
 
+/**
+ * Definition for execute_dom_actions tool
+ */
+export const EXECUTE_DOM_ACTIONS_TOOL: ToolDefinition = {
+  type: "function",
+  function: {
+    name: "execute_dom_actions",
+    description: "Executes DOM actions on one or more interactive elements in a browser tab. Can perform clicks and text input on elements identified by their unique agentic-purpose-id.",
+    parameters: {
+      type: "object",
+      properties: {
+        tabId: {
+          type: "number",
+          description: "ID of the tab where the DOM actions will be executed"
+        },
+        actions: {
+          type: "array",
+          description: "Array of actions to execute on different elements",
+          items: {
+            type: "object",
+            properties: {
+              agenticPurposeId: {
+                type: "string",
+                description: "Unique identifier of the element to interact with (agentic-purpose-id)"
+              },
+              actionType: {
+                type: "string",
+                enum: ["click", "type"],
+                description: "Type of action to perform: 'click' for clicking elements, 'type' for text input"
+              },
+              value: {
+                type: "string",
+                description: "Text to type (required only when actionType is 'type')"
+              }
+            },
+            required: ["agenticPurposeId", "actionType"],
+            additionalProperties: false
+          }
+        },
+        reason: {
+          type: "string",
+          description: "Reason why these DOM actions are needed"
+        },
+        userDescription: {
+          type: "string",
+          description: "Clear description in first person of what tool is being used and for what specific purpose (e.g., 'I am clicking the login button and typing credentials to authenticate')"
+        }
+      },
+      required: ["tabId", "actions", "reason", "userDescription"]
+    }
+  }
+};
+

@@ -34,8 +34,8 @@ import {
 } from '../video/executors';
 
 import type { Tab, ToolDefinition, ToolCall, ToolResult } from '../tabs/types';
-import { GET_INTERACTIVE_CONTEXT_TOOL, SCROLL_PAGE_TOOL, GET_PAGE_CONTEXT_TOOL } from '../dom/definitions';
-import { executeGetInteractiveContext, executeScrollPage, executeGetPageContext } from '../dom/executors';
+import { GET_INTERACTIVE_CONTEXT_TOOL, SCROLL_PAGE_TOOL, GET_PAGE_CONTEXT_TOOL, EXECUTE_DOM_ACTIONS_TOOL } from '../dom/definitions';
+import { executeGetInteractiveContext, executeScrollPage, executeGetPageContext, executeDomActions } from '../dom/executors';
 
 /**
  * Obtiene las herramientas disponibles para la IA basándose en las pestañas seleccionadas y el modo
@@ -72,6 +72,7 @@ export function getAvailableTools(selectedTabs: Tab[] = [], mode: 'ask' | 'agent
     tools.push(GET_INTERACTIVE_CONTEXT_TOOL);
     tools.push(SCROLL_PAGE_TOOL);
     tools.push(GET_PAGE_CONTEXT_TOOL);
+    tools.push(EXECUTE_DOM_ACTIONS_TOOL);
   }
 
   return tools;
@@ -125,7 +126,8 @@ export async function executeTool(
       'search_and_analyze_video': () => executeSearchAndAnalyzeVideo(toolCall),
       'get_interactive_context': () => executeGetInteractiveContext(toolCall),
       'scroll_page': () => executeScrollPage(toolCall),
-      'get_page_context': () => executeGetPageContext(toolCall)
+      'get_page_context': () => executeGetPageContext(toolCall),
+      'execute_dom_actions': () => executeDomActions(toolCall)
     };
     
     const executor = toolExecutors[toolName];
