@@ -48,7 +48,7 @@ Category: Non-automation tools
 
 ### AUTOMATION PLANS (needsBrowserControl: true)
 - Steps should follow format: **[action] [context] [platform/place]**
-- Steps should be general and flexible (do NOT specify individual tools)
+- Steps should be simple, general and flexible (do NOT specify individual tools or add unknown/specific details)
 - **action**: General action (Access, Create, Search, Configure, Setup, Navigate, etc.)
 - **context**: What is being worked on (contact, campaign, product, form, etc.)
 - **platform/place**: Where the action takes place (HubSpot, Amazon, LinkedIn, website, etc.)
