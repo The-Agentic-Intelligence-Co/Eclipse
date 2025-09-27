@@ -26,6 +26,10 @@ export interface ToolDefinition {
       properties: Record<string, {
         type: string;
         description: string;
+        items?: any;
+        enum?: string[];
+        required?: string[];
+        additionalProperties?: boolean;
       }>;
       required: string[];
     };
