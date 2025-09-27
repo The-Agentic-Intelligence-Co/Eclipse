@@ -1,4 +1,4 @@
-import { getInteractiveContext, scrollToNewContent } from '@agentic-intelligence/dom-engine';
+import { getInteractiveContext, scrollToNewContent, executeActions } from '@agentic-intelligence/dom-engine';
 
 // Escuchar mensajes del background script
 chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
@@ -68,6 +68,16 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
         error: error instanceof Error ? error.message : 'Unknown error'
       });
     }
+    return true;
+  }
+  
+  if (request.action === 'executeDomActions') {
+    const { actions } = request;
+    
+    // Usar la función executeActions de la librería dom-engine
+    const result = executeActions(actions);
+    
+    sendResponse(result);
     return true;
   }
   
