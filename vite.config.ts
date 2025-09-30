@@ -11,6 +11,7 @@ export default defineConfig({
         'side-panel': resolve(__dirname, 'src/side-panel/index.html'),
         'background': resolve(__dirname, 'src/background/background.ts'),
         'src/content/domContentScript': resolve(__dirname, 'src/content/domContentScript.ts'),
+        'glow-animation': resolve(__dirname, 'src/content/glow-animation.js'),
       },
       output: {
         entryFileNames: '[name].js',

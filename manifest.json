@@ -8,7 +8,8 @@
     "activeTab",
     "tabs",
     "scripting",
-    "tabGroups"
+    "tabGroups",
+    "storage"
   ],
   "host_permissions": ["<all_urls>"],
   "action": {
@@ -20,8 +21,14 @@
   "side_panel": {
     "default_path": "src/side-panel/index.html"
   },
-  "content_scripts": [{
-    "matches": ["<all_urls>"],
-    "js": ["src/content/domContentScript.js"]
-  }]
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content/domContentScript.js"]
+    },
+    {
+      "matches": ["<all_urls>"],
+      "js": ["glow-animation.js"]
+    }
+  ]
 }
