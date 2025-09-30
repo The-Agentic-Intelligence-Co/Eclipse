@@ -3,6 +3,7 @@ import { getExecutorResponse } from './executor';
 import { getValidatorResponse } from './validator';
 import { executeTool } from '../tools/index';
 import { handleAIError, getUnifiedTabs } from '../shared';
+import { startGlowAnimation, stopGlowAnimationInAllTabs } from '../../utils/glowUtils';
 import type { Tab, ChatMessage } from '../../types/hooks';
 import type { Plan, ToolCallHistory } from '../types/plan';
 import type { StreamingCallback } from '../shared';
@@ -32,18 +33,40 @@ export async function getAgentResponse(
     }
     
     const plan = plannerResponse.plan!;
+    
+    // Start glow animation if plan needs browser control
+    if (plan.needsBrowserControl) {
+      console.log('[Orchestrator] Plan needs browser control, starting glow animation');
+      if (currentActiveTab?.id) {
+        await startGlowAnimation(currentActiveTab.id);
+      }
+    }
         
-    return await executePlanWithValidation(
-      plan,
-      chatHistory,
-      selectedTabs,
-      currentActiveTab,
-      showCurrentTabIndicator,
-      onChunk,
-      allAvailableTabs
-    );
+    try {
+      return await executePlanWithValidation(
+        plan,
+        chatHistory,
+        selectedTabs,
+        currentActiveTab,
+        showCurrentTabIndicator,
+        onChunk,
+        allAvailableTabs
+      );
+    } finally {
+      // Stop glow animation when plan execution ends
+      if (plan.needsBrowserControl) {
+        console.log('[Orchestrator] Plan execution ended, stopping glow animation');
+        await stopGlowAnimationInAllTabs();
+      }
+    }
     
   } catch (error) {
+    // Stop glow animation on error
+    try {
+      await stopGlowAnimationInAllTabs();
+    } catch (glowError) {
+      console.error('[Orchestrator] Error stopping glow animation on error:', glowError);
+    }
     return handleAIError(error, 'Agent Mode');
   }
 }
@@ -57,7 +80,7 @@ async function executePlanWithValidation(
   onChunk?: StreamingCallback,
   allAvailableTabs?: Tab[]
 ): Promise<string> {
-  const MAX_ITERATIONS = 7;
+  const MAX_ITERATIONS = 12;
   let currentStepIndex = 0;
   let lastValidatorFeedback: string | undefined;
   
@@ -68,7 +91,7 @@ async function executePlanWithValidation(
     
     if (currentStep.status === 'done') {
       currentStepIndex++;
-      lastValidatorFeedback = undefined;
+      // NO resetear lastValidatorFeedback aquí - mantenerlo para la siguiente iteración
       continue;
     }
     
@@ -146,7 +169,7 @@ async function executePlanWithValidation(
     lastValidatorFeedback = validatorResponse.feedback;
     if (validatorResponse.type === 'step_completed') {
       currentStepIndex++;
-      lastValidatorFeedback = undefined;
+      // NO resetear aquí tampoco - mantener el feedback
     } else if (validatorResponse.type === 'plan_completed') {
       plan.status = 'completed';
       return validatorResponse.userDescription
