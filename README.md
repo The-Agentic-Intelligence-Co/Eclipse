@@ -19,7 +19,7 @@ Eclipse is an intelligent browser extension that revolutionizes how you interact
 ## ✨ Features
 
 ### 1. Browser Automation
-[![Browser Automation Demo](https://img.youtube.com/vi/5h2P5Kgs7sw/0.jpg)](https://youtu.be/5h2P5Kgs7sw)
+![Browser Automation Demo](assets/browser_automation_demo.gif)
 
 Eclipse can automate browser tasks like filling forms, navigating websites and completing tasks. It uses AI to understand web pages and perform actions just like a human would. In the demo, it's being used for lead extraction from a conference portal, perfect for GTM and sales teams. The multi-agent system is limited to 30 steps as a safety mechanism, but this is enough to reduce tasks that typically take 15-30 minutes down to just 2-4 minutes.
 
