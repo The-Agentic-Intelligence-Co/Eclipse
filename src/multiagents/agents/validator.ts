@@ -59,6 +59,9 @@ PLAN OVERVIEW:
 - In Progress: ${currentStep ? 1 : 0}
 - Pending Steps: ${pendingSteps.length}
 
+TOOL CALL HISTORY:
+${JSON.stringify(plan.toolCallHistory, null, 2)}
+
 CURRENT STEP DETAILS:
 ${stepProgress ? JSON.stringify(stepProgress, null, 2) : 'No step in progress'}
 
