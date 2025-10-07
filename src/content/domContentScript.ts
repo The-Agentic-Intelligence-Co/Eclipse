@@ -72,12 +72,20 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   }
   
   if (request.action === 'executeDomActions') {
-    const { actions } = request;
-    
-    // Usar la función executeActions de la librería dom-engine
-    const result = executeActions(actions);
-    
-    sendResponse(result);
+    try {
+      const { actions } = request;
+      
+      // Usar la función executeActions de la librería dom-engine
+      // executeActions devuelve un objeto directamente, NO una Promise
+      const result = executeActions(actions);
+      
+      sendResponse(result);
+    } catch (error) {
+      sendResponse({ 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
     return true;
   }
   
