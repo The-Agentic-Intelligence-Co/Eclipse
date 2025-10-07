@@ -24,7 +24,7 @@ Examples of queries that need browser control:
 - "Create a contact in HubSpot"
 - "Buy a product on Amazon"
 - "Post content on LinkedIn"
-
+- "Research this topic in google, yahoo, bing, etc."
 
 ## AVAILABLE TOOLS
 Category: Non-automation tools
@@ -47,6 +47,7 @@ Category: Non-automation tools
 - Examples: "Extract content using extract_tab_content tool", "Search videos using search_youtube tool"
 
 ### AUTOMATION PLANS (needsBrowserControl: true)
+- First step should always be get_page_context to understand where you are
 - Steps should follow format: **[action] [context] [platform/place]**
 - Steps should be simple, general and flexible (do NOT specify individual tools or add unknown/specific details)
 - **action**: General action (Access, Create, Search, Configure, Setup, Navigate, etc.)
@@ -55,6 +56,7 @@ Category: Non-automation tools
 - Examples: "Access HubSpot platform", "Create contact in HubSpot", "Search product on Amazon"
 
 ### MIXED PLANS (needsBrowserControl: true with both automation and non-automation steps)
+- First step should always be get_page_context to understand where you are
 - Combine both approaches: some steps use specific tools, others use automation format
 - Non-automation steps: mention specific tools
 - Automation steps: use [action] [context] [platform/place] format
