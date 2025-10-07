@@ -31,29 +31,29 @@
         0% {
           box-shadow:
             inset 0 0 42px 19px transparent,
-            inset 0 0 36px 16px rgba(251, 102, 24, 0.06),
-            inset 0 0 30px 13px rgba(251, 102, 24, 0.12),
-            inset 0 0 24px 10px rgba(251, 102, 24, 0.18);
+            inset 0 0 36px 16px rgba(251, 102, 24, 0.15),
+            inset 0 0 30px 13px rgba(251, 102, 24, 0.25),
+            inset 0 0 24px 10px rgba(251, 102, 24, 0.35);
         }
         50% {
           box-shadow:
             inset 0 0 52px 25px transparent,
-            inset 0 0 46px 23px rgba(251, 102, 24, 0.10),
-            inset 0 0 39px 19px rgba(251, 102, 24, 0.18),
-            inset 0 0 33px 16px rgba(251, 102, 24, 0.24);
+            inset 0 0 46px 23px rgba(251, 102, 24, 0.20),
+            inset 0 0 39px 19px rgba(251, 102, 24, 0.30),
+            inset 0 0 33px 16px rgba(251, 102, 24, 0.40);
         }
         100% {
           box-shadow:
             inset 0 0 42px 19px transparent,
-            inset 0 0 36px 16px rgba(251, 102, 24, 0.06),
-            inset 0 0 30px 13px rgba(251, 102, 24, 0.12),
-            inset 0 0 24px 10px rgba(251, 102, 24, 0.18);
+            inset 0 0 36px 16px rgba(251, 102, 24, 0.15),
+            inset 0 0 30px 13px rgba(251, 102, 24, 0.25),
+            inset 0 0 24px 10px rgba(251, 102, 24, 0.35);
         }
       }
       
       @keyframes eclipse-glow-fade-in {
         from { opacity: 0; }
-        to { opacity: 0.6; }
+        to { opacity: 0.9; }
       }
       
       #${GLOW_OVERLAY_ID} {
