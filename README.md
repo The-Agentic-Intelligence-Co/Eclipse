@@ -50,13 +50,60 @@ Get AI analysis of YouTube videos with summaries, timestamps, and key moments. A
 Eclipse operates in two distinct modes to match your needs:
 
 ### Agent Mode
-Full-featured mode with complete browser automation capabilities. This mode includes everything from Ask Mode plus tab management and browser automation. It operates with a multi-agent feedback system:
+Full-featured mode with complete browser automation capabilities. This mode includes everything from Ask Mode plus tab management and browser automation. It operates through a sophisticated multi-agent system:
 
 - **Planner Agent**: Understands your query and creates an actionable plan
-- **Executor Agent**: Executes the necessary tools to complete your goal
-- **Validator Agent**: Keeps the executor agent on track, manages errors, and provides feedback to ensure successful task completion
+- **Executor Agent**: Executes the necessary tools to complete your goal  
+- **Validator Agent**: Keeps the executor on track, manages errors, and provides feedback to ensure successful task completion
 
-The multi-agent system works collaboratively to break down complex tasks into manageable steps and ensure reliable execution. The system is limited to 30 steps as a safety mechanism to prevent infinite loops and ensure controlled automation.
+The multi-agent system works collaboratively to break down complex tasks into manageable steps and ensure reliable execution, with a maximum of 12 iterations as a safety mechanism to prevent infinite loops.
+
+#### Multi-Agent Architecture
+
+```mermaid
+graph TD
+    A[User sends message] --> B[Orchestrator receives request]
+    B --> C[Orchestrator calls Planner]
+    C --> D{Planner evaluates request}
+    
+    D -->|Direct response| E[Return response to user]
+    D -->|Needs plan| F[Planner creates plan with steps]
+    
+    F --> G[Orchestrator executes executePlanWithValidation]
+    G --> H[Start glow animation if needs browser control]
+    
+    H --> I[Execution loop MAX_ITERATIONS=12]
+    I --> J[Executor receives current step]
+    J --> K{Executor decides action}
+    
+    K -->|Tool call| L[Execute specific tool]
+    K -->|No tool| M[Pause plan]
+    
+    L --> N[Record result in toolCallHistory]
+    N --> O[Validator evaluates result]
+    
+    O --> P{Validator determines state}
+    P -->|Step completed| Q[Advance to next step]
+    P -->|Step in progress| R[Continue with same step]
+    P -->|Plan completed| S[Finish execution]
+    
+    Q --> T{More steps?}
+    T -->|Yes| I
+    T -->|No| S
+    
+    R --> I
+    S --> U[Stop glow animation]
+    U --> V[Return final response to user]
+    
+    M --> W[Return pause response]
+```
+
+**Key Features:**
+- Maximum 12 iterations to prevent infinite loops
+- Glow animation for visual feedback during browser control
+- Complete audit trail of all tool calls and actions
+- Dynamic plan updates based on validator feedback
+- Robust error handling and recovery mechanisms
 
 ### Ask Mode
 Includes all features except those that require direct browser interface actions (tab management and browser automation). Think of it as Eclipse's safe mode - use this mode when you need to analyze content, search videos, extract information, or get insights from your web pages.
