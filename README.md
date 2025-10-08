@@ -2,7 +2,9 @@
   <img src="assets/eclipse_logo.png" alt="Eclipse Logo" width="200">
 </div>
 
-# 🌙 Eclipse
+---
+
+## 🌙 Eclipse
 
 ---
 
