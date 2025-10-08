@@ -2,11 +2,7 @@
   <img src="assets/eclipse_logo.png" alt="Eclipse Logo" width="200">
 </div>
 
----
-
 ## 🌙 Eclipse
-
----
 
 Eclipse is an intelligent browser extension that revolutionizes how you interact with web content. Built with a multi-agent AI system, it combines powerful content analysis with browser automation to transform your browsing experience from manual tasks into intelligent workflows.
 
@@ -18,13 +14,9 @@ Eclipse is an intelligent browser extension that revolutionizes how you interact
 
 ## 💡 Why Eclipse?
 
----
-
 I applied twice for early access to be part of the beta testers for Perplexity's Comet AI browser, but got rejected both times. Some time later, they announced they were recording every movement and activity of users, which completely turned me off from using it. So I decided to build my own alternative.
 
 ## ✨ Features
-
----
 
 ### 1. Browser Automation
 ![Browser Automation Demo](assets/browser_automation_demo.gif)
@@ -55,8 +47,6 @@ Get AI analysis of YouTube videos with summaries, timestamps, and key moments. A
 
 ## 🎯 Modes
 
----
-
 Eclipse operates in two distinct modes to match your needs:
 
 ### Agent Mode
@@ -72,8 +62,6 @@ The multi-agent system works collaboratively to break down complex tasks into ma
 Includes all features except those that require direct browser interface actions (tab management and browser automation). Think of it as Eclipse's safe mode - use this mode when you need to analyze content, search videos, extract information, or get insights from your web pages.
 
 ## 🚀 How to Install
-
----
 
 ### Prerequisites
 - **Groq API Key**: Required for AI features
@@ -92,8 +80,6 @@ Includes all features except those that require direct browser interface actions
 
 ## 🗺️ Product Roadmap
 
----
-
 ### ✅ Stable Features
 - **Tab Management**: Group tabs, organize by topic, custom colors
 - **Video Search & Analysis**: YouTube search, AI analysis, timestamp detection
@@ -108,10 +94,6 @@ The next steps include deploying MCP servers on GCP and integrating them with th
 
 ## 🤝 Contributions
 
----
-
 Contributions are welcome! Please feel free to submit issues, feature requests, or pull requests to help improve Eclipse.
-
----
 
 *Eclipse is an open-source project built with the goal of making web browsing more intelligent and efficient. It was made open source to keep the door open for innovative ideas and provide an accessible, cost-effective alternative without the privacy concerns of Perplexity Comet.*
