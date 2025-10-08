@@ -1,22 +1,17 @@
-/**
- * Cliente de Groq y configuración compartida
- */
+// Groq client and shared configuration
 
 import Groq from "groq-sdk";
 import { CONFIG } from "../config";
 import type { GroqMessage } from "./types";
 
-// Instancia compartida de Groq
-// ⚠️ ADVERTENCIA DE SEGURIDAD: Esta opción expone la API key en el navegador
-// En producción, considera usar un backend proxy para mayor seguridad
+// Shared Groq instance
+// Warning: This exposes the API key in the browser
 export const groq = new Groq({
   apiKey: (import.meta as any).env.VITE_GROQ_API_KEY,
   dangerouslyAllowBrowser: true
 });
 
-/**
- * Crea una llamada a Groq con configuración estándar
- */
+// Creates a Groq call with standard configuration
 export async function createGroqCompletion(
   messages: GroqMessage[],
   tools: any[]
@@ -24,7 +19,7 @@ export async function createGroqCompletion(
   try {
     const baseConfig = {
       model: CONFIG.MODEL,
-      messages: messages, // Los mensajes ya incluyen el system prompt
+      messages: messages, // Messages already include the system prompt
       tools: tools,
       tool_choice: "auto" as any,
       stream: true,
@@ -32,7 +27,7 @@ export async function createGroqCompletion(
       temperature: CONFIG.TEMPERATURE,
     };
 
-    // Log de configuración para debugging
+    // Configuration log for debugging
     if (CONFIG.DEBUG) {
       console.log('🔧 Groq Completion Config:', {
         model: baseConfig.model,
@@ -45,7 +40,7 @@ export async function createGroqCompletion(
 
     return await groq.chat.completions.create(baseConfig as any);
   } catch (error) {
-    console.error('❌ Error en createGroqCompletion:', {
+    console.error('❌ Error in createGroqCompletion:', {
       error: error instanceof Error ? error.message : 'Unknown error',
       stack: error instanceof Error ? error.stack : undefined,
       model: CONFIG.MODEL,

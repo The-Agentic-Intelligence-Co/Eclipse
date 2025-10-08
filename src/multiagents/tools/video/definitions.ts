@@ -1,12 +1,8 @@
-/**
- * Definiciones de herramientas de video para la IA
- */
+// Video tool definitions for AI
 
 import type { ToolDefinition } from '../tabs/types';
 
-/**
- * Definición de la herramienta search_youtube
- */
+// Definition for search_youtube tool
 export const SEARCH_YOUTUBE_TOOL: ToolDefinition = {
   type: "function",
   function: {
@@ -37,9 +33,7 @@ export const SEARCH_YOUTUBE_TOOL: ToolDefinition = {
   }
 };
 
-/**
- * Definición de la herramienta analyze_video_with_ai
- */
+// Definition for analyze_video_with_ai tool
 export const ANALYZE_VIDEO_TOOL: ToolDefinition = {
   type: "function",
   function: {
@@ -70,9 +64,7 @@ export const ANALYZE_VIDEO_TOOL: ToolDefinition = {
   }
 };
 
-/**
- * Definición de la herramienta search_and_analyze_video
- */
+// Definition for search_and_analyze_video tool
 export const SEARCH_AND_ANALYZE_TOOL: ToolDefinition = {
   type: "function",
   function: {

@@ -14,7 +14,7 @@ const setupEditMode = (editRef: React.RefObject<HTMLSpanElement>, initialContent
   setTimeout(() => {
     if (editRef.current) {
       editRef.current.textContent = initialContent;
-      // Solo posicionar cursor al final si es la primera vez que se entra en modo edición
+      // Only position cursor at end if it's the first time entering edit mode
       if (isFirstTime) {
         positionCursorAtEnd(editRef.current);
       }
@@ -36,7 +36,7 @@ const MessageItem: React.FC<MessageItemProps> = ({
   const handleClick = (): void => {
     if (message.type === 'user') {
       const initialContent = onStartEdit(message.id, message.content);
-      // Solo es la primera vez si no estamos ya en modo de edición
+      // Only the first time if we're not already in edit mode
       const isFirstTime = !isEditing;
       setupEditMode(editRef, initialContent, isFirstTime);
     }

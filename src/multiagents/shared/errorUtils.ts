@@ -1,12 +1,8 @@
-/**
- * Utilidades para manejo de errores de manera consistente
- */
+// Utilities for consistent error handling
 
-/**
- * Maneja errores de manera consistente
- */
+// Handles errors consistently
 export function handleAIError(error: unknown, context: string): string {
-  console.error(`Error en ${context}:`, error);
-  const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-  return `Lo siento, hubo un error al procesar tu consulta en ${context}. Por favor, intenta de nuevo. Error: ${errorMessage}`;
+  console.error(`Error in ${context}:`, error);
+  const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+  return `Sorry, there was an error processing your request in ${context}. Please try again. Error: ${errorMessage}`;
 }

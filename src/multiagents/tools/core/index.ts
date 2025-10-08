@@ -1,8 +1,6 @@
-/**
- * Índice del núcleo del sistema de herramientas
- */
+// Core tool system index
 
-// Exportar funciones del gestor de herramientas
+// Export tool manager functions
 export { 
   getAvailableTools, 
   executeTool, 
@@ -10,5 +8,5 @@ export {
   convertToolResultsToMessages 
 } from './toolManager';
 
-// Exportar configuración
+// Export configuration
 export * from './config';

@@ -1,4 +1,4 @@
-// Re-exportar todos los hooks organizados por categorías
+// Export all hooks organized by category
 export * from './tabs';
 export * from './chat';
 export * from './streaming';

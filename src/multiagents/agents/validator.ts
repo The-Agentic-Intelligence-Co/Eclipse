@@ -22,12 +22,12 @@ export async function getValidatorResponse(
     const messages = mapChatHistoryToMessages(chatHistory);
     const enhancedMessages = await addTabContext(messages, selectedTabs, currentActiveTab, showCurrentTabIndicator);
     
-    // Extraer el step actual del plan (el que está in_progress)
+    // Extract current step from plan (the one in_progress)
     const currentStep = plan.steps.find(step => step.status === 'in_progress');
     const completedSteps = plan.steps.filter(step => step.status === 'done');
     const pendingSteps = plan.steps.filter(step => step.status === 'pending');
     
-    // Parsear información relevante del step actual
+    // Parse relevant information from current step
     const stepToolCalls = plan.toolCallHistory.filter(tc => tc.stepId === currentStep?.id);
     const lastToolCall = stepToolCalls[stepToolCalls.length - 1];
     const toolHistory = stepToolCalls.map(toolCall => ({
@@ -87,14 +87,14 @@ ${pendingSteps.map(step => `- ${step.title}`).join('\n')}
       []
     );
     
-    // FASE 1: Recibir JSON completo sin streaming
+    // Get complete JSON response without streaming
     const { fullResponse } = await processStreaming(completion, undefined);
     console.log('fullResponse validator', fullResponse);
     
-    // Parsear la respuesta para extraer userDescription
+    // Parse response to extract userDescription
     const parsedResponse = parseValidatorResponse(fullResponse);
     
-    // FASE 2: Hacer streaming del userDescription si hay callback y es plan_completed
+    // Stream the userDescription if callback is provided and plan is completed
     if (onChunk && parsedResponse.userDescription && parsedResponse.type === 'plan_completed') {
       console.log('🎬 Starting streaming of validator userDescription:', parsedResponse.userDescription);
       await streamUserDescription(parsedResponse.userDescription, onChunk);

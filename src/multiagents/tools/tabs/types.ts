@@ -1,6 +1,4 @@
-/**
- * Tipos para herramientas de pestañas
- */
+// Types for tab tools
 
 export interface Tab {
   id: number;

@@ -27,14 +27,14 @@ export async function getPlannerResponse(
       []
     );
     
-    // FASE 1: Recibir JSON completo sin streaming
+    // Get complete JSON response without streaming
     const { fullResponse } = await processStreaming(completion, undefined);
     console.log('fullResponse', fullResponse);
     
-    // Parsear la respuesta para extraer userDescription
+    // Parse response to extract userDescription
     const parsedResponse = parsePlannerResponse(fullResponse);
     
-    // FASE 2: Hacer streaming del userDescription si hay callback
+    // Stream the userDescription if callback is provided
     if (onChunk && parsedResponse.userDescription) {
       await streamUserDescription(parsedResponse.userDescription, onChunk);
     }
@@ -76,8 +76,8 @@ function parsePlannerResponse(response: string): PlannerResponse {
         userDescription: parsed.userDescription,
         plan: {
           ...parsed.plan,
-          toolCallHistory: [], // Inicializar historial de herramientas
-          needsBrowserControl: parsed.plan.needsBrowserControl || false, // Usar el valor del prompt o false por defecto
+          toolCallHistory: [], // Initialize tool history
+          needsBrowserControl: parsed.plan.needsBrowserControl || false, // Use prompt value or false by default
           createdAt: new Date(),
           updatedAt: new Date()
         }

@@ -2,9 +2,7 @@
 
 import type { ToolDefinition } from '../tabs/types';
 
-/**
- * Definition for get_interactive_context tool
- */
+// Definition for get_interactive_context tool
 export const GET_INTERACTIVE_CONTEXT_TOOL: ToolDefinition = {
   type: "function",
   function: {
@@ -27,9 +25,7 @@ export const GET_INTERACTIVE_CONTEXT_TOOL: ToolDefinition = {
   }
 };
 
-/**
- * Definition for scroll_page tool
- */
+// Definition for scroll_page tool
 export const SCROLL_PAGE_TOOL: ToolDefinition = {
   type: "function",
   function: {
@@ -52,9 +48,7 @@ export const SCROLL_PAGE_TOOL: ToolDefinition = {
   }
 };
 
-/**
- * Definition for get_page_context tool
- */
+// Definition for get_page_context tool
 export const GET_PAGE_CONTEXT_TOOL: ToolDefinition = {
   type: "function",
   function: {
@@ -81,9 +75,7 @@ export const GET_PAGE_CONTEXT_TOOL: ToolDefinition = {
   }
 };
 
-/**
- * Definition for execute_dom_actions tool
- */
+// Definition for execute_dom_actions tool
 export const EXECUTE_DOM_ACTIONS_TOOL: ToolDefinition = {
   type: "function",
   function: {

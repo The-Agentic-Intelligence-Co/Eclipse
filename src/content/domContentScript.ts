@@ -1,6 +1,6 @@
 import { getInteractiveContext, scrollToNewContent, executeActions } from '@agentic-intelligence/dom-engine';
 
-// Escuchar mensajes del background script
+// Listen for messages from background script
 chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   if (request.action === 'ping') {
     sendResponse({ success: true, loaded: true });
@@ -9,7 +9,7 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   
   if (request.action === 'getInteractiveContext') {
     try {
-      // Usar la librería con el contexto de la página actual
+      // Use the library with the current page context
       const context = getInteractiveContext({ 
         injectTrackers: true, 
         context: { document, window } 
@@ -27,7 +27,7 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
         error: error instanceof Error ? error.message : 'Unknown error'
       });
     }
-    return true; // Mantener el canal abierto para respuesta asíncrona
+    return true; // Keep channel open for async response
   }
   
   if (request.action === 'getPageContext') {
@@ -75,8 +75,8 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
     try {
       const { actions } = request;
       
-      // Usar la función executeActions de la librería dom-engine
-      // executeActions devuelve un objeto directamente, NO una Promise
+      // Use the executeActions function from dom-engine library
+      // executeActions returns an object directly, NOT a Promise
       const result = executeActions(actions);
       
       sendResponse(result);

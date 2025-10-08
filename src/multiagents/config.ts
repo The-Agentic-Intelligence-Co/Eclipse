@@ -1,6 +1,4 @@
-/**
- * Configuración centralizada para el motor de IA y depuración
- */
+// Centralized configuration for AI engine and debugging
 
 export interface AIConfig {
   MODEL: string;
@@ -15,6 +13,6 @@ export const CONFIG: AIConfig = {
   MAX_COMPLETION_TOKENS: 8192,
   TEMPERATURE: 1,
   REASONING_EFFORT: "medium",
-  // Activar logs detallados en desarrollo
+  // Enable detailed logs in development
   DEBUG: typeof import.meta !== 'undefined' ? (import.meta as any).env?.MODE !== 'production' : true,
 } as const;

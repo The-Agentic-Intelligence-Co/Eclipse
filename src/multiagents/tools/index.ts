@@ -1,18 +1,16 @@
-/**
- * Índice principal de tools disponibles para la IA
- */
+// Main index of available AI tools
 
-// Exportar funcionalidad del núcleo
+// Export core functionality
 export * from './core';
 
-// Exportar herramientas de pestañas
+// Export tab tools
 export * from './tabs';
 
-// Exportar herramientas de video
+// Export video tools
 export * from './video';
 
-// Exportar herramientas de DOM
+// Export DOM tools
 export * from './dom';
 
-// Aquí se pueden agregar más categorías de tools en el futuro
-// export * from './otraCategoria';
+// More tool categories can be added here in the future
+// export * from './otherCategory';

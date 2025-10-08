@@ -1,8 +1,6 @@
-/**
- * Tipos para los hooks de la aplicación
- */
+// Types for application hooks
 
-// Tipos para pestañas
+// Types for tabs
 export interface Tab {
   id: number;
   title: string;
@@ -19,14 +17,14 @@ export interface Tab {
   status?: 'loading' | 'complete';
 }
 
-// Tipos para mensajes del chat
+// Types for chat messages
 export interface ChatMessage {
   id: string;
   type: 'user' | 'ai';
   content: string;
 }
 
-// Tipos para callbacks de streaming
+// Types for streaming callbacks
 export interface StreamingCallbacks {
   startTyping?: () => void;
   stopTyping?: () => void;
@@ -35,7 +33,7 @@ export interface StreamingCallbacks {
   handleStreamingChunk?: (chunk: string, fullResponse: string, isFirstChunk: boolean, onFirstChunk?: () => void) => void;
 }
 
-// Tipos para callbacks de mensajes
+// Types for message callbacks
 export interface MessageCallbacks {
   addUserMessage: (content: string) => ChatMessage[];
   addAIResponse: (content: string) => void;
@@ -46,7 +44,7 @@ export interface MessageCallbacks {
   stopTyping: () => void;
 }
 
-// Tipos para el hook de gestión de pestañas
+// Types for tab management hook
 export interface UseTabManagementReturn {
   tabs: Tab[];
   selectedTabs: Tab[];
@@ -60,7 +58,7 @@ export interface UseTabManagementReturn {
   maxLimit: number;
 }
 
-// Tipos para el hook de streaming
+// Types for streaming hook
 export interface UseStreamingReturn {
   streamingMessage: string;
   streamingHtml: string;
@@ -70,13 +68,13 @@ export interface UseStreamingReturn {
   handleStreamingChunk: (chunk: string, fullResponse: string, isFirstChunk: boolean, onFirstChunk?: () => void) => void;
 }
 
-// Tipos para el hook de indicadores de pestañas
+// Types for tab indicators hook
 export interface UseTabIndicatorsReturn {
   hoveredIndicator: string | null;
   setHoveredIndicator: (indicator: string | null) => void;
 }
 
-// Tipos para el hook de gestión de dropdowns
+// Types for dropdown management hook
 export interface UseDropdownManagementReturn {
   isContextDropdownOpen: boolean;
   isModeDropdownOpen: boolean;
@@ -88,13 +86,13 @@ export interface UseDropdownManagementReturn {
   closeAllDropdowns: () => void;
 }
 
-// Tipos para el hook de mensajes de bienvenida
+// Types for welcome messages hook
 export interface UseWelcomeMessagesReturn {
   currentWelcomeMessage: string;
   hasWelcomeMessages: boolean;
 }
 
-// Tipos para el hook de estado del footer
+// Types for footer state hook
 export interface UseFooterStateReturn {
   selectedMode: string;
   content: string;
@@ -106,7 +104,7 @@ export interface UseFooterStateReturn {
   changeMode: (mode: string) => void;
 }
 
-// Tipos para el hook de mensajes del chat
+// Types for chat messages hook
 export interface UseChatMessagesReturn {
   messages: ChatMessage[];
   isTyping: boolean;
@@ -119,7 +117,7 @@ export interface UseChatMessagesReturn {
   stopTyping: () => void;
 }
 
-// Tipos para el hook de edición de mensajes
+// Types for message editing hook
 export interface UseMessageEditingReturn {
   editingMessageId: string | null;
   editingContent: string;
@@ -128,13 +126,13 @@ export interface UseMessageEditingReturn {
   updateEditingContent: (content: string) => void;
 }
 
-// Tipos para el hook de gestión del chat
+// Types for chat management hook
 export interface UseChatManagementReturn {
   handleUserMessage: (userMessage: string, mode: string, onChatStart?: () => void) => Promise<void>;
   handleConfirmEdit: (messageId: string, newContent: string, messages: ChatMessage[], onEditComplete?: () => void) => Promise<void>;
 }
 
-// Tipos para eventos de mensajes
+// Types for message events
 export interface UserMessageEvent extends CustomEvent {
   detail: {
     message: string;
@@ -142,7 +140,7 @@ export interface UserMessageEvent extends CustomEvent {
   };
 }
 
-// Tipos para componentes React
+// Types for React components
 export interface AppProps {}
 
 export interface HeaderProps {

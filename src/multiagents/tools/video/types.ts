@@ -1,6 +1,4 @@
-/**
- * Tipos para herramientas de video
- */
+// Types for video tools
 
 export interface YouTubeVideo {
   video_id: string;

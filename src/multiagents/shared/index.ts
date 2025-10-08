@@ -1,41 +1,39 @@
-/**
- * Archivo índice para exportar todas las utilidades compartidas
- */
+// Export all shared utilities
 
-// Tipos
+// Types
 export type {
   StreamingResult,
   StreamingCallback,
   GroqMessage
 } from './types';
 
-// Cliente de Groq
+// Groq client
 export {
   groq,
   createGroqCompletion
 } from './groqClient';
 
-// Utilidades de mensajes
+// Message utilities
 export {
   mapChatHistoryToMessages,
   createAssistantMessageWithToolCalls,
   createToolMessages
 } from './messageUtils';
 
-// Utilidades de streaming
+// Streaming utilities
 export {
   processStreaming,
   streamToolDescriptions,
   streamUserDescription
 } from './streamingUtils';
 
-// Utilidades de pestañas
+// Tab utilities
 export {
   getUnifiedTabs,
   addTabContext
 } from './tabUtils';
 
-// Utilidades de errores
+// Error utilities
 export {
   handleAIError
 } from './errorUtils';

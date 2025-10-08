@@ -1,11 +1,7 @@
-/**
- * Utility functions for DOM tools
- */
+// Utility functions for DOM tools
 
-/**
- * Ensures content script is loaded in the target tab
- * If not loaded, injects it dynamically
- */
+// Ensures content script is loaded in the target tab
+// If not loaded, injects it dynamically
 export async function ensureContentScriptLoaded(tabId: number): Promise<void> {
   try {
     // Try to ping the content script
@@ -33,9 +29,7 @@ export async function ensureContentScriptLoaded(tabId: number): Promise<void> {
   }
 }
 
-/**
- * Sends message to content script with automatic injection fallback
- */
+// Sends message to content script with automatic injection fallback
 export async function sendMessageWithInjection(
   tabId: number, 
   message: any, 

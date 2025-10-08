@@ -1,8 +1,6 @@
-/**
- * Configuración centralizada para todas las herramientas
- */
+// Centralized configuration for all tools
 
-// Configuración de YouTube API
+// YouTube API configuration
 export const YOUTUBE_CONFIG = {
   API_KEY: (import.meta as any).env.VITE_YOUTUBE_API_KEY,
   API_URL: "https://www.googleapis.com/youtube/v3",
@@ -10,19 +8,19 @@ export const YOUTUBE_CONFIG = {
   MAX_RESULTS: 10
 } as const;
 
-// Configuración de Google AI
+// Google AI configuration
 export const GOOGLE_AI_CONFIG = {
   API_KEY: (import.meta as any).env.VITE_GOOGLE_AI_API_KEY,
   MODEL: "gemini-2.5-pro"
 } as const;
 
-// Configuración de caché para extracción de contenido
+// Cache configuration for content extraction
 export const CACHE_CONFIG = {
-  DEFAULT_TTL_MS: 30_000, // 30 segundos
+  DEFAULT_TTL_MS: 30_000, // 30 seconds
   MAX_CONTENT_LENGTH: 5000
 } as const;
 
-// Configuración de selectores para extracción de contenido
+// Content selectors for extraction
 export const CONTENT_SELECTORS = [
   'main',
   'article',

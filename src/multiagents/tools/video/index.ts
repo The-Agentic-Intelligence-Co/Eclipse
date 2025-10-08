@@ -1,8 +1,6 @@
-/**
- * Índice de herramientas de video
- */
+// Video tools index
 
-// Exportar funciones de búsqueda y análisis
+// Export search and analysis functions
 export { 
   searchYt, 
   analyzeVideoWithAI, 
@@ -11,21 +9,21 @@ export {
   searchAndAnalyzeVideo
 } from './search';
 
-// Exportar definiciones de herramientas
+// Export tool definitions
 export { 
   SEARCH_YOUTUBE_TOOL,
   ANALYZE_VIDEO_TOOL,
   SEARCH_AND_ANALYZE_TOOL
 } from './definitions';
 
-// Exportar ejecutores de herramientas
+// Export tool executors
 export { 
   executeSearchYoutube,
   executeAnalyzeVideoWithAI,
   executeSearchAndAnalyzeVideo
 } from './executors';
 
-// Exportar tipos
+// Export types
 export type { 
   YouTubeVideo, 
   SearchAndAnalyzeResult, 

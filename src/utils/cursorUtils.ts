@@ -9,13 +9,13 @@ export const positionCursorAtEnd = (element: HTMLElement | null): void => {
   
   if (!selection) return;
   
-  // Seleccionar todo el contenido del elemento
+  // Select all element content
   range.selectNodeContents(element);
   
-  // Colapsar la selección al final
+  // Collapse selection to the end
   range.collapse(false);
   
-  // Aplicar la selección
+  // Apply the selection
   selection.removeAllRanges();
   selection.addRange(range);
 };

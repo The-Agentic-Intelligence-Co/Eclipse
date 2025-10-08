@@ -1,10 +1,8 @@
-/**
- * Tipos e interfaces compartidos para los agentes de IA
- */
+// Shared types and interfaces for AI agents
 
 import type { ToolCall } from "../tools/tabs/types";
 
-// Tipos para el streaming
+// Types for streaming
 export interface StreamingResult {
   fullResponse: string;
   toolCalls: ToolCall[];

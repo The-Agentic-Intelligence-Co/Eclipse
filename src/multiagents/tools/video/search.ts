@@ -1,21 +1,15 @@
-// Configuración de la API de YouTube
+// YouTube API configuration
 import { YOUTUBE_CONFIG, GOOGLE_AI_CONFIG } from '../core/config';
 import type { YouTubeVideo, SearchAndAnalyzeResult } from './types';
 
-/**
- * Busca videos en YouTube
- * @param {string} query - Término de búsqueda
- * @param {number} maxResults - Número máximo de resultados (por defecto 5)
- * @param {string} pageToken - Token para paginación (opcional)
- * @returns {Promise<YouTubeVideo[]>} Array con información de los videos
- */
+// Search for videos on YouTube
 export async function searchYt(
   query: string, 
   maxResults: number = YOUTUBE_CONFIG.DEFAULT_MAX_RESULTS, 
   pageToken: string | null = null
 ): Promise<YouTubeVideo[]> {
   try {
-    console.log("🔍 Buscando videos en YouTube:", query);
+    console.log("🔍 Searching videos on YouTube:", query);
     const params = new URLSearchParams({
       part: "snippet",
       maxResults: Math.min(maxResults, YOUTUBE_CONFIG.MAX_RESULTS).toString(),
@@ -33,10 +27,10 @@ export async function searchYt(
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(`Error de API: ${data.error?.message || 'Error desconocido'}`);
+      throw new Error(`API Error: ${data.error?.message || 'Unknown error'}`);
     }
 
-    // Extraer solo la información relevante
+    // Extract only relevant information
     const extractedData: YouTubeVideo[] = data.items.map((item: any) => ({
       video_id: item.id.videoId,
       title: item.snippet.title,
@@ -47,28 +41,19 @@ export async function searchYt(
 
     return extractedData;
   } catch (error) {
-    console.error("Error al buscar videos:", error);
+    console.error("Error searching videos:", error);
     return [];
   }
 }
 
-/**
- * Extrae hashtags del texto de descripción
- * @param {string} description - Texto de descripción
- * @returns {string[]} Array de hashtags encontrados
- */
+// Extract hashtags from description text
 function extractHashtags(description: string): string[] {
   const hashtagRegex = /#\w+/g;
   const hashtags = description.match(hashtagRegex);
   return hashtags || [];
 }
 
-/**
- * Analiza un video usando Google Generative AI
- * @param {string} videoId - ID del video de YouTube
- * @param {string} customPrompt - Prompt personalizado (opcional)
- * @returns {Promise<string>} Respuesta del análisis del video
- */
+// Analyze a video using Google Generative AI
 export async function analyzeVideoWithAI(
   videoId: string, 
   customPrompt: string | null = null
@@ -79,14 +64,14 @@ export async function analyzeVideoWithAI(
     const genAI = new GoogleGenerativeAI(GOOGLE_AI_CONFIG.API_KEY);
     const model = genAI.getGenerativeModel({ model: GOOGLE_AI_CONFIG.MODEL });
     
-    // Prompt por defecto si no se proporciona uno personalizado
+    // Default prompt if no custom one is provided
     const defaultPrompt = "Analyze this video and provide a comprehensive summary. Include key points, main topics discussed, and any notable moments. Be specific and informative.";
     const prompt = customPrompt || defaultPrompt;
     
     const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
     
-    console.log(`\n🤖 Analizando video con AI: ${videoUrl}`);
-    console.log("⏳ Esto puede tomar unos momentos...");
+    console.log(`\n🤖 Analyzing video with AI: ${videoUrl}`);
+    console.log("⏳ This may take a few moments...");
     
     const result = await model.generateContent([
       prompt,
@@ -100,23 +85,19 @@ export async function analyzeVideoWithAI(
     
     return result.response.text();
   } catch (error) {
-    console.error("Error al analizar video con AI:", error instanceof Error ? error.message : 'Error desconocido');
-    return `Error en el análisis: ${error instanceof Error ? error.message : 'Error desconocido'}`;
+    console.error("Error analyzing video with AI:", error instanceof Error ? error.message : 'Unknown error');
+    return `Analysis error: ${error instanceof Error ? error.message : 'Unknown error'}`;
   }
 }
 
-/**
- * Extrae el timestamp de inicio de la respuesta de Gemini
- * @param {string} analysis - Respuesta del análisis de Gemini
- * @returns {number | null} Timestamp en segundos o null si no se encuentra
- */
+// Extract start timestamp from Gemini response
 export function extractTimestampFromAnalysis(analysis: string): number | null {
-  // Buscar patrones de tiempo en el análisis
+  // Search for time patterns in the analysis
   const timePatterns = [
-    /(\d{1,2}):(\d{2})/g,  // Formato MM:SS
-    /(\d{1,2})h(\d{2})m(\d{2})s/g,  // Formato HH:MM:SS
-    /(\d+)m(\d+)s/g,  // Formato MM:SS
-    /(\d+)s/g  // Solo segundos
+    /(\d{1,2}):(\d{2})/g,  // MM:SS format
+    /(\d{1,2})h(\d{2})m(\d{2})s/g,  // HH:MM:SS format
+    /(\d+)m(\d+)s/g,  // MM:SS format
+    /(\d+)s/g  // Seconds only
   ];
   
   let timestamp: number | null = null;
@@ -124,7 +105,7 @@ export function extractTimestampFromAnalysis(analysis: string): number | null {
   for (const pattern of timePatterns) {
     const match = analysis.match(pattern);
     if (match) {
-      // Convertir a segundos (implementación básica)
+      // Convert to seconds (basic implementation)
       if (pattern.source.includes(':')) {
         const [minutes, seconds] = match[0].split(':').map(Number);
         timestamp = minutes * 60 + seconds;
@@ -136,53 +117,42 @@ export function extractTimestampFromAnalysis(analysis: string): number | null {
   return timestamp;
 }
 
-/**
- * Genera URL directa con timestamp
- * @param {string} videoId - ID del video de YouTube
- * @param {number} timestamp - Timestamp en segundos
- * @returns {string} URL con timestamp
- */
+// Generate direct URL with timestamp
 export function generateDirectTimestampUrl(videoId: string, timestamp: number): string {
   return `https://www.youtube.com/watch?v=${videoId}&t=${timestamp}s`;
 }
 
-/**
- * Función integrada: busca videos en YouTube y analiza el primer resultado
- * @param {string} query - Término de búsqueda
- * @param {string} analysisPrompt - Prompt personalizado para el análisis (opcional)
- * @param {number} maxSearchResults - Número máximo de resultados de búsqueda (por defecto 5)
- * @returns {Promise<SearchAndAnalyzeResult>} Objeto con información del video analizado y otros resultados
- */
+// Integrated function: search YouTube videos and analyze the first result
 export async function searchAndAnalyzeVideo(
   query: string, 
   analysisPrompt: string | null = null, 
   maxSearchResults: number = 5
 ): Promise<SearchAndAnalyzeResult> {
   try {
-    // Paso 1: Buscar videos
+    // Step 1: Search videos
     const videos = await searchYt(query, maxSearchResults);
     
     if (videos.length === 0) {
       return {
         success: false,
-        error: `No se encontraron videos para la búsqueda: "${query}"`,
+        error: `No videos found for search: "${query}"`,
         videos: [],
         analysis: null
       };
     }
     
-    // Paso 2: Analizar el primer resultado
+    // Step 2: Analyze the first result
     const firstVideo = videos[0];
-    console.log(`🔍 Analizando el primer resultado: "${firstVideo.title}" (ID: ${firstVideo.video_id})`);
+    console.log(`🔍 Analyzing first result: "${firstVideo.title}" (ID: ${firstVideo.video_id})`);
     
     const analysis = await analyzeVideoWithAI(firstVideo.video_id, analysisPrompt);
     
-    // Intentar extraer timestamp si existe
+    // Try to extract timestamp if it exists
     const timestamp = extractTimestampFromAnalysis(analysis);
     let timestampInfo = '';
     if (timestamp) {
       const directUrl = generateDirectTimestampUrl(firstVideo.video_id, timestamp);
-      timestampInfo = `\n\n⏰ **Timestamp detectado:** ${Math.floor(timestamp / 60)}:${(timestamp % 60).toString().padStart(2, '0')}\n🔗 **Enlace directo:** ${directUrl}`;
+      timestampInfo = `\n\n⏰ **Timestamp detected:** ${Math.floor(timestamp / 60)}:${(timestamp % 60).toString().padStart(2, '0')}\n🔗 **Direct link:** ${directUrl}`;
     }
     
     return {
@@ -197,10 +167,10 @@ export async function searchAndAnalyzeVideo(
     };
     
   } catch (error) {
-    console.error('Error en búsqueda y análisis integrado:', error);
+    console.error('Error in integrated search and analysis:', error);
     return {
       success: false,
-      error: `Error en búsqueda y análisis: ${error instanceof Error ? error.message : 'Error desconocido'}`,
+      error: `Error in search and analysis: ${error instanceof Error ? error.message : 'Unknown error'}`,
       videos: [],
       analysis: null
     };

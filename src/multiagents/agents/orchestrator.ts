@@ -91,7 +91,7 @@ async function executePlanWithValidation(
     
     if (currentStep.status === 'done') {
       currentStepIndex++;
-      // NO resetear lastValidatorFeedback aquí - mantenerlo para la siguiente iteración
+      // Do not reset lastValidatorFeedback here - keep it for next iteration
       continue;
     }
     
@@ -142,7 +142,7 @@ async function executePlanWithValidation(
     if (validatorResponse.updatedPlan) {      
       const updatedPlan = validatorResponse.updatedPlan;
       
-      // Actualizar propiedades no-array directamente
+      // Update non-array properties directly
       Object.keys(updatedPlan).forEach(key => {
         const value = updatedPlan[key as keyof typeof updatedPlan];
         if (value !== undefined && key !== 'steps') {
@@ -150,14 +150,14 @@ async function executePlanWithValidation(
         }
       });
       
-      // Manejar steps específicos que han cambiado
+      // Handle specific steps that have changed
       if (updatedPlan.steps) {
         const updatedSteps = updatedPlan.steps;
         updatedSteps.forEach((updatedStep: any) => {
           if (updatedStep && updatedStep.id) {
             const stepIndex = plan.steps.findIndex((step: any) => step.id === updatedStep.id);
             if (stepIndex !== -1) {
-              // Actualizar step existente
+              // Update existing step
               plan.steps[stepIndex] = { ...plan.steps[stepIndex], ...updatedStep };
             }
           }
@@ -169,7 +169,7 @@ async function executePlanWithValidation(
     lastValidatorFeedback = validatorResponse.feedback;
     if (validatorResponse.type === 'step_completed') {
       currentStepIndex++;
-      // NO resetear aquí tampoco - mantener el feedback
+      // Do not reset here either - keep the feedback
     } else if (validatorResponse.type === 'plan_completed') {
       plan.status = 'completed';
       return validatorResponse.userDescription

@@ -1,14 +1,10 @@
-/**
- * Utilidades para manejo de mensajes y conversión de formatos
- */
+// Utilities for message handling and format conversion
 
 import type { ChatMessage } from "../../types/hooks";
 import type { ToolCall, ToolResult } from "../tools/tabs/types";
 import type { GroqMessage } from "./types";
 
-/**
- * Convierte el historial de chat a formato de mensajes para Groq
- */
+// Converts chat history to Groq message format
 export function mapChatHistoryToMessages(chatHistory: ChatMessage[]): Array<{ role: 'user' | 'assistant'; content: string }> {
   return chatHistory.map(msg => ({
     role: msg.type === 'user' ? 'user' : 'assistant',
@@ -16,9 +12,7 @@ export function mapChatHistoryToMessages(chatHistory: ChatMessage[]): Array<{ ro
   }));
 }
 
-/**
- * Convierte tool calls a formato de mensaje de asistente
- */
+// Converts tool calls to assistant message format
 export function createAssistantMessageWithToolCalls(
   content: string,
   toolCalls: ToolCall[]
@@ -34,9 +28,7 @@ export function createAssistantMessageWithToolCalls(
   };
 }
 
-/**
- * Convierte resultados de herramientas a formato de mensaje
- */
+// Converts tool results to message format
 export function createToolMessages(toolResults: ToolResult[]): GroqMessage[] {
   return toolResults.map(result => ({
     role: "tool" as const,

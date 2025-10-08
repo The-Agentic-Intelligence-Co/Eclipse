@@ -1,4 +1,4 @@
-// This is the logic for the Ask Mode
+// This is the logic for Ask Mode
 import { GENERAL_SYSTEM_PROMPT } from "../prompts/systemPrompts";
 import { 
   getAvailableTools, 
@@ -20,17 +20,7 @@ import {
   type GroqMessage
 } from "../shared";
 
-/**
- * Función principal para obtener respuesta de la IA
- * @param {string} userMessage - Mensaje del usuario
- * @param {Array} chatHistory - Historial completo de la conversación
- * @param {Function} onChunk - Callback para manejar chunks del streaming
- * @param {Array} selectedTabs - Pestañas seleccionadas para contexto
- * @param {Object} currentActiveTab - Pestaña activa actual
- * @param {boolean} showCurrentTabIndicator - Si mostrar la pestaña activa en el contexto
- * @param {string} mode - Modo de operación ('ask' o 'agent')
- * @returns {Promise<string>} Respuesta de la IA
- */
+// Main function to get AI response
 export async function getAIResponse(
   _userMessage: string, 
   chatHistory: ChatMessage[] = [], 
@@ -41,22 +31,22 @@ export async function getAIResponse(
   mode: 'ask' | 'agent' = 'agent'
 ): Promise<string> {
   try {
-    // Preparar mensajes y contexto usando utilidades compartidas
+    // Prepare messages and context using shared utilities
     const messages = mapChatHistoryToMessages(chatHistory);
     const allAvailableTabs = getUnifiedTabs(selectedTabs, currentActiveTab, showCurrentTabIndicator);
     const enhancedMessages = await addTabContext(messages, selectedTabs, currentActiveTab, showCurrentTabIndicator);
     const availableTools = getAvailableTools(allAvailableTabs, mode);
     
-    // Primera llamada a Groq usando utilidad compartida
+    // First call to Groq using shared utility
     const completion = await createGroqCompletion(
       [{ role: "system", content: GENERAL_SYSTEM_PROMPT }, ...enhancedMessages], 
       availableTools
     );
 
-    // Procesar streaming y tool calls usando utilidad compartida
+    // Process streaming and tool calls using shared utility
     const { fullResponse, toolCalls, toolDescriptions } = await processStreaming(completion, onChunk);
     
-    // Si hay tool calls, ejecutarlas y hacer segunda llamada
+    // If there are tool calls, execute them and make second call
     if (toolCalls.length > 0) {
       console.log('toolCalls in responder', toolCalls);
       return await handleToolCalls(toolCalls, enhancedMessages, allAvailableTabs, onChunk, toolDescriptions, mode);
@@ -68,7 +58,7 @@ export async function getAIResponse(
   }
 }
 
-// Funciones auxiliares específicas del responder
+// Helper functions specific to responder
 
 async function handleToolCalls(
   toolCalls: ToolCall[], 
@@ -79,26 +69,26 @@ async function handleToolCalls(
   mode: 'ask' | 'agent'
 ): Promise<string> {
   try {
-    // Streamear descripciones usando utilidad compartida
+    // Stream descriptions using shared utility
     streamToolDescriptions(toolDescriptions, onChunk);
     
     const toolResults: ToolResult[] = await executeMultipleTools(toolCalls, allAvailableTabs, mode);
     
-    // Agregar mensaje del asistente usando utilidad compartida
+    // Add assistant message using shared utility
     const assistantMessage = createAssistantMessageWithToolCalls('', toolCalls);
     enhancedMessages.push(assistantMessage as any);
     
-    // Agregar resultados de tools usando utilidad compartida
+    // Add tool results using shared utility
     const toolMessages = createToolMessages(toolResults);
     enhancedMessages.push(...toolMessages as any);
     
-    // Segunda llamada a Groq usando utilidad compartida
+    // Second call to Groq using shared utility
     const finalCompletion = await createGroqCompletion(
       [{ role: "system", content: GENERAL_SYSTEM_PROMPT }, ...enhancedMessages as GroqMessage[]], 
       []
     );
 
-    // Procesar respuesta final sin incluir la descripción de la herramienta
+    // Process final response without including tool description
     let finalResponse = '';
     let finalIsFirstChunk = true;
     
@@ -106,7 +96,7 @@ async function handleToolCalls(
       const content = chunk.choices[0]?.delta?.content || '';
       if (content) {
         finalResponse += content;
-        // Streamear solo la respuesta final
+        // Stream only the final response
         onChunk?.(content, finalResponse, finalIsFirstChunk);
         finalIsFirstChunk = false;
       }
@@ -114,6 +104,6 @@ async function handleToolCalls(
     
     return finalResponse;
   } catch (error) {
-    return handleAIError(error, 'ejecución de herramientas');
+    return handleAIError(error, 'tool execution');
   }
 }

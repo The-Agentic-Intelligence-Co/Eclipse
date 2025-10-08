@@ -1,24 +1,19 @@
-/**
- * Glow animation content script
- * Provides visual feedback during agent execution
- */
+// Glow animation for visual feedback when AI is working
 
 (() => {
   const GLOW_OVERLAY_ID = 'eclipse-glow-overlay'
   const GLOW_STYLES_ID = 'eclipse-glow-styles'
   const GLOW_INITIALIZED_KEY = 'eclipse-glow-initialized'
-  const GLOW_ENABLED_KEY = 'eclipse-glow-enabled'  // Stored in chrome.storage.local
+  const GLOW_ENABLED_KEY = 'eclipse-glow-enabled'  // Setting stored in browser
   
-  // Check if already initialized to prevent duplicate listeners
+  // Check if already loaded to avoid duplicates
   if (window[GLOW_INITIALIZED_KEY]) {
     console.log('[Eclipse] Glow animation already initialized')
     return
   }
   window[GLOW_INITIALIZED_KEY] = true
   
-  /**
-   * Create and inject glow animation styles
-   */
+  // Add the glow animation styles to the page
   function injectStyles() {
     if (document.getElementById(GLOW_STYLES_ID)) {
       return
@@ -74,19 +69,17 @@
     document.head.appendChild(style)
   }
   
-  /**
-   * Start glow animation
-   */
+  // Start the glow effect on the page
   function startGlow() {
     console.log('[Eclipse] startGlow() called')
-    // Remove existing overlay if present
+    // Remove any existing glow effect
     stopGlow()
     
-    // Inject styles
+    // Add the glow styles
     console.log('[Eclipse] Injecting styles...')
     injectStyles()
     
-    // Create overlay
+    // Create the glow overlay
     console.log('[Eclipse] Creating overlay...')
     const overlay = document.createElement('div')
     overlay.id = GLOW_OVERLAY_ID
@@ -95,9 +88,7 @@
     console.log('[Eclipse] Glow animation started, overlay added to DOM')
   }
   
-  /**
-   * Stop glow animation
-   */
+  // Stop the glow effect
   function stopGlow() {
     const overlay = document.getElementById(GLOW_OVERLAY_ID)
     if (overlay) {
@@ -106,9 +97,7 @@
     }
   }
 
-  /**
-   * Read whether glow is enabled (default true)
-   */
+  // Check if glow effect is enabled in settings
   function isGlowEnabled() {
     console.log('[Eclipse] isGlowEnabled() called')
     return new Promise((resolve, reject) => {
@@ -122,7 +111,7 @@
         
         chrome.storage.local.get(GLOW_ENABLED_KEY, (result) => {
           console.log('[Eclipse] Storage result:', result)
-          // If key is missing, treat as enabled by default
+          // If setting is missing, glow is enabled by default
           const enabled = result && Object.prototype.hasOwnProperty.call(result, GLOW_ENABLED_KEY)
             ? result[GLOW_ENABLED_KEY] !== false
             : true
@@ -136,9 +125,7 @@
     })
   }
   
-  /**
-   * Message listener
-   */
+  // Listen for messages from the extension
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log('[Eclipse] Glow animation received ANY message:', request)
     if (request.source !== 'GlowAnimationService') {
@@ -153,7 +140,7 @@
         return true
         
       case 'startGlow': {
-        // Gate on persisted setting
+        // Check if glow is enabled in settings
         console.log('[Eclipse] Checking if glow is enabled...')
         isGlowEnabled().then((enabled) => {
           console.log('[Eclipse] Glow enabled:', enabled)
@@ -181,21 +168,20 @@
         sendResponse({ success: false, error: 'Unknown action' })
     }
     
-    return true  // Keep message channel open for async response
+    return true  // Keep message channel open for responses
   })
   
-  // Clean up on page unload
+  // Stop glow when page is closed
   window.addEventListener('beforeunload', stopGlow)
   
-  // Also clean up on visibility change (tab switch)
+  // Stop glow when switching tabs
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       stopGlow()
     }
   })
   
-  // Start glow immediately if we're being re-injected after navigation
-  // The service will send a start message right after injection
+  // Ready to start glow when extension sends message
   
   console.log('[Eclipse] Glow animation content script loaded and ready')
 })()

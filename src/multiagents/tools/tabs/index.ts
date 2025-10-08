@@ -1,11 +1,9 @@
-/**
- * Índice de herramientas de pestañas
- */
+// Tab tools index
 
-// Exportar funciones de extracción
+// Export extraction functions
 export { extractTabContent, extractMultipleTabsContent } from './extractor';
 
-// Exportar definiciones de herramientas
+// Export tool definitions
 export { 
   createExtractTabContentTool, 
   createExtractMultipleTabsContentTool,
@@ -15,7 +13,7 @@ export {
   SWITCH_TO_TAB_TOOL
 } from './definitions';
 
-// Exportar ejecutores de herramientas
+// Export tool executors
 export { 
   executeExtractTabContent, 
   executeExtractMultipleTabsContent,
@@ -25,5 +23,5 @@ export {
   executeSwitchToTab
 } from './executors';
 
-// Exportar tipos
+// Export types
 export type { Tab, ToolCall, ToolDefinition, ToolResult, ExtractedContent } from './types';

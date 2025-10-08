@@ -48,13 +48,13 @@ ${validatorFeedback ? `Validator feedback: ${validatorFeedback}` : ''}
       availableTools
     );
     
-    // FASE 1: Recibir JSON completo sin streaming
+    // Get complete JSON response without streaming
     const { fullResponse, toolCalls } = await processStreaming(completion, undefined);
     console.log('fullResponse', fullResponse);
     console.log('toolCalls from executor', toolCalls);
     
     if (toolCalls && toolCalls.length > 0) {
-      // FASE 2: Hacer streaming del userDescription de la herramienta si hay callback
+      // Stream the tool description if callback is provided
       if (onChunk) {
         const toolCall = toolCalls[0];
         const toolUserDescription = extractUserDescriptionFromToolCall(toolCall);
@@ -72,7 +72,7 @@ ${validatorFeedback ? `Validator feedback: ${validatorFeedback}` : ''}
       };
     }
     
-    // Si no hay tool calls, significa que el executor no pudo determinar qué herramienta usar
+    // If no tool calls, executor could not determine which tool to use
     return {
       type: 'no_tool_call',
       content: 'I was unable to determine which tool to use for this step. Please provide more specific instructions.'

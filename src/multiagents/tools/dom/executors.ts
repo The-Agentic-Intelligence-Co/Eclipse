@@ -1,9 +1,7 @@
 import type { ToolResult } from '../tabs/types';
 import { sendMessageWithInjection } from './utils';
 
-/**
- * Executes the get_interactive_context tool using content script messaging
- */
+// Get interactive context from the current page
 export const executeGetInteractiveContext = async (toolCall: any): Promise<ToolResult> => {
   try {
     console.log('Executing get_interactive_context with parameters:', toolCall);
@@ -11,10 +9,10 @@ export const executeGetInteractiveContext = async (toolCall: any): Promise<ToolR
     // Get the active tab
     const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!activeTab.id) {
-      throw new Error('No se pudo obtener la pestaña activa');
+      throw new Error('Could not get active tab');
     }
     
-    // Send message to content script with automatic injection
+    // Send message to content script
     const response = await sendMessageWithInjection(activeTab.id, {
       action: 'getInteractiveContext'
     });
@@ -24,7 +22,7 @@ export const executeGetInteractiveContext = async (toolCall: any): Promise<ToolR
     return {
       tool_call_id: toolCall.id,
       functionName: toolCall.function.name,
-      content: response.success ? JSON.stringify(response.context) : response.error || 'Error desconocido',
+      content: response.success ? JSON.stringify(response.context) : response.error || 'Unknown error',
       success: response.success
     };
   } catch (error) {
@@ -39,9 +37,7 @@ export const executeGetInteractiveContext = async (toolCall: any): Promise<ToolR
   }
 };
 
-/**
- * Executes the get_page_context tool using content script messaging
- */
+// Get page context and content from a specific tab
 export const executeGetPageContext = async (toolCall: any): Promise<ToolResult> => {
   try {
     console.log('Executing get_page_context with parameters:', toolCall);
@@ -54,7 +50,7 @@ export const executeGetPageContext = async (toolCall: any): Promise<ToolResult> 
       throw new Error(`Tab with ID ${tabId} not found`);
     }
 
-    // Send message to content script for both content extraction and interactive context
+    // Send message to content script
     const response = await sendMessageWithInjection(tab.id, {
       action: 'getPageContext'
     }, 10000);
@@ -64,7 +60,7 @@ export const executeGetPageContext = async (toolCall: any): Promise<ToolResult> 
     return {
       tool_call_id: toolCall.id,
       functionName: toolCall.function.name,
-      content: response.success ? JSON.stringify(response.data) : response.error || 'Error desconocido',
+      content: response.success ? JSON.stringify(response.data) : response.error || 'Unknown error',
       success: response.success
     };
   } catch (error) {
@@ -79,9 +75,7 @@ export const executeGetPageContext = async (toolCall: any): Promise<ToolResult> 
   }
 };
 
-/**
- * Executes the execute_dom_actions tool using content script messaging
- */
+// Execute DOM actions on a specific tab
 export const executeDomActions = async (toolCall: any): Promise<ToolResult> => {
   try {
     console.log('Executing execute_dom_actions with parameters:', toolCall);
@@ -94,11 +88,11 @@ export const executeDomActions = async (toolCall: any): Promise<ToolResult> => {
       throw new Error(`Tab with ID ${tabId} not found`);
     }
 
-    // Send message to content script to execute DOM actions
+    // Send message to content script
     const response = await sendMessageWithInjection(tab.id, {
       action: 'executeDomActions',
       actions: actions
-    }, 15000); // Longer timeout for multiple actions
+    }, 15000); // Longer timeout for actions
 
     console.log('DOM actions executed:', response);
     
@@ -120,9 +114,7 @@ export const executeDomActions = async (toolCall: any): Promise<ToolResult> => {
   }
 };
 
-/**
- * Executes the scroll_page tool using content script messaging
- */
+// Scroll the current page
 export const executeScrollPage = async (toolCall: any): Promise<ToolResult> => {
   try {
     console.log('Executing scroll_page with parameters:', toolCall);
@@ -130,7 +122,7 @@ export const executeScrollPage = async (toolCall: any): Promise<ToolResult> => {
     // Get the active tab
     const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!activeTab.id) {
-      throw new Error('No se pudo obtener la pestaña activa');
+      throw new Error('Could not get active tab');
     }
 
     // Send message to content script
@@ -143,7 +135,7 @@ export const executeScrollPage = async (toolCall: any): Promise<ToolResult> => {
     return {
       tool_call_id: toolCall.id,
       functionName: toolCall.function.name,
-      content: response.success ? response.message || 'Page scrolled successfully' : response.error || 'Error al hacer scroll',
+      content: response.success ? response.message || 'Page scrolled successfully' : response.error || 'Error scrolling page',
       success: response.success
     };
   } catch (error) {

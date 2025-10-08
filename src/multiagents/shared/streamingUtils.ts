@@ -1,13 +1,9 @@
-/**
- * Utilidades para manejo de streaming y procesamiento de chunks
- */
+// Utilities for streaming and chunk processing
 
 import type { ToolCall } from "../tools/tabs/types";
 import type { StreamingResult, StreamingCallback } from "./types";
 
-/**
- * Procesa el streaming de Groq y extrae tool calls
- */
+// Processes Groq streaming and extracts tool calls
 export async function processStreaming(
   completion: any, 
   onChunk?: StreamingCallback
@@ -43,7 +39,7 @@ export async function processStreaming(
     }
   }
   
-  // Extraer userDescription de tool calls
+  // Extract userDescription from tool calls
   const toolDescriptions = toolCalls.map(tc => {
     try {
       const args = JSON.parse(tc.function.arguments);
@@ -56,9 +52,7 @@ export async function processStreaming(
   return { fullResponse, toolCalls, toolDescriptions };
 }
 
-/**
- * Streamea descripciones de herramientas
- */
+// Streams tool descriptions
 export function streamToolDescriptions(
   toolDescriptions: string[],
   onChunk?: StreamingCallback
@@ -71,10 +65,8 @@ export function streamToolDescriptions(
   return '';
 }
 
-/**
- * Simula streaming del userDescription con delay rápido y uniforme
- * Utilidad compartida para planner y validator
- */
+// Simulates streaming of userDescription with fast and uniform delay
+// Shared utility for planner and validator
 export async function streamUserDescription(userDescription: string, onChunk: StreamingCallback): Promise<void> {
   const words = userDescription.split(' ');
   let currentText = '';
@@ -84,12 +76,12 @@ export async function streamUserDescription(userDescription: string, onChunk: St
     const space = i < words.length - 1 ? ' ' : '';
     currentText += word + space;
     
-    // Delay uniforme y muy rápido para todas las palabras (5-15ms)
+    // Uniform and very fast delay for all words (5-15ms)
     const delay = Math.random() * 10 + 5;
     
     await new Promise(resolve => setTimeout(resolve, delay));
     
-    // Llamar al callback con el chunk actual
+    // Call callback with current chunk
     onChunk(word + space, currentText, i === 0);
   }
 }

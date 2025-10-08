@@ -1,11 +1,7 @@
-/**
- * System prompts para diferentes tipos de interacciones con la IA
- */
+// System prompts for different types of AI interactions
 
-/**
- * Prompt del sistema para respuestas generales (modo ASK)
- * Define el formato y estilo de las respuestas de la IA
- */
+// System prompt for general responses (ASK mode)
+// Defines the format and style of AI responses
 export const GENERAL_SYSTEM_PROMPT: string = `
 You are Eclipse, an intelligent browser agent designed to help users navigate 
 and interact with web content more effectively.

@@ -1,7 +1,5 @@
-/**
- * Gestor de herramientas para la IA - Versión refactorizada
- * Maneja la ejecución de tools y conversión de resultados
- */
+// Tool manager for AI - refactored version
+// Handles tool execution and result conversion
 
 import { 
   createExtractTabContentTool, 
@@ -37,21 +35,16 @@ import type { Tab, ToolDefinition, ToolCall, ToolResult } from '../tabs/types';
 import { GET_INTERACTIVE_CONTEXT_TOOL, SCROLL_PAGE_TOOL, GET_PAGE_CONTEXT_TOOL, EXECUTE_DOM_ACTIONS_TOOL } from '../dom/definitions';
 import { executeGetInteractiveContext, executeScrollPage, executeGetPageContext, executeDomActions } from '../dom/executors';
 
-/**
- * Obtiene las herramientas disponibles para la IA basándose en las pestañas seleccionadas y el modo
- * @param {Tab[]} selectedTabs - Pestañas seleccionadas para contexto
- * @param {string} mode - Modo de operación ('ask' o 'agent')
- * @returns {ToolDefinition[]} Array de herramientas disponibles
- */
+// Gets available tools for AI based on selected tabs and mode
 export function getAvailableTools(selectedTabs: Tab[] = [], mode: 'ask' | 'agent' = 'agent'): ToolDefinition[] {
   const tools: ToolDefinition[] = [];
   
-  // Solo incluir la tool de extracción si hay pestañas seleccionadas
+  // Only include extraction tool if there are selected tabs
   if (selectedTabs && selectedTabs.length > 0) {
-    // Agregar tool para extraer contenido de una pestaña específica
+    // Add tool to extract content from a specific tab
     tools.push(createExtractTabContentTool(selectedTabs));
     
-    // Agregar tool para extraer contenido de múltiples pestañas si hay más de una
+    // Add tool to extract content from multiple tabs if there are more than one
     if (selectedTabs.length > 1) {
       tools.push(createExtractMultipleTabsContentTool(selectedTabs));
     }
@@ -78,13 +71,7 @@ export function getAvailableTools(selectedTabs: Tab[] = [], mode: 'ask' | 'agent
   return tools;
 }
 
-/**
- * Ejecuta una herramienta específica
- * @param {ToolCall} toolCall - Llamada a la herramienta desde la IA
- * @param {Tab[]} selectedTabs - Pestañas seleccionadas para contexto
- * @param {string} mode - Modo de operación ('ask' o 'agent')
- * @returns {Promise<ToolResult>} Resultado de la ejecución de la herramienta
- */
+// Executes a specific tool
 export async function executeTool(
   toolCall: ToolCall, 
   selectedTabs: Tab[] = [], 
@@ -93,7 +80,7 @@ export async function executeTool(
   try {
     const toolName = toolCall.function.name;
     
-    // Validar que la herramienta esté permitida en el modo actual
+    // Validate that tool is allowed in current mode
     if (mode === 'ask') {
       const askModeTools = [
         'extract_tab_content',
@@ -107,13 +94,13 @@ export async function executeTool(
         return {
           tool_call_id: toolCall.id,
           functionName: toolName,
-          content: `❌ La herramienta "${toolName}" no está disponible en modo 'Ask'. Solo se permiten herramientas de análisis y consulta.`,
+          content: `❌ Tool "${toolName}" is not available in 'Ask' mode. Only analysis and query tools are allowed.`,
           success: false
         };
       }
     }
     
-    // Mapeo de herramientas a sus ejecutores
+    // Tool mapping to their executors
     const toolExecutors: Record<string, () => Promise<ToolResult>> = {
       'extract_tab_content': () => executeExtractTabContent(toolCall, selectedTabs),
       'extract_multiple_tabs_content': () => executeExtractMultipleTabsContent(toolCall, selectedTabs),
@@ -135,7 +122,7 @@ export async function executeTool(
       return {
         tool_call_id: toolCall.id,
         functionName: toolName,
-        content: `Error: Herramienta "${toolName}" no reconocida.`,
+        content: `Error: Tool "${toolName}" not recognized.`,
         success: false
       };
     }
@@ -143,24 +130,18 @@ export async function executeTool(
     return await executor();
     
   } catch (error) {
-    console.error('Error ejecutando tool:', error);
-    console.error('Error en tool call:', toolCall);
+    console.error('Error executing tool:', error);
+    console.error('Error in tool call:', toolCall);
     return {
       tool_call_id: toolCall.id,
       functionName: toolCall.function.name,
-      content: `Error ejecutando la herramienta: ${error instanceof Error ? error.message : 'Error desconocido'}`,
+      content: `Error executing tool: ${error instanceof Error ? error.message : 'Unknown error'}`,
       success: false
     };
   }
 }
 
-/**
- * Ejecuta múltiples herramientas en paralelo
- * @param {ToolCall[]} toolCalls - Array de llamadas a herramientas
- * @param {Tab[]} selectedTabs - Pestañas seleccionadas para contexto
- * @param {string} mode - Modo de operación ('ask' o 'agent')
- * @returns {Promise<ToolResult[]>} Array de resultados de las herramientas
- */
+// Executes multiple tools in parallel
 export async function executeMultipleTools(
   toolCalls: ToolCall[], 
   selectedTabs: Tab[] = [], 
@@ -170,30 +151,26 @@ export async function executeMultipleTools(
     return [];
   }
   
-  // Deduplicar tool calls por id
+  // Deduplicate tool calls by id
   const uniqueToolCalls = toolCalls.filter((toolCall, index, self) => 
     index === self.findIndex(tc => tc.id === toolCall.id)
   );
   
-  // Ejecutar cada tool en paralelo
+  // Execute each tool in parallel
   const executionPromises = uniqueToolCalls.map(toolCall => 
     executeTool(toolCall, selectedTabs, mode)
   );
   
   const results = await Promise.all(executionPromises);
   
-  // Log simple de las tools ejecutadas
+  // Simple log of executed tools
   const toolNames = uniqueToolCalls.map(tc => tc.function.name).join(', ');
-  console.log(`🛠️ Tools ejecutadas: ${toolNames}`);
+  console.log(`🛠️ Tools executed: ${toolNames}`);
   
   return results;
 }
 
-/**
- * Convierte los resultados de las tools al formato de mensajes para Groq
- * @param {ToolResult[]} toolResults - Resultados de las herramientas ejecutadas
- * @returns {Array} Array de mensajes en formato para Groq
- */
+// Converts tool results to Groq message format
 export function convertToolResultsToMessages(toolResults: ToolResult[]): Array<{
   role: 'tool';
   tool_call_id: string;

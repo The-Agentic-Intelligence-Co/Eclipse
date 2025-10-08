@@ -1,13 +1,9 @@
-/**
- * Utility functions for glow animation management
- */
+// Utility functions for glow animation management
 
 let currentActiveTabId: number | null = null;
 
-/**
- * Ensures glow animation content script is loaded in the target tab
- * If not loaded, injects it dynamically
- */
+// Ensures glow animation content script is loaded in the target tab
+// If not loaded, injects it dynamically
 export async function ensureGlowScriptLoaded(tabId: number): Promise<void> {
   try {
     // Try to ping the glow content script
@@ -41,9 +37,7 @@ export async function ensureGlowScriptLoaded(tabId: number): Promise<void> {
   }
 }
 
-/**
- * Starts glow animation in the specified tab and tracks it as active
- */
+// Starts glow animation in the specified tab and tracks it as active
 export async function startGlowAnimation(tabId: number): Promise<void> {
   try {
     // Stop animation in previous active tab if different
@@ -71,9 +65,7 @@ export async function startGlowAnimation(tabId: number): Promise<void> {
   }
 }
 
-/**
- * Stops glow animation in the specified tab
- */
+// Stops glow animation in the specified tab
 export async function stopGlowAnimation(tabId: number): Promise<void> {
   try {
     await chrome.tabs.sendMessage(tabId, {
@@ -92,9 +84,7 @@ export async function stopGlowAnimation(tabId: number): Promise<void> {
   }
 }
 
-/**
- * Stops glow animation in all tabs
- */
+// Stops glow animation in all tabs
 export async function stopGlowAnimationInAllTabs(): Promise<void> {
   try {
     // Only stop in the current active tab if we know it
@@ -115,9 +105,7 @@ export async function stopGlowAnimationInAllTabs(): Promise<void> {
   }
 }
 
-/**
- * Moves glow animation to the new active tab
- */
+// Moves glow animation to the new active tab
 export async function moveGlowToActiveTab(newActiveTabId: number): Promise<void> {
   if (currentActiveTabId === newActiveTabId) {
     return; // Already active

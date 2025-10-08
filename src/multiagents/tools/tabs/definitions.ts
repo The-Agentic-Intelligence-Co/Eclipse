@@ -1,12 +1,8 @@
-/**
- * Definiciones de herramientas de pestañas para la IA
- */
+// Tab tool definitions for AI
 
 import type { Tab, ToolDefinition } from './types';
 
-/**
- * Crea la definición de la herramienta extract_tab_content
- */
+// Creates the extract_tab_content tool definition
 export function createExtractTabContentTool(selectedTabs: Tab[]): ToolDefinition {
   const availableTabsInfo = selectedTabs.map(tab => 
     `ID ${tab.id}: "${tab.title}" (${tab.url})`
@@ -39,9 +35,7 @@ export function createExtractTabContentTool(selectedTabs: Tab[]): ToolDefinition
   };
 }
 
-/**
- * Crea la definición de la herramienta extract_multiple_tabs_content
- */
+// Creates the extract_multiple_tabs_content tool definition
 export function createExtractMultipleTabsContentTool(selectedTabs: Tab[]): ToolDefinition {
   const availableTabsInfo = selectedTabs.map(tab => 
     `ID ${tab.id}: "${tab.title}" (${tab.url})`
@@ -70,9 +64,7 @@ export function createExtractMultipleTabsContentTool(selectedTabs: Tab[]): ToolD
   };
 }
 
-/**
- * Definición de la herramienta open_tab_with_url
- */
+// Definition for open_tab_with_url tool
 export const OPEN_TAB_WITH_URL_TOOL: ToolDefinition = {
   type: "function",
   function: {
@@ -99,9 +91,7 @@ export const OPEN_TAB_WITH_URL_TOOL: ToolDefinition = {
   }
 };
 
-/**
- * Definición de la herramienta group_tabs
- */
+// Definition for group_tabs tool
 export const GROUP_TABS_TOOL: ToolDefinition = {
   type: "function",
   function: {
@@ -132,9 +122,7 @@ export const GROUP_TABS_TOOL: ToolDefinition = {
   }
 };
 
-/**
- * Definición de la herramienta list_all_tabs
- */
+// Definition for list_all_tabs tool
 export const LIST_ALL_TABS_TOOL: ToolDefinition = {
   type: "function",
   function: {
@@ -157,9 +145,7 @@ export const LIST_ALL_TABS_TOOL: ToolDefinition = {
   }
 };
 
-/**
- * Definición de la herramienta switch_to_tab
- */
+// Definition for switch_to_tab tool
 export const SWITCH_TO_TAB_TOOL: ToolDefinition = {
   type: "function",
   function: {

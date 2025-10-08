@@ -7,7 +7,7 @@ import type { AppProps } from './types/hooks';
 
 const App: React.FC<AppProps> = () => {
 
-  // Hook para gestión de pestañas - ahora compartido entre Content y Footer
+  // Hook for tab management - shared between Content and Footer
   const {
     tabs,
     selectedTabs,
@@ -21,7 +21,7 @@ const App: React.FC<AppProps> = () => {
     maxLimit
   } = useTabManagement();
 
-  // Estado para saber si el chat ha comenzado
+  // State to track if chat has started
   const [hasStartedChat, setHasStartedChat] = useState<boolean>(false);
 
   return (

@@ -1,12 +1,8 @@
-/**
- * Utilidades para manejo de pestañas y contexto del navegador
- */
+// Utilities for tab handling and browser context
 
 import type { Tab } from "../tools/tabs/types";
 
-/**
- * Unifica las pestañas seleccionadas con la pestaña activa actual
- */
+// Unifies selected tabs with current active tab
 export function getUnifiedTabs(
   selectedTabs: Tab[], 
   currentActiveTab: Tab | null, 
@@ -20,9 +16,7 @@ export function getUnifiedTabs(
   return allTabs;
 }
 
-/**
- * Añade contexto de pestañas a los mensajes con estado actualizado en tiempo real
- */
+// Adds tab context to messages with real-time updated state
 export async function addTabContext(
   messages: Array<{ role: 'user' | 'assistant'; content: string }>, 
   selectedTabs: Tab[], 
@@ -31,7 +25,7 @@ export async function addTabContext(
 ): Promise<Array<{ role: 'user' | 'assistant'; content: string }>> {
   if (!selectedTabs?.length && !(currentActiveTab && showCurrentTabIndicator)) return messages;
   
-  // Obtener el estado actual de las pestañas en tiempo real
+  // Get current state of tabs in real-time
   const currentActiveTabInfo = await getCurrentActiveTab();
   
   const contextParts: string[] = [];
@@ -39,7 +33,7 @@ export async function addTabContext(
     contextParts.push(`**Selected tabs:**\n${selectedTabs.map(tab => `- **${tab.title}** (${tab.url})`).join('\n')}`);
   }
   
-  // Usar la pestaña activa actual en lugar de la obsoleta
+  // Use current active tab instead of obsolete one
   if (currentActiveTabInfo && showCurrentTabIndicator) {
     contextParts.push(`**Current active tab:**\n- **${currentActiveTabInfo.title}** (${currentActiveTabInfo.url})`);
   }
@@ -56,9 +50,7 @@ export async function addTabContext(
   return enhancedMessages;
 }
 
-/**
- * Obtiene la pestaña activa actual en tiempo real
- */
+// Gets current active tab in real-time
 async function getCurrentActiveTab(): Promise<Tab | null> {
   try {
     const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
