@@ -1,27 +1,33 @@
-# Eclipse
+<div align="center">
+  <img src="assets/eclipse_logo.png" alt="Eclipse Logo" width="200">
+</div>
+
+# 🌙 Eclipse
+
+---
 
 Eclipse is an intelligent browser extension that revolutionizes how you interact with web content. Built with a multi-agent AI system, it combines powerful content analysis with browser automation to transform your browsing experience from manual tasks into intelligent workflows.
 
-## 📋 Table of Contents
+<div align="center">
 
-- [Features](#features)
-  - [1. Browser Automation](#1-browser-automation)
-  - [2. Tab Management](#2-tab-management)
-  - [3. Advanced Video Search](#3-advanced-video-search)
-  - [4. Extract Content from One/Multiple Tabs](#4-extract-content-from-onemultiple-tabs)
-  - [5. Video Analysis](#5-video-analysis)
-- [Modes](#modes)
-- [How to Install](#how-to-install)
-- [Product Roadmap](#product-roadmap)
-- [Contributions](#contributions)
-- [Why Eclipse?](#why-eclipse)
+**100% Open Source • Privacy First • Free • BYOK (Bring Your Own Keys)**
+
+</div>
+
+## 💡 Why Eclipse?
+
+---
+
+I applied twice for early access to be part of the beta testers for Perplexity's Comet AI browser, but got rejected both times. Some time later, they announced they were recording every movement and activity of users, which completely turned me off from using it. So I decided to build my own alternative.
 
 ## ✨ Features
+
+---
 
 ### 1. Browser Automation
 ![Browser Automation Demo](assets/browser_automation_demo.gif)
 
-Eclipse can automate browser tasks like filling forms, navigating websites and completing tasks. It uses AI to understand web pages and perform actions just like a human would. In the demo, it's being used for lead extraction from a conference portal, perfect for GTM and sales teams. The multi-agent system is limited to 30 steps as a safety mechanism, but this is enough to reduce tasks that typically take 15-30 minutes down to just 2-4 minutes.
+Eclipse can automate browser tasks like filling forms, navigating websites and completing tasks. It uses AI to understand web pages and perform actions just like a human would. In the demo, it's being used for lead extraction from a conference portal, a common task in B2B/enterprise GTM and sales teams - reducing tasks that typically take 15-30 minutes down to just 2-4 minutes.
 
 Powered by [dom-engine](https://github.com/The-Agentic-Intelligence-Co/dom-engine), our in-house library that turns website DOMs into actionable context for AI agents.
 
@@ -47,10 +53,9 @@ Get AI analysis of YouTube videos with summaries, timestamps, and key moments. A
 
 ## 🎯 Modes
 
-Eclipse operates in two distinct modes to match your needs:
+---
 
-### Ask Mode
-Perfect for content analysis and information extraction. Includes all features except those that require direct browser interface actions (tab management and browser automation). Use this mode when you need to analyze content, search videos, extract information, or get insights from your web pages.
+Eclipse operates in two distinct modes to match your needs:
 
 ### Agent Mode
 Full-featured mode with complete browser automation capabilities. This mode includes everything from Ask Mode plus tab management and browser automation. It operates with a multi-agent feedback system:
@@ -59,10 +64,20 @@ Full-featured mode with complete browser automation capabilities. This mode incl
 - **Executor Agent**: Executes the necessary tools to complete your goal
 - **Validator Agent**: Keeps the executor agent on track, manages errors, and provides feedback to ensure successful task completion
 
-The multi-agent system works collaboratively to break down complex tasks into manageable steps and ensure reliable execution.
+The multi-agent system works collaboratively to break down complex tasks into manageable steps and ensure reliable execution. The system is limited to 30 steps as a safety mechanism to prevent infinite loops and ensure controlled automation.
+
+### Ask Mode
+Includes all features except those that require direct browser interface actions (tab management and browser automation). Think of it as Eclipse's safe mode - use this mode when you need to analyze content, search videos, extract information, or get insights from your web pages.
 
 ## 🚀 How to Install
 
+---
+
+### Prerequisites
+- **Groq API Key**: Required for AI features
+- **YouTube API Key**: Required for video search and analysis features
+
+### Installation Steps
 1. Clone this repository
 2. Run `npm install` to install dependencies
 3. Run `npm run build:extension` to build the extension
@@ -71,7 +86,11 @@ The multi-agent system works collaboratively to break down complex tasks into ma
 6. Click "Load unpacked" and select the `dist` folder
 7. The Eclipse extension will appear in your browser toolbar
 
+> **Note**: Chrome Web Store submission is currently in process, but you can install manually using the steps above.
+
 ## 🗺️ Product Roadmap
+
+---
 
 ### ✅ Stable Features
 - **Tab Management**: Group tabs, organize by topic, custom colors
@@ -87,11 +106,9 @@ The next steps include deploying MCP servers on GCP and integrating them with th
 
 ## 🤝 Contributions
 
+---
+
 Contributions are welcome! Please feel free to submit issues, feature requests, or pull requests to help improve Eclipse.
-
-## 💡 Why Eclipse?
-
-I applied twice for early access to be part of the beta testers for Perplexity's Comet AI browser, but got rejected both times. Also, as a consumer, I wasn't comfortable with the idea of a browser tracking all my movements and activities. So I decided to build my own alternative.
 
 ---
 
