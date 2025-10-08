@@ -12,10 +12,6 @@ Eclipse is an intelligent browser extension that revolutionizes how you interact
 
 </div>
 
-## 💡 Why Eclipse?
-
-I applied twice for early access to be part of the beta testers for Perplexity's Comet AI browser, but got rejected both times. Some time later, they announced they were recording every movement and activity of users, which completely turned me off from using it. So I decided to build my own alternative.
-
 ## ✨ Features
 
 ### 1. Browser Automation
