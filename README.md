@@ -2,6 +2,8 @@
   <img src="assets/eclipse_logo.png" alt="Eclipse Logo" width="200">
 </div>
 
+---
+
 ## 🌙 Eclipse
 
 Eclipse is an intelligent browser extension that revolutionizes how you interact with web content. Built with a multi-agent AI system, it combines powerful content analysis with browser automation to transform your browsing experience from manual tasks into intelligent workflows.
