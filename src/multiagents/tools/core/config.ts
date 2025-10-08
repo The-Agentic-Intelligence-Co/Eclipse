@@ -4,7 +4,7 @@
 
 // Configuración de YouTube API
 export const YOUTUBE_CONFIG = {
-  API_KEY: "AIzaSyC3ekSF0lZN91aNLK8c0QlWzgqfo8H2kiM",
+  API_KEY: (import.meta as any).env.VITE_YOUTUBE_API_KEY,
   API_URL: "https://www.googleapis.com/youtube/v3",
   DEFAULT_MAX_RESULTS: 5,
   MAX_RESULTS: 10
@@ -12,7 +12,7 @@ export const YOUTUBE_CONFIG = {
 
 // Configuración de Google AI
 export const GOOGLE_AI_CONFIG = {
-  API_KEY: "AIzaSyAjhElUElRbIOQHh1hp7IokzOIwOKYSOZk",
+  API_KEY: (import.meta as any).env.VITE_GOOGLE_AI_API_KEY,
   MODEL: "gemini-2.5-pro"
 } as const;
 

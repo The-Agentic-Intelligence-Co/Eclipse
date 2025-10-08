@@ -10,7 +10,7 @@ import type { GroqMessage } from "./types";
 // ⚠️ ADVERTENCIA DE SEGURIDAD: Esta opción expone la API key en el navegador
 // En producción, considera usar un backend proxy para mayor seguridad
 export const groq = new Groq({
-  apiKey: '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',
+  apiKey: (import.meta as any).env.VITE_GROQ_API_KEY,
   dangerouslyAllowBrowser: true
 });
 
